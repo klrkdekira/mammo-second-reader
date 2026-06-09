@@ -1,7 +1,7 @@
 [project]
 name = "cm3070-final-project"
 version = "0.1.0"
-description = "Add your description here"
+description = "Auditable Deep Learning for Breast Cancer Screening"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -17,11 +17,15 @@ dependencies = [
     "peft>=0.19.1",
     "pydicom>=3.0.2",
     "scikit-learn>=1.8.0",
+    "seaborn>=0.13.2",
     "torch",
     "torchvision",
     "transformers[torch]>=5.8.0",
     "uvicorn>=0.47.0",
 ]
+
+[dependency-groups]
+dev = ["ruff>=0.15.13"]
 
 [tool.uv]
 package = true
