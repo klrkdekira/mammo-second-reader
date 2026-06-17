@@ -6,13 +6,14 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "albumentations>=2.0.8",
+    "click>=8.4.1",
     "fastapi>=0.136.1",
     "grad-cam>=1.5.5",
     "gradio>=6.14.0",
     "jupyterlab>=4.1.6",
     "matplotlib>=3.10.9",
     "numpy>=2.4.3",
-    "opencv-python>=4.13.0.92",
+    "opencv-python-headless>=4.13.0.92",
     "pandas>=3.0.2",
     "peft>=0.19.1",
     "pydicom>=3.0.2",
@@ -20,20 +21,42 @@ dependencies = [
     "seaborn>=0.13.2",
     "torch",
     "torchvision",
-    "transformers[torch]>=5.8.0",
+    "triton-rocm",
     "uvicorn>=0.47.0",
 ]
 
+
 [dependency-groups]
-dev = ["ruff>=0.15.13"]
+dev = ["mypy>=2.1.0", "ruff>=0.15.13"]
 
 [tool.uv]
 package = true
+required-environments = [
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
 
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+# CUDA 12.8
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+# RoCM 7.2
 [[tool.uv.index]]
 name = "pytorch-rocm"
 url = "https://download.pytorch.org/whl/rocm7.2"
+explicit = true
 
+# Pin torch to ROCm index
 [tool.uv.sources]
 torch = { index = "pytorch-rocm" }
 torchvision = { index = "pytorch-rocm" }
+pytorch-triton-rocm = { index = "pytorch-rocm" }
+triton-rocm = { index = "pytorch-rocm" }
