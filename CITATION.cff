@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as follows."
+type: software
+title: Auditable Deep Learning for Breast Cancer Screening
+version: 0.0.1
+date-released: 2026-06-02
+abstract: This project presents an auditable deep-learning pipeline for breast cancer screening in mammography, with reproducible preprocessing and evaluation workflows.
+license: MIT
+repository-code: https://github.com/klrkdekira/cm3070-final-project
+authors:
+  - family-names: Chow
+    given-names: Chee Leong
+    orcid: "https://orcid.org/0009-0009-1943-3010"
+keywords:
+  - medical imaging
+  - mammography
+  - deep learning
+  - ROCm
+  - AMD GPU
