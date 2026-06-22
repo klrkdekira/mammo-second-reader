@@ -1,5 +1,5 @@
 [project]
-name = "cm3070-final-project"
+name = "mammo-second-reader"
 version = "0.1.0"
 description = "Auditable Deep Learning for Breast Cancer Screening"
 readme = "README.md"
@@ -22,9 +22,7 @@ dependencies = [
     "torch",
     "torchvision",
     "triton-rocm",
-    "uvicorn>=0.47.0",
 ]
-
 
 [dependency-groups]
 dev = ["mypy>=2.1.0", "ruff>=0.15.13"]
