@@ -1,0 +1,19 @@
+seed = 42
+run_name = "vgg16_imagenet"
+output_dir = "models"
+
+[data]
+train_csv = "data/cbis-ddsm/training/train.csv"
+val_csv = "data/cbis-ddsm/training/val.csv"
+test_csv = "data/cbis-ddsm/training/test.csv"
+image_root = "data/cbis-ddsm/cbis_ddsm"
+image_size = 224
+
+[model]
+name = "vgg16"
+
+[train]
+epochs = 25
+batch_size = 32
+scheduler = "cosine"
+early_stop_patience = 10
