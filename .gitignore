@@ -217,5 +217,10 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
+# Training data
 data/cbis-ddsm
 data/inbreast
+
+# Model
+models/
+results/
