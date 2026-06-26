@@ -10,6 +10,7 @@ dependencies = [
     "fastapi>=0.136.1",
     "grad-cam>=1.5.5",
     "gradio>=6.14.0",
+    "ipywidgets>=8.1.8",
     "jupyterlab>=4.1.6",
     "matplotlib>=3.10.9",
     "numpy>=2.4.3",
@@ -50,6 +51,7 @@ explicit = true
 [[tool.uv.index]]
 name = "pytorch-rocm"
 url = "https://download.pytorch.org/whl/rocm7.2"
+# url = "https://download.pytorch.org/whl/nightly/rocm7.2"
 explicit = true
 
 # Pin torch to ROCm index
