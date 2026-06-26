@@ -21,7 +21,7 @@ import pydicom
 class DICOMPathResolver:
     """Maps CBIS-DDSM CSV path strings to on-disk DICOM Paths.
 
-    Build once, then call ``resolve_dataframe`` on each of the four split
+    Build once, then call `resolve_dataframe` on each of the four split
     DataFrames. The instance caches header reads so repeated lookups for
     the same file are cheap.
     """
@@ -59,7 +59,7 @@ class DICOMPathResolver:
         if (folder := self.dicom_dir / base).exists():
             return folder
 
-        # Convention 2: numeric suffix mismatch, strip _N and pick lowest
+        # Convention 2: numeric suffix mismatch, strip _N and pick lowest-numbered match
         core = re.sub(r"_\d+$", "", base)
         if series := self._folder_lookup.get(core):
             return series[min(series)]
