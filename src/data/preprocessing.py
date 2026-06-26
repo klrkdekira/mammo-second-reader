@@ -24,16 +24,55 @@ def apply_clahe(
     return clahe.apply(arr_u8).astype(np.float32) / 255.0
 
 
+def strip_border(
+    arr: np.ndarray, sat_thresh: float = 0.85, edge_px: int = 5
+) -> np.ndarray:
+    """Zero the bright frame left by film digitisation (CBIS-DDSM).
+
+    sat_thresh: pixels at or above this value are treated as saturated border.
+        0.85 rather than 0.9 because bright calcifications can push the border
+        below 0.9 after min-max normalisation.
+    edge_px: how many pixels deep from each edge to search for border components.
+        CBIS-DDSM scans sometimes have 1-2 background pixels at the very edge
+        before the white frame starts, so checking only column 0 misses them.
+    """
+    import cv2
+
+    sat = (arr >= sat_thresh).astype(np.uint8)
+    n, labels = cv2.connectedComponents(sat, connectivity=8)
+    if n <= 1:
+        return arr.copy()
+    edge_labels = (
+        set(labels[:edge_px, :].ravel())
+        | set(labels[-edge_px:, :].ravel())
+        | set(labels[:, :edge_px].ravel())
+        | set(labels[:, -edge_px:].ravel())
+    )
+    edge_labels.discard(np.intp(0))
+    if not edge_labels:
+        return arr.copy()
+    out = arr.copy()
+    out[np.isin(labels, list(edge_labels))] = 0.0
+    return out
+
+
 def segment_breast(
     arr: np.ndarray,
     blur_ksize: int = 5,
     open_ksize: int = 20,
     close_ksize: int = 25,
     margin_frac: float = 0.02,
+    remove_border: bool = True,
 ) -> np.ndarray:
-    """Return a float32 {0., 1.} breast mask via Otsu thresholding and largest connected component."""
+    """Return a float32 {0., 1.} breast mask via Otsu thresholding and largest connected component.
+
+    With `remove_border` (default), saturated film-scan border bands are
+    stripped first so they cannot merge with the breast component and inflate the bounding box.
+    """
     import cv2
 
+    if remove_border:
+        arr = strip_border(arr)
     u8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     blur = cv2.medianBlur(u8, blur_ksize)
     _, th = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
@@ -45,8 +84,8 @@ def segment_breast(
         return np.ones(arr.shape, np.float32)
     biggest = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA]))
     mask = (labels == biggest).astype(np.uint8)
-    # Fill interior holes (dark fatty regions below the Otsu threshold) so the
-    # mask does not punch holes in breast tissue when applied.
+    # fills interior holes (dark fatty regions below the Otsu threshold).
+    # prevents the mask from cutting holes in breast tissue when applied.
     contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     filled = np.zeros_like(mask)
     cv2.drawContours(filled, contours, -1, 1, thickness=cv2.FILLED)
@@ -69,8 +108,12 @@ def breast_bbox(mask: np.ndarray) -> tuple[int, int, int, int]:
 
 
 def breast_crop_box(path: str | Path) -> tuple[int, int, int, int]:
+    """Return the breast bounding box using the same pipeline as `preprocess`."""
     arr = load_dicom(path)
-    return breast_bbox(segment_breast(arr))
+    arr = strip_border(arr)
+    mask = segment_breast(arr, remove_border=False)
+    mask = mask * (arr > 1e-6).astype(np.float32)
+    return breast_bbox(mask)
 
 
 def resize(arr: np.ndarray, size: int = 224) -> np.ndarray:
@@ -90,11 +133,24 @@ def preprocess(
 ) -> np.ndarray:
     """Full pipeline: DICOM -> segmented crop -> optional CLAHE -> resize -> float32."""
     arr = load_dicom(path)
-    mask = segment_breast(arr)
-    arr = arr * mask
+    # Strip the film border from the source array before segmentation. Without
+    # this, strip_border only zeros the border inside segment_breast's local
+    # copy (for Otsu), so the mask can still cover the border region and the
+    # bounding box starts at the saturated border column.
+    arr = strip_border(arr)
+    mask = segment_breast(arr, remove_border=False)
+    # The mask's margin dilation can cover the zeroed film-border pixels.
+    # Intersect with arr > 0 so those pixels are excluded from the bounding box
+    # and CLAHE never sees the steep zero→tissue gradient they would create.
+    mask = mask * (arr > 1e-6).astype(np.float32)
     y0, y1, x0, x1 = breast_bbox(mask)
+    mask_crop = mask[y0:y1, x0:x1]
     arr = arr[y0:y1, x0:x1]
     if use_clahe:
-        arr = apply_clahe(arr)
+        tissue_mean = float(np.mean(arr[mask_crop > 0])) if mask_crop.any() else 0.5
+        arr_filled = np.where(mask_crop > 0, arr, tissue_mean)
+        arr = apply_clahe(arr_filled) * mask_crop
+    else:
+        arr = arr * mask_crop
     arr = resize(arr, image_size)
     return arr.astype(np.float32)
