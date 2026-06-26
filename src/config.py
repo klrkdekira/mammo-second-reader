@@ -10,7 +10,6 @@ import random
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 
@@ -45,6 +44,7 @@ class TrainConfig:
     early_stop_patience: int | None = None
     stage1_epochs: int = 5
     stage2_lr: float = 1e-5
+    grad_clip: float | None = None
 
 
 @dataclass(frozen=True)
