@@ -222,5 +222,6 @@ data/cbis-ddsm
 data/inbreast
 
 # Model
-models/
+models/*.pt
+models/*.json
 results/
