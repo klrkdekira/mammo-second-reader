@@ -23,7 +23,12 @@ from src.data.augment import train_augment, val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.metrics import evaluate, youden_threshold
 from src.models import build_model
-from src.models.transfer import freeze_backbone, unfreeze_head, unfreeze_top_blocks
+from src.models.transfer import (
+    ARCHS,
+    freeze_backbone,
+    unfreeze_head,
+    unfreeze_top_blocks,
+)
 from src.training.callbacks import BestAUCCheckpoint, EarlyStopping
 from src.training.loss import make_criterion
 
@@ -34,7 +39,7 @@ def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
     train_ds = MammogramDataset(
         cfg.data.train_csv,
         cfg.data.image_root,
-        transform=train_augment(cfg.data.image_size),
+        transform=train_augment(cfg.data.image_size, level=cfg.data.augment),
     )
     val_ds = MammogramDataset(
         cfg.data.val_csv,
@@ -89,6 +94,19 @@ def _build_scheduler(optimiser: torch.optim.Optimizer, cfg: TrainConfig, epochs:
     raise ValueError(f"Unknown scheduler {cfg.scheduler!r}")
 
 
+def _mixup(
+    x: torch.Tensor, y: torch.Tensor, alpha: float
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return a convex combination of the batch with a shuffled copy of itself.
+
+    Soft targets go straight into BCEWithLogitsLoss, so no per-sample loss
+    mixing is needed.
+    """
+    lam = float(np.random.beta(alpha, alpha))
+    perm = torch.randperm(x.size(0), device=x.device)
+    return lam * x + (1.0 - lam) * x[perm], lam * y + (1.0 - lam) * y[perm]
+
+
 def _train_one_epoch(
     model: torch.nn.Module,
     loader: DataLoader,
@@ -96,12 +114,15 @@ def _train_one_epoch(
     optimiser: torch.optim.Optimizer,
     device: torch.device,
     grad_clip: float | None = None,
+    mixup_alpha: float = 0.0,
 ) -> float:
     model.train()
     running, n = 0.0, 0
     for x, y in loader:
         x = x.to(device, non_blocking=True)
         y = y.to(device, non_blocking=True)
+        if mixup_alpha > 0.0:
+            x, y = _mixup(x, y, mixup_alpha)
         optimiser.zero_grad()
         logits = model(x)
         loss = criterion(logits, y)
@@ -162,12 +183,19 @@ def _fit(
     scheduler=None,
     start_epoch: int = 0,
     grad_clip: float | None = None,
+    mixup_alpha: float = 0.0,
 ) -> list[dict]:
     history: list[dict] = []
     for step in range(epochs):
         epoch = start_epoch + step
         train_loss = _train_one_epoch(
-            model, train_loader, criterion, optimiser, device, grad_clip=grad_clip
+            model,
+            train_loader,
+            criterion,
+            optimiser,
+            device,
+            grad_clip=grad_clip,
+            mixup_alpha=mixup_alpha,
         )
         val_y, val_p = _predict(model, val_loader, device)
         panel = evaluate(val_y, val_p)
@@ -218,16 +246,13 @@ def main(config_path: Path) -> None:
     }
     model = build_model(cfg.model.name, pretrained=cfg.model.pretrained, **model_kwargs)
     model = model.to(device)
-    criterion = make_criterion(cfg.data.train_csv, device)
+    criterion = make_criterion(
+        cfg.data.train_csv, device, label_smoothing=cfg.train.label_smoothing
+    )
     ckpt = BestAUCCheckpoint(cfg.output_dir / f"{cfg.run_name}.pt")
     stopper = EarlyStopping(patience=cfg.train.early_stop_patience or 10)
 
-    is_transfer = cfg.model.name.lower() in (
-        "vgg16",
-        "vgg19",
-        "resnet50",
-        "efficientnet_b4",
-    )
+    is_transfer = cfg.model.name.lower() in ARCHS
     history: list[dict] = []
     if is_transfer and cfg.model.pretrained:
         freeze_backbone(model)
@@ -245,6 +270,7 @@ def main(config_path: Path) -> None:
             ckpt,
             stopper=None,
             grad_clip=cfg.train.grad_clip,
+            mixup_alpha=cfg.train.mixup_alpha,
         )
         unfreeze_top_blocks(model, cfg.model.name)
         stage2_cfg = dataclasses.replace(cfg.train, lr=cfg.train.stage2_lr)
@@ -269,6 +295,7 @@ def main(config_path: Path) -> None:
             scheduler=scheduler,
             start_epoch=cfg.train.stage1_epochs,
             grad_clip=cfg.train.grad_clip,
+            mixup_alpha=cfg.train.mixup_alpha,
         )
     else:
         optimiser = _build_optimiser(model, cfg.train)
@@ -285,6 +312,7 @@ def main(config_path: Path) -> None:
             stopper,
             scheduler=scheduler,
             grad_clip=cfg.train.grad_clip,
+            mixup_alpha=cfg.train.mixup_alpha,
         )
 
     _save_history(cfg.output_dir / f"{cfg.run_name}.history.json", history)

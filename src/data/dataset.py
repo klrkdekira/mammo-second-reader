@@ -41,7 +41,9 @@ class MammogramDataset(Dataset):
         """Return a binary ROI mask for row `idx`, resized to `out_shape` (H, W).
 
         Cropped to the same breast bounding box used by `preprocess` so it
-        aligns with Grad-CAM heatmap coordinates.
+        aligns with Grad-CAM heatmap coordinates. Cached `.npy` masks (built
+        by `src.data.cache_roi_masks`) are stored pre-cropped, so only the
+        raw-DICOM fallback pays for the breast re-segmentation.
 
         Returns `None` if the manifest has no `roi_mask_id` column, the
         value is missing, or the mask file does not exist on disk.
@@ -62,15 +64,15 @@ class MammogramDataset(Dataset):
         npy = base.with_suffix(self.cache_suffix)
         dcm = base.with_suffix(".dcm")
         if npy.exists():
-            mask = np.load(npy)
+            mask = (np.load(npy) > 0).astype(np.uint8)
         elif dcm.exists():
             import pydicom
 
             mask = pydicom.dcmread(str(dcm)).pixel_array
+            mask = (np.asarray(mask) > 0).astype(np.uint8)
+            mask = self._crop_roi_to_breast(str(row["image_id"]), mask)
         else:
             return None
-        mask = (np.asarray(mask) > 0).astype(np.uint8)
-        mask = self._crop_roi_to_breast(str(row["image_id"]), mask)
         mask = cv2.resize(
             mask, (out_shape[1], out_shape[0]), interpolation=cv2.INTER_NEAREST
         )
