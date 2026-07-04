@@ -1,0 +1,7 @@
+.git
+.venv
+.mypy_cache
+/models/*
+/data/*
+__pycache__
+pyproject.toml
