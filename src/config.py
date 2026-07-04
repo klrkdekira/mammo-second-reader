@@ -22,6 +22,7 @@ class DataConfig:
     image_root: Path
     image_size: int = 224
     cache_dir: Path | None = None
+    augment: str = "default"
 
 
 @dataclass(frozen=True)
@@ -45,6 +46,8 @@ class TrainConfig:
     stage1_epochs: int = 5
     stage2_lr: float = 1e-5
     grad_clip: float | None = None
+    label_smoothing: float = 0.0
+    mixup_alpha: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -75,6 +78,7 @@ def load_config(path: Path) -> Config:
             cache_dir=Path(raw["data"].get("cache_dir"))
             if raw["data"].get("cache_dir")
             else None,
+            augment=str(raw["data"].get("augment", "default")),
         ),
         model=ModelConfig(**raw["model"]),
         train=TrainConfig(**raw["train"]),
