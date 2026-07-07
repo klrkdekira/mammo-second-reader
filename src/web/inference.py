@@ -15,15 +15,20 @@ import torch
 
 from src.evaluation.gradcam import TARGET_LAYERS, compute_gradcam
 from src.models import build_model
+from src.models.transfer import ARCHS
 
 MODEL_DIR = Path("models")
 
-# checkpoint registry mapping the trained model
+# checkpoint registry mapping run_name -> architecture.
 MODEL_REGISTRY: dict[str, str] = {
     "baseline": "baseline",
-    "regularised": "deeper",
+    "regularised_base": "deeper",
+    "regularised_heavy_aug": "deeper",
+    "regularised_label_smooth": "deeper",
+    "regularised_mixup": "deeper",
+    "regularised_combined": "deeper",
     "vgg16_scratch": "vgg16",
-    "vgg16_imagenet": "vgg16",
+    **{f"{arch}_imagenet": arch for arch in ARCHS},
 }
 
 

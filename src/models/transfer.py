@@ -16,9 +16,22 @@ class ArchSpec(NamedTuple):
 ARCHS: dict[str, ArchSpec] = {
     "vgg16": ArchSpec("VGG16_Weights", "IMAGENET1K_V1", "classifier", ("features", 24)),
     "vgg19": ArchSpec("VGG19_Weights", "IMAGENET1K_V1", "classifier", ("features", 28)),
+    "resnet18": ArchSpec("ResNet18_Weights", "IMAGENET1K_V1", "fc", ("layer4",)),
     "resnet50": ArchSpec("ResNet50_Weights", "IMAGENET1K_V2", "fc", ("layer4",)),
+    "densenet121": ArchSpec(
+        "DenseNet121_Weights", "IMAGENET1K_V1", "classifier", ("features", 10)
+    ),
+    "efficientnet_b0": ArchSpec(
+        "EfficientNet_B0_Weights", "IMAGENET1K_V1", "classifier", ("features", 7)
+    ),
     "efficientnet_b4": ArchSpec(
         "EfficientNet_B4_Weights", "IMAGENET1K_V1", "classifier", ("features", 7)
+    ),
+    "mobilenet_v3_large": ArchSpec(
+        "MobileNet_V3_Large_Weights", "IMAGENET1K_V2", "classifier", ("features", 13)
+    ),
+    "convnext_tiny": ArchSpec(
+        "ConvNeXt_Tiny_Weights", "IMAGENET1K_V1", "classifier", ("features", 6)
     ),
 }
 

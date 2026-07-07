@@ -9,7 +9,7 @@ def build_model(name: str, pretrained: bool = True, **kwargs):
     from src.models import transfer
 
     name = name.lower()
-    if name in ("baseline", "regularised"):
+    if name == "baseline":
         return BaselineCNN(**kwargs)
     if name == "deeper":
         return DeeperCNN(**kwargs)
