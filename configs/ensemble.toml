@@ -1,0 +1,10 @@
+seed = 42
+run_name = "ensemble"
+output_dir = "models"
+members = ["vgg16_imagenet", "vgg19_imagenet", "resnet50_imagenet", "efficientnet_b4_imagenet"]
+
+[data]
+val_csv = "data/cbis-ddsm/training/val.csv"
+test_csv = "data/cbis-ddsm/training/test.csv"
+image_root = "data/cbis-ddsm/cbis_ddsm"
+image_size = 224

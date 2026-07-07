@@ -1,5 +1,5 @@
 seed = 42
-run_name = "regularised"
+run_name = "regularised_base"
 output_dir = "models"
 
 [data]
