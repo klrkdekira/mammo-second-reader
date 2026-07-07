@@ -12,12 +12,16 @@ import torch
 
 TARGET_LAYERS = {
     "baseline": "features.2.0",
-    "regularised": "features.2.0",
     "deeper": "features.4.0",
     "vgg16": "backbone.features.28",
     "vgg19": "backbone.features.34",
+    "resnet18": "backbone.layer4.1.conv2",
     "resnet50": "backbone.layer4.2.conv3",
+    "densenet121": "backbone.features.norm5",
+    "efficientnet_b0": "backbone.features.8",
     "efficientnet_b4": "backbone.features.8",
+    "mobilenet_v3_large": "backbone.features.16",
+    "convnext_tiny": "backbone.features.7",
 }
 
 
