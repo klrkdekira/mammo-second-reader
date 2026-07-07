@@ -225,3 +225,5 @@ data/inbreast
 models/*.pt
 models/*.json
 results/
+sync_cuda.sh
+sync_results.sh
