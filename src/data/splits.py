@@ -45,7 +45,7 @@ def _build_dataframe(
     - pathology
     - label
     - birads_density
-    - mass_or_calc
+    - lesion_type
     - subtlety
     - roi_mask_id
 
@@ -56,7 +56,7 @@ def _build_dataframe(
         columns={
             "breast_density": "birads_density",  # mass CSVs use underscore
             "breast density": "birads_density",  # calc CSVs use space
-            "abnormality type": "mass_or_calc",
+            "abnormality type": "lesion_type",
         }
     )
     if "subtlety" not in df.columns:
@@ -85,11 +85,51 @@ def _build_dataframe(
         "pathology",
         "label",
         "birads_density",
-        "mass_or_calc",
+        "lesion_type",
         "subtlety",
         "roi_mask_id",
     ]
     return df[keep]
+
+
+def collapse_to_image_level(df: pd.DataFrame) -> pd.DataFrame:
+    """Collapse per-abnormality rows to one row per image.
+
+    CBIS-DDSM lists one row per abnormality, so a mammogram with two
+    abnormalities appears twice (and one carrying both a mass and a calc
+    appears in both CSVs). For image-level classification that double-counts
+    the image, inflating effective counts and the `pos_weight` denominator in
+    training/loss.py, and, when the abnormalities disagree, assigns the image
+    two contradictory labels. Collapse to one row per image with a
+    malignant-if-any label.
+
+    Per-abnormality fields (lesion_type, roi_mask_id, subtlety, pathology) are
+    taken from a representative abnormality that carries the image label, so
+    the kept ROI mask and subtlety describe the lesion that sets the label.
+    lesion_type becomes "mixed" when an image mixes mass and calc, which
+    lesion_strata then excludes from both single-type buckets.
+    """
+    if df.empty:
+        return df
+    n_before = len(df)
+    rows = []
+    for _, g in df.groupby("image_id", sort=False):
+        malignant = int(g["label"].max())
+        rep = g[g["label"] == malignant].iloc[0].to_dict()
+        rep["label"] = malignant
+        types = sorted(g["lesion_type"].dropna().astype(str).str.lower().unique())
+        rep["lesion_type"] = types[0] if len(types) == 1 else "mixed"
+        rows.append(rep)
+    out = pd.DataFrame(rows, columns=df.columns).reset_index(drop=True)
+    collapsed = n_before - len(out)
+    if collapsed:
+        LOGGER.info(
+            "Collapsed %d duplicate abnormality rows to image level (%d rows -> %d images)",
+            collapsed,
+            n_before,
+            len(out),
+        )
+    return out
 
 
 def carve_validation(
@@ -141,8 +181,8 @@ def main(
             "calc_case_description_*.csv into the raw directory."
         )
 
-    train_full = pd.concat(train_parts, ignore_index=True)
-    test_df = pd.concat(test_parts, ignore_index=True)
+    train_full = collapse_to_image_level(pd.concat(train_parts, ignore_index=True))
+    test_df = collapse_to_image_level(pd.concat(test_parts, ignore_index=True))
     train_df, val_df = carve_validation(train_full, val_frac, seed)
 
     for name, df in (

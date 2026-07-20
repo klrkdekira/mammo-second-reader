@@ -16,7 +16,7 @@ birads_assessment: int - BI-RADS assessment category 1-6 (INbreast primary).
 roi_mask_id     : str  - path stem of the binary lesion-mask file; same
                          root convention as image_id.
 pathology       : str  - raw string label before binary collapse (CBIS-DDSM).
-mass_or_calc    : str  - "mass" or "calc" (CBIS-DDSM).
+lesion_type     : str  - "mass" or "calcification" (CBIS-DDSM).
 subtlety        : int  - radiologist subtlety rating 1-5 (CBIS-DDSM).
 """
 
@@ -38,7 +38,7 @@ SCHEMA: dict[str, str] = {
     "birads_assessment": "Int64",
     "roi_mask_id": "str",
     "pathology": "str",
-    "mass_or_calc": "str",
+    "lesion_type": "str",
     "subtlety": "Int64",
 }
 

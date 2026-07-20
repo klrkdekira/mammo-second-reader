@@ -36,7 +36,7 @@ def main(
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = build_model(model_name, pretrained=True)
-    state = torch.load(base_checkpoint, map_location=device)
+    state = torch.load(base_checkpoint, map_location=device, weights_only=True)
     model.load_state_dict(state)
     model = model.to(device)
 
