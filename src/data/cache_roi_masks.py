@@ -18,7 +18,7 @@ from tqdm import tqdm
 
 from src.config import setup_logging
 from src.data.dicom_to_png import _find_dicom
-from src.data.preprocessing import _segment, breast_bbox, load_dicom
+from src.data.preprocessing import breast_bbox, breast_mask, load_dicom
 
 LOGGER = logging.getLogger(__name__)
 
@@ -66,8 +66,8 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
             LOGGER.warning("No image DICOM found for %s", image_id)
             skipped += len(todo)
             continue
-        arr, breast_mask = _segment(load_dicom(img_dcm))
-        y0, y1, x0, x1 = breast_bbox(breast_mask)
+        img = load_dicom(img_dcm)
+        y0, y1, x0, x1 = breast_bbox(breast_mask(img))
         for rid in todo:
             mask_dcm = _find_dicom(raw_root, rid)
             if mask_dcm is None:
@@ -76,10 +76,10 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
                 continue
             mask = pydicom.dcmread(str(mask_dcm)).pixel_array
             mask = (np.asarray(mask) > 0).astype(np.uint8)
-            if mask.shape != arr.shape:
+            if mask.shape != img.shape:
                 mask = cv2.resize(
                     mask,
-                    (arr.shape[1], arr.shape[0]),
+                    (img.shape[1], img.shape[0]),
                     interpolation=cv2.INTER_NEAREST,
                 )
             mask = mask[y0:y1, x0:x1]

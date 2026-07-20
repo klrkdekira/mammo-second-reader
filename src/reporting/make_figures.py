@@ -213,6 +213,53 @@ def plot_density_strata(metrics_path: Path, out_dir: Path) -> None:
     LOGGER.info("Wrote %s", out_path)
 
 
+def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
+    """AUC, sensitivity, and specificity broken down by lesion type.
+
+    Three side-by-side bar charts share a mass-vs-calcification axis, with
+    each model a separate bar group. A large mass-vs-calc AUC gap is the
+    evidence for training separate per-lesion-type models; a small gap
+    argues the pooled model is not the bottleneck.
+    """
+    runs = _load_metrics(metrics_path)["runs"]
+    runs = [r for r in runs if r.get("lesion_strata")]
+    if not runs:
+        LOGGER.warning("No lesion_strata data; skipping")
+        return
+
+    metrics_spec = [
+        ("auc", "AUC"),
+        ("sens", "Sensitivity"),
+        ("spec", "Specificity"),
+    ]
+    lesions = ["mass", "calcification"]
+    x = np.arange(len(lesions))
+    bar_width = 0.8 / max(len(runs), 1)
+
+    fig, axes = plt.subplots(1, 3, figsize=(13, 4))
+    for ax, (key, label) in zip(axes, metrics_spec):
+        for i, r in enumerate(runs):
+            by_lesion = {s["lesion_type"]: s for s in r["lesion_strata"]}
+            values = [by_lesion.get(le, {}).get(key, float("nan")) for le in lesions]
+            offset = (i - len(runs) / 2 + 0.5) * bar_width
+            ax.bar(x + offset, values, bar_width, label=r["model"])
+        ax.set_xticks(x)
+        ax.set_xticklabels([le.capitalize() for le in lesions])
+        ax.set_xlabel("Lesion type")
+        ax.set_ylabel(label)
+        ax.set_title(f"{label} by lesion type")
+        ax.set_ylim(0, 1)
+        ax.axhline(0.5, linestyle="--", color="grey", linewidth=0.8)
+        ax.legend(fontsize=7)
+
+    fig.suptitle("Lesion-type-stratified metrics", y=1.02)
+    out_path = out_dir / "lesion_strata.png"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    plt.close(fig)
+    LOGGER.info("Wrote %s", out_path)
+
+
 def plot_reliability(metrics_path: Path, out_dir: Path) -> None:
     """Reliability diagram for each run showing calibration after temperature scaling.
 
@@ -376,6 +423,7 @@ def main(
     )
     plot_confusion_matrices(metrics_path, figures_dir)
     plot_density_strata(metrics_path, figures_dir)
+    plot_lesion_strata(metrics_path, figures_dir)
     plot_reliability(metrics_path, figures_dir)
     plot_decision_curves(metrics_path, figures_dir)
     plot_gradcam_roi(metrics_path, figures_dir)
