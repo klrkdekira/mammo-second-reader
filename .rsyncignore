@@ -2,6 +2,7 @@
 .venv
 .mypy_cache
 /models/*
+/results/*
 /data/*
 __pycache__
 pyproject.toml

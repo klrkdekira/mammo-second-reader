@@ -56,9 +56,14 @@ def render() -> None:
         from PIL import Image
 
         contents = Path(file_path).read_bytes()
-        result = run_single_inference(
-            contents, Path(file_path).name, model_name, threshold
-        )
+        try:
+            result = run_single_inference(
+                contents, Path(file_path).name, model_name, threshold
+            )
+        except (ValueError, FileNotFoundError) as exc:
+            # Undecodable/oversized upload or a missing checkpoint: show the
+            # message in the UI rather than leaking a raw stack trace.
+            raise gr.Error(str(exc)) from exc
         prob = result["probability"]
         confidences = {"Malignant": prob, "Benign": 1.0 - prob}
         overlay = None

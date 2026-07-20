@@ -8,7 +8,7 @@ import logging
 import os
 import random
 import tomllib
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, fields
 from pathlib import Path
 
 import numpy as np
@@ -23,6 +23,7 @@ class DataConfig:
     image_size: int = 224
     cache_dir: Path | None = None
     augment: str = "default"
+    num_workers: int = 2
 
 
 @dataclass(frozen=True)
@@ -48,6 +49,7 @@ class TrainConfig:
     grad_clip: float | None = None
     label_smoothing: float = 0.0
     mixup_alpha: float = 0.0
+    sampler: str = "shuffle"  # "shuffle" or "balanced" (WeightedRandomSampler)
 
 
 @dataclass(frozen=True)
@@ -60,11 +62,69 @@ class Config:
     output_dir: Path = field(default_factory=lambda: Path("models"))
 
 
+@dataclass(frozen=True)
+class EnsembleConfig:
+    """Schema for an ensemble config.
+
+    Ensemble configs differ from single-model configs: they carry a top-level
+    `members` list of checkpoint names and have no [model]/[train] sections, so
+    `load_config`/`Config` cannot represent them. Use `load_ensemble_config`.
+    """
+
+    seed: int
+    run_name: str
+    members: list[str]
+    test_csv: Path
+    image_root: Path
+    val_csv: Path | None = None
+    image_size: int = 224
+    batch_size: int = 32
+    num_workers: int = 2
+    output_dir: Path = field(default_factory=lambda: Path("models"))
+
+
+_TOP_LEVEL_KEYS = {"seed", "run_name", "output_dir", "data", "model", "train"}
+_ENSEMBLE_TOP_KEYS = {"seed", "run_name", "output_dir", "members", "data"}
+_ENSEMBLE_DATA_KEYS = {
+    "val_csv",
+    "test_csv",
+    "image_root",
+    "image_size",
+    "batch_size",
+    "num_workers",
+}
+
+
+def _reject_unknown_keys(section: str, provided, allowed) -> None:
+    """Raise `ValueError` if `provided` contains keys outside `allowed`.
+
+    Guards against silently-dropped typos (e.g. `augmnet` in [data]), which
+    otherwise leave the default in force with no warning.
+    """
+    unknown = set(provided) - set(allowed)
+    if unknown:
+        raise ValueError(
+            f"Unknown key(s) in {section}: {sorted(unknown)}. "
+            f"Allowed keys: {sorted(allowed)}."
+        )
+
+
 def load_config(path: Path) -> Config:
-    """Load a TOML config file"""
+    """Load a single-model TOML config file.
+
+    For ensemble configs (top-level `members`, no [model]/[train]) use
+    `load_ensemble_config` instead; this loader requires those sections.
+    """
     path = Path(path)
     with path.open("rb") as f:
         raw = tomllib.load(f)
+
+    _reject_unknown_keys("top level", raw, _TOP_LEVEL_KEYS)
+    for section, cls in (("data", DataConfig), ("model", ModelConfig), ("train", TrainConfig)):
+        if section in raw:
+            _reject_unknown_keys(
+                f"[{section}]", raw[section], {f.name for f in fields(cls)}
+            )
 
     return Config(
         seed=int(raw["seed"]),
@@ -79,9 +139,41 @@ def load_config(path: Path) -> Config:
             if raw["data"].get("cache_dir")
             else None,
             augment=str(raw["data"].get("augment", "default")),
+            num_workers=int(
+                raw["data"].get(
+                    "num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2)
+                )
+            ),
         ),
         model=ModelConfig(**raw["model"]),
         train=TrainConfig(**raw["train"]),
+        output_dir=Path(raw.get("output_dir", "models")),
+    )
+
+
+def load_ensemble_config(path: Path) -> EnsembleConfig:
+    """Load an ensemble TOML config into a validated `EnsembleConfig`."""
+    path = Path(path)
+    with path.open("rb") as f:
+        raw = tomllib.load(f)
+
+    _reject_unknown_keys("top level", raw, _ENSEMBLE_TOP_KEYS)
+    data = raw.get("data", {})
+    _reject_unknown_keys("[data]", data, _ENSEMBLE_DATA_KEYS)
+
+    val_csv = data.get("val_csv")
+    return EnsembleConfig(
+        seed=int(raw["seed"]),
+        run_name=str(raw["run_name"]),
+        members=list(raw["members"]),
+        test_csv=Path(data["test_csv"]),
+        image_root=Path(data["image_root"]),
+        val_csv=Path(val_csv) if val_csv else None,
+        image_size=int(data.get("image_size", 224)),
+        batch_size=int(data.get("batch_size", 32)),
+        num_workers=int(
+            data.get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2))
+        ),
         output_dir=Path(raw.get("output_dir", "models")),
     )
 

@@ -23,6 +23,7 @@ from src.evaluation.calibration import (
 )
 from src.evaluation.decision_curve import decision_curve
 from src.evaluation.density_strata import metrics_by_density
+from src.evaluation.lesion_strata import metrics_by_lesion_type
 from src.evaluation.metrics import evaluate
 from src.models import build_model
 
@@ -130,7 +131,7 @@ def main(config_path: Path) -> None:
         dropout_head=cfg.model.dropout_head,
         head_hidden=cfg.model.head_hidden,
     )
-    state = torch.load(weights_path, map_location=device)
+    state = torch.load(weights_path, map_location=device, weights_only=True)
     model.load_state_dict(state)
     model = model.to(device)
 
@@ -140,7 +141,10 @@ def main(config_path: Path) -> None:
         transform=val_augment(cfg.data.image_size),
     )
     test_loader = DataLoader(
-        test_ds, batch_size=cfg.train.batch_size, shuffle=False, num_workers=2
+        test_ds,
+        batch_size=cfg.train.batch_size,
+        shuffle=False,
+        num_workers=cfg.data.num_workers,
     )
     y_true, test_logits = _predict_logits(model, test_loader, device)
     y_prob = 1.0 / (1.0 + np.exp(-test_logits))
@@ -164,6 +168,19 @@ def main(config_path: Path) -> None:
         test_ds.df, y_prob, threshold
     ).to_dict(orient="records")
 
+    # Mass-vs-calcification stratified metrics, motivating (or rejecting)
+    # separate per-lesion-type training. Skipped on splits predating the
+    # lesion_type column.
+    if "lesion_type" in test_ds.df.columns:
+        record["lesion_strata"] = metrics_by_lesion_type(
+            test_ds.df, y_prob, threshold
+        ).to_dict(orient="records")
+    else:
+        LOGGER.warning(
+            "lesion_strata skipped: test CSV has no lesion_type column; "
+            "re-run make splits to regenerate it."
+        )
+
     # Temperature scaling on validation logits. Calibrated probabilities feed the decision curve.
     cal_prob = y_prob
     if Path(cfg.data.val_csv).exists():
@@ -173,7 +190,10 @@ def main(config_path: Path) -> None:
             transform=val_augment(cfg.data.image_size),
         )
         val_loader = DataLoader(
-            val_ds, batch_size=cfg.train.batch_size, shuffle=False, num_workers=2
+            val_ds,
+            batch_size=cfg.train.batch_size,
+            shuffle=False,
+            num_workers=cfg.data.num_workers,
         )
         val_true, val_logits = _predict_logits(model, val_loader, device)
         temperature = fit_temperature(
