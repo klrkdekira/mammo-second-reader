@@ -7,14 +7,13 @@ results/metrics.json.
 
 import json
 import logging
-import tomllib
 from pathlib import Path
 
 import click
 import torch
 from torch.utils.data import DataLoader
 
-from src.config import get_device, setup_logging
+from src.config import get_device, load_ensemble_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.metrics import evaluate, youden_threshold
@@ -31,7 +30,7 @@ def _load_member(name: str, output_dir: Path, device: torch.device) -> torch.nn.
     weights = output_dir / f"{name}.pt"
     if not weights.exists():
         raise FileNotFoundError(f"Checkpoint not found: {weights}. Train {name} first.")
-    state = torch.load(weights, map_location=device)
+    state = torch.load(weights, map_location=device, weights_only=True)
     model.load_state_dict(state)
     return model.to(device).eval()
 
@@ -50,26 +49,22 @@ def _append_record(record: dict, path: Path = METRICS_PATH) -> None:
 
 def main(config_path: Path) -> None:
     setup_logging()
-    with open(config_path, "rb") as f:
-        cfg = tomllib.load(f)
-
-    output_dir = Path(cfg.get("output_dir", "models"))
-    members: list[str] = cfg["members"]
-    data_cfg = cfg["data"]
-    image_size: int = data_cfg.get("image_size", 224)
-    test_csv = Path(data_cfg["test_csv"])
-    image_root = Path(data_cfg["image_root"])
+    cfg = load_ensemble_config(config_path)
 
     device = get_device()
     LOGGER.info("Using device %s", device)
 
     models = []
-    for name in members:
+    for name in cfg.members:
         LOGGER.info("Loading member %s", name)
-        models.append(_load_member(name, output_dir, device))
+        models.append(_load_member(name, cfg.output_dir, device))
 
-    test_ds = MammogramDataset(test_csv, image_root, transform=val_augment(image_size))
-    test_loader = DataLoader(test_ds, batch_size=32, shuffle=False, num_workers=2)
+    test_ds = MammogramDataset(
+        cfg.test_csv, cfg.image_root, transform=val_augment(cfg.image_size)
+    )
+    test_loader = DataLoader(
+        test_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=cfg.num_workers
+    )
 
     y_true = test_ds.df["label"].values.astype(int)
     y_prob = ensemble_predict(models, test_loader, device)
@@ -79,12 +74,13 @@ def main(config_path: Path) -> None:
     # the test labels and then scoring those same labels is test-set leakage
     # that inflates sensitivity/specificity/PPV/F1 (AUC, being threshold-free,
     # is unaffected).
-    val_csv = data_cfg.get("val_csv")
-    if val_csv:
+    if cfg.val_csv:
         val_ds = MammogramDataset(
-            Path(val_csv), image_root, transform=val_augment(image_size)
+            cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
         )
-        val_loader = DataLoader(val_ds, batch_size=32, shuffle=False, num_workers=2)
+        val_loader = DataLoader(
+            val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=cfg.num_workers
+        )
         val_true = val_ds.df["label"].values.astype(int)
         val_prob = ensemble_predict(models, val_loader, device)
         threshold = youden_threshold(val_true, val_prob)
@@ -107,8 +103,8 @@ def main(config_path: Path) -> None:
     import dataclasses
 
     record = {
-        "model": cfg.get("run_name", "ensemble"),
-        "members": members,
+        "model": cfg.run_name,
+        "members": cfg.members,
         "val_threshold": float(threshold),
         "test": {**dataclasses.asdict(panel), "confusion": panel.confusion.tolist()},
         "roc": {"fpr": fpr.tolist(), "tpr": tpr.tolist()},

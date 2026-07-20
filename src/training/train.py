@@ -3,6 +3,7 @@
 import dataclasses
 import json
 import logging
+import random
 from pathlib import Path
 from typing import Any
 
@@ -31,8 +32,22 @@ from src.models.transfer import (
 )
 from src.training.callbacks import BestAUCCheckpoint, EarlyStopping
 from src.training.loss import make_criterion
+from src.training.sampler import balanced_sampler
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _seed_worker(worker_id: int) -> None:
+    """Seed numpy/random in each DataLoader worker from its torch seed.
+
+    Spawn workers start with fresh numpy/random state, so Albumentations'
+    (numpy-backed) random ops would differ run-to-run despite set_global_seed.
+    torch assigns each worker a deterministic seed derived from the loader's
+    generator; mirror it into numpy and random so augmentation is reproducible.
+    """
+    worker_seed = torch.initial_seed() % 2**32
+    np.random.seed(worker_seed)
+    random.seed(worker_seed)
 
 
 def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
@@ -46,23 +61,45 @@ def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
         cfg.data.image_root,
         transform=val_augment(cfg.data.image_size),
     )
+    # A seeded generator makes both the shuffle order and the worker seeds
+    # (and any WeightedRandomSampler draws) deterministic across runs.
+    generator = torch.Generator()
+    generator.manual_seed(cfg.seed)
+
+    sampler = None
+    shuffle = True
+    if cfg.train.sampler == "balanced":
+        sampler = balanced_sampler(
+            train_ds.df["label"].tolist(), generator=generator
+        )
+        shuffle = False  # mutually exclusive with a sampler
+    elif cfg.train.sampler != "shuffle":
+        raise ValueError(
+            f"Unknown train.sampler {cfg.train.sampler!r}; "
+            "expected 'shuffle' or 'balanced'."
+        )
+
     train_loader = DataLoader(
         train_ds,
         batch_size=cfg.train.batch_size,
-        shuffle=True,
-        num_workers=2,
+        shuffle=shuffle,
+        sampler=sampler,
+        num_workers=cfg.data.num_workers,
         pin_memory=True,
-        persistent_workers=True,
-        multiprocessing_context="spawn",
+        persistent_workers=cfg.data.num_workers > 0,
+        multiprocessing_context="spawn" if cfg.data.num_workers > 0 else None,
+        worker_init_fn=_seed_worker,
+        generator=generator,
     )
     val_loader = DataLoader(
         val_ds,
         batch_size=cfg.train.batch_size,
         shuffle=False,
-        num_workers=2,
+        num_workers=cfg.data.num_workers,
         pin_memory=True,
-        persistent_workers=True,
-        multiprocessing_context="spawn",
+        persistent_workers=cfg.data.num_workers > 0,
+        multiprocessing_context="spawn" if cfg.data.num_workers > 0 else None,
+        worker_init_fn=_seed_worker,
     )
     return train_loader, val_loader
 
@@ -101,6 +138,14 @@ def _mixup(
 
     Soft targets go straight into BCEWithLogitsLoss, so no per-sample loss
     mixing is needed.
+
+    Interaction with pos_weight: the criterion still applies the fixed
+    n_neg/n_pos pos_weight to these interpolated soft targets, so a mixed
+    sample's positive term is up-weighted by the full imbalance factor even
+    though its target is only fractionally positive. The effect is small and
+    consistent across runs; configs combining mixup and pos_weight (e.g.
+    regularised_combined) should note it rather than read the two as
+    independent. See WARNINGS / writeup.
     """
     lam = float(np.random.beta(alpha, alpha))
     perm = torch.randperm(x.size(0), device=x.device)
@@ -154,7 +199,9 @@ def _save_history(path: Path, history: list[dict]) -> None:
     path.write_text(json.dumps(history, indent=2) + "\n")
 
 
-def _persist_val_threshold(cfg: Config, threshold: float, val_auc: float) -> None:
+def _persist_val_threshold(
+    cfg: Config, threshold: float, val_auc: float, final_val_auc: float | None = None
+) -> None:
     sidecar = cfg.output_dir / f"{cfg.run_name}.threshold.json"
     sidecar.parent.mkdir(parents=True, exist_ok=True)
     sidecar.write_text(
@@ -162,6 +209,7 @@ def _persist_val_threshold(cfg: Config, threshold: float, val_auc: float) -> Non
             {
                 "youden_j": threshold,
                 "val_auc_at_best": val_auc,
+                "val_auc_final_epoch": final_val_auc,
                 "run_name": cfg.run_name,
             },
             indent=2,
@@ -328,8 +376,18 @@ def main(config_path: Path) -> None:
         )
     val_y, val_p = _predict(model, val_loader, device)
     panel = evaluate(val_y, val_p)
-    _persist_val_threshold(cfg, youden_threshold(val_y, val_p), panel.auc)
-    LOGGER.info("Training done. Best val AUC = %.4f", ckpt.best)
+    # The final-epoch val AUC (last history entry) vs the reloaded best-epoch
+    # AUC makes the overfitting gap visible without re-reading every epoch.
+    final_val_auc = history[-1]["val_auc"] if history else None
+    _persist_val_threshold(
+        cfg, youden_threshold(val_y, val_p), panel.auc, final_val_auc
+    )
+    LOGGER.info(
+        "Training done. Best val AUC = %.4f (final-epoch val AUC = %s, gap = %s)",
+        panel.auc,
+        f"{final_val_auc:.4f}" if final_val_auc is not None else "n/a",
+        f"{panel.auc - final_val_auc:+.4f}" if final_val_auc is not None else "n/a",
+    )
 
 
 @click.command()

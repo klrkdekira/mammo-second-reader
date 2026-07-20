@@ -19,6 +19,11 @@ from src.models.transfer import ARCHS
 
 MODEL_DIR = Path("models")
 
+# Reject oversized uploads before decoding. Full-field DICOM mammograms are
+# typically 10-30 MB; 100 MB leaves generous headroom while bounding the work
+# a single malformed/hostile upload can trigger.
+MAX_UPLOAD_BYTES = 100 * 1024 * 1024
+
 # checkpoint registry mapping run_name -> architecture.
 MODEL_REGISTRY: dict[str, str] = {
     "baseline": "baseline",
@@ -42,8 +47,15 @@ def _load_model(model_name: str) -> torch.nn.Module:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = build_model(MODEL_REGISTRY[model_name], pretrained=False)
     weights = MODEL_DIR / f"{model_name}.pt"
-    if weights.exists():
-        model.load_state_dict(torch.load(weights, map_location=device))
+    # Never serve predictions from an uninitialised network: a randomly
+    # initialised model still returns confident-looking probabilities, which
+    # is unacceptable in a clinical-facing demo.
+    if not weights.exists():
+        raise FileNotFoundError(
+            f"No checkpoint for model {model_name!r} at {weights}. "
+            "Train the model or pick one of the available checkpoints."
+        )
+    model.load_state_dict(torch.load(weights, map_location=device, weights_only=True))
     return model.to(device).eval()
 
 
@@ -59,22 +71,41 @@ def model_threshold(model_name: str) -> float:
 def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
     """Decode DICOM or PNG/JPG bytes and run the shared preprocessing pipeline.
 
-    Returns the segmented, CLAHE-equalised image in the unit range. ImageNet
-    normalisation is applied separately so the array can double as the
-    Grad-CAM overlay base.
+    Returns the segmented, CLAHE-equalised image in the unit range [0, 1].
+    ImageNet normalisation is deliberately NOT applied here: it happens once,
+    in `run_single_inference`, so this array can double as the (unnormalised)
+    Grad-CAM overlay base. Do not normalise twice.
+
+    Raises `ValueError` for oversized or undecodable uploads so the caller can
+    surface a user-facing message instead of a raw stack trace.
     """
     from src.data.preprocessing import preprocess_array
+
+    if len(contents) > MAX_UPLOAD_BYTES:
+        raise ValueError(
+            f"Upload is {len(contents) // (1024 * 1024)} MB, over the "
+            f"{MAX_UPLOAD_BYTES // (1024 * 1024)} MB limit."
+        )
 
     if filename.lower().endswith(".dcm"):
         import pydicom
 
-        arr = pydicom.dcmread(io.BytesIO(contents)).pixel_array.astype(np.float32)
-        arr = (arr - arr.min()) / (arr.max() - arr.min() + 1e-8)
-    else:
-        from PIL import Image
+        from src.data.preprocessing import dicom_to_array
 
-        img = Image.open(io.BytesIO(contents)).convert("L")
-        arr = np.asarray(img, dtype=np.float32) / 255.0
+        try:
+            arr = dicom_to_array(pydicom.dcmread(io.BytesIO(contents)))
+        except Exception as exc:
+            raise ValueError(f"Could not decode the file as a DICOM image: {exc}") from exc
+    else:
+        from PIL import Image, UnidentifiedImageError
+
+        try:
+            img = Image.open(io.BytesIO(contents)).convert("L")
+            arr = np.asarray(img, dtype=np.float32) / 255.0
+        except (UnidentifiedImageError, OSError, ValueError) as exc:
+            raise ValueError(
+                f"Could not decode the file as a PNG/JPEG image: {exc}"
+            ) from exc
     return preprocess_array(arr)
 
 
