@@ -119,7 +119,7 @@ def main(config_path: Path) -> None:
     "config_path",
     type=click.Path(exists=True, path_type=Path),
     required=True,
-    help="YAML ensemble config.",
+    help="TOML ensemble config.",
 )
 def cli(config_path: Path) -> None:
     main(config_path)

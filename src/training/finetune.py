@@ -8,7 +8,7 @@ import click
 import torch
 from torch.utils.data import DataLoader
 
-from src.config import setup_logging
+from src.config import get_device, setup_logging
 from src.data.augment import train_augment, val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.metrics import evaluate
@@ -34,8 +34,14 @@ def main(
     val_csv = workdir / "val.csv"
     image_root = workdir / "processed"
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = build_model(model_name, pretrained=True)
+    device = get_device()
+    clean_name = (
+        model_name.lower()
+        .replace("_imagenet", "")
+        .replace("_transfer", "")
+        .replace("_scratch", "")
+    )
+    model = build_model(clean_name, pretrained=True)
     state = torch.load(base_checkpoint, map_location=device, weights_only=True)
     model.load_state_dict(state)
     model = model.to(device)
