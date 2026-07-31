@@ -10,8 +10,7 @@ quantity an operational radiology service actually trades off.
 import numpy as np
 
 
-def net_benefit(y_true: np.ndarray, y_prob: np.ndarray,
-                threshold: float) -> float:
+def net_benefit(y_true: np.ndarray, y_prob: np.ndarray, threshold: float) -> float:
     n = len(y_true)
     pred = (y_prob >= threshold).astype(int)
     tp = int(((pred == 1) & (y_true == 1)).sum())
@@ -19,9 +18,9 @@ def net_benefit(y_true: np.ndarray, y_prob: np.ndarray,
     return (tp / n) - (fp / n) * (threshold / (1 - threshold + 1e-12))
 
 
-def decision_curve(y_true: np.ndarray, y_prob: np.ndarray,
-                   thresholds: np.ndarray | None = None
-                   ) -> dict[str, np.ndarray]:
+def decision_curve(
+    y_true: np.ndarray, y_prob: np.ndarray, thresholds: np.ndarray | None = None
+) -> dict[str, np.ndarray]:
     """Return model, treat-all, and treat-none net benefits across thresholds."""
     if thresholds is None:
         thresholds = np.linspace(0.05, 0.5, 46)
@@ -29,7 +28,9 @@ def decision_curve(y_true: np.ndarray, y_prob: np.ndarray,
     y_prob = np.asarray(y_prob).ravel().astype(float)
     prevalence = float(y_true.mean())
     model_nb = np.array([net_benefit(y_true, y_prob, t) for t in thresholds])
-    treat_all_nb = prevalence - (1 - prevalence) * (thresholds / (1 - thresholds + 1e-12))
+    treat_all_nb = prevalence - (1 - prevalence) * (
+        thresholds / (1 - thresholds + 1e-12)
+    )
     treat_none_nb = np.zeros_like(thresholds)
     return {
         "thresholds": thresholds,

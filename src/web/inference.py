@@ -95,7 +95,9 @@ def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
         try:
             arr = dicom_to_array(pydicom.dcmread(io.BytesIO(contents)))
         except Exception as exc:
-            raise ValueError(f"Could not decode the file as a DICOM image: {exc}") from exc
+            raise ValueError(
+                f"Could not decode the file as a DICOM image: {exc}"
+            ) from exc
     else:
         from PIL import Image, UnidentifiedImageError
 

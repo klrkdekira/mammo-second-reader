@@ -8,8 +8,13 @@ import logging
 import os
 import random
 import tomllib
+from collections.abc import Iterable
 from dataclasses import dataclass, field, fields
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import torch
 
 import numpy as np
 
@@ -95,7 +100,9 @@ _ENSEMBLE_DATA_KEYS = {
 }
 
 
-def _reject_unknown_keys(section: str, provided, allowed) -> None:
+def _reject_unknown_keys(
+    section: str, provided: Iterable[str], allowed: Iterable[str]
+) -> None:
     """Raise `ValueError` if `provided` contains keys outside `allowed`.
 
     Guards against silently-dropped typos (e.g. `augmnet` in [data]), which
@@ -120,7 +127,11 @@ def load_config(path: Path) -> Config:
         raw = tomllib.load(f)
 
     _reject_unknown_keys("top level", raw, _TOP_LEVEL_KEYS)
-    for section, cls in (("data", DataConfig), ("model", ModelConfig), ("train", TrainConfig)):
+    for section, cls in (
+        ("data", DataConfig),
+        ("model", ModelConfig),
+        ("train", TrainConfig),
+    ):
         if section in raw:
             _reject_unknown_keys(
                 f"[{section}]", raw[section], {f.name for f in fields(cls)}
@@ -140,9 +151,7 @@ def load_config(path: Path) -> Config:
             else None,
             augment=str(raw["data"].get("augment", "default")),
             num_workers=int(
-                raw["data"].get(
-                    "num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2)
-                )
+                raw["data"].get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2))
             ),
         ),
         model=ModelConfig(**raw["model"]),
@@ -198,7 +207,7 @@ def set_global_seed(seed: int) -> None:
         pass
 
 
-def get_device():
+def get_device() -> "torch.device":
     """Return available torch device, preferring GPU if available."""
     import torch
 

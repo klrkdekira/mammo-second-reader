@@ -49,11 +49,9 @@ def main(
     if freeze_backbone:
         for p in model.parameters():
             p.requires_grad = False
-        head = (
-            model.backbone.classifier[-1]
-            if hasattr(model.backbone, "classifier")
-            else model.backbone.fc
-        )
+        backbone = getattr(model, "backbone", model)
+        classifier = getattr(backbone, "classifier", None)
+        head = classifier[-1] if classifier is not None else getattr(backbone, "fc")
         for p in head.parameters():
             p.requires_grad = True
 

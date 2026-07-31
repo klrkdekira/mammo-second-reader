@@ -7,8 +7,13 @@ No vertical flip. Mammograms are not vertically symmetric.
 pipeline, "heavy" for stronger geometric/intensity jitter plus cutout.
 """
 
+from typing import TYPE_CHECKING
 
-def train_augment(image_size: int = 224, level: str = "default"):
+if TYPE_CHECKING:
+    import albumentations as A
+
+
+def train_augment(image_size: int = 224, level: str = "default") -> "A.Compose":
     import albumentations as A
 
     tail = [
@@ -48,7 +53,7 @@ def train_augment(image_size: int = 224, level: str = "default"):
     return A.Compose(ops + tail)
 
 
-def val_augment(image_size: int = 224):
+def val_augment(image_size: int = 224) -> "A.Compose":
     import albumentations as A
 
     return A.Compose(
