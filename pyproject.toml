@@ -24,13 +24,38 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["mypy>=2.1.0", "pytest>=9.1.1", "ruff>=0.15.13"]
+dev = [
+    "mypy>=2.1.0",
+    "pandas-stubs>=3.0.5.260730",
+    "pytest>=9.1.1",
+    "ruff>=0.15.13",
+    "types-seaborn>=0.13.2.20260728",
+    "types-tqdm>=4.70.0.20260731",
+]
 
 [tool.uv]
 package = true
-# required-environments = [
-#     "sys_platform == 'linux' and platform_machine == 'x86_64'",
-# ]
+environments = [
+    "sys_platform == 'darwin'",
+    "sys_platform == 'linux' and platform_machine == 'x86_64'",
+]
+
+[tool.mypy]
+python_version = "3.12"
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = [
+    "albumentations.*",
+    "cv2.*",
+    "gradio.*",
+    "peft.*",
+    "pydicom.*",
+    "pytorch_grad_cam.*",
+    "sklearn.*",
+    "torchvision.*",
+]
+ignore_missing_imports = true
 
 [build-system]
 requires = ["hatchling"]
@@ -39,22 +64,24 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
 
-# # CUDA 12.8
-# [[tool.uv.index]]
-# name = "pytorch-cu128"
-# url = "https://download.pytorch.org/whl/cu128"
-# explicit = true
+# PyTorch wheels per backend
 
-# # RoCM 7.2
-# [[tool.uv.index]]
-# name = "pytorch-rocm"
-# url = "https://download.pytorch.org/whl/rocm7.2"
-# # url = "https://download.pytorch.org/whl/nightly/rocm7.2"
-# explicit = true
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
 
-# # Pin torch to ROCm index
+[[tool.uv.index]]
+name = "pytorch-rocm72"
+url = "https://download.pytorch.org/whl/rocm7.2"
+explicit = true
+
 # [tool.uv.sources]
-# torch = { index = "pytorch-rocm" }
-# torchvision = { index = "pytorch-rocm" }
-# pytorch-triton-rocm = { index = "pytorch-rocm" }
-# triton-rocm = { index = "pytorch-rocm" }
+# torch = [
+#     # { index = "pytorch-cu128", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+#     { index = "pytorch-rocm72", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+# ]
+# torchvision = [
+#     # { index = "pytorch-cu128", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+#     { index = "pytorch-rocm72", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" },
+# ]
