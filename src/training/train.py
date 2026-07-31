@@ -5,7 +5,6 @@ import json
 import logging
 import random
 from pathlib import Path
-from typing import Any
 
 import click
 import numpy as np
@@ -69,9 +68,7 @@ def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
     sampler = None
     shuffle = True
     if cfg.train.sampler == "balanced":
-        sampler = balanced_sampler(
-            train_ds.df["label"].tolist(), generator=generator
-        )
+        sampler = balanced_sampler(train_ds.df["label"].tolist(), generator=generator)
         shuffle = False  # mutually exclusive with a sampler
     elif cfg.train.sampler != "shuffle":
         raise ValueError(
@@ -287,7 +284,7 @@ def main(config_path: Path) -> None:
     LOGGER.info("Using device %s", device)
 
     train_loader, val_loader = _build_loaders(cfg)
-    model_kwargs: dict[str, Any] = {
+    model_kwargs: dict[str, object] = {
         "dropout_conv": cfg.model.dropout_conv,
         "dropout_head": cfg.model.dropout_head,
         "head_hidden": cfg.model.head_hidden,

@@ -22,8 +22,12 @@ class TemperatureScaler(nn.Module):
         return logits / self.T
 
 
-def fit_temperature(val_logits: torch.Tensor, val_labels: torch.Tensor,
-                    lr: float = 0.01, max_iter: int = 200) -> float:
+def fit_temperature(
+    val_logits: torch.Tensor,
+    val_labels: torch.Tensor,
+    lr: float = 0.01,
+    max_iter: int = 200,
+) -> float:
     """LBFGS over a scalar T on BCE-with-logits NLL on val. Returns T."""
     scaler = TemperatureScaler()
     optimiser = optim.LBFGS([scaler.T], lr=lr, max_iter=max_iter)
@@ -39,8 +43,9 @@ def fit_temperature(val_logits: torch.Tensor, val_labels: torch.Tensor,
     return float(scaler.T.detach().item())
 
 
-def expected_calibration_error(probs: np.ndarray, labels: np.ndarray,
-                               n_bins: int = 10) -> float:
+def expected_calibration_error(
+    probs: np.ndarray, labels: np.ndarray, n_bins: int = 10
+) -> float:
     """Weighted average gap between predicted and observed across bins.
 
     Uses equal-width binning over [0, 1] with n_bins bins, per Guo 2017.
@@ -59,8 +64,9 @@ def expected_calibration_error(probs: np.ndarray, labels: np.ndarray,
     return float(ece)
 
 
-def reliability_bins(probs: np.ndarray, labels: np.ndarray,
-                     n_bins: int = 10) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def reliability_bins(
+    probs: np.ndarray, labels: np.ndarray, n_bins: int = 10
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """Return (bin_centres, predicted_means, observed_means) for plotting."""
     bin_edges = np.linspace(0, 1, n_bins + 1)
     centres, preds, obs = [], [], []

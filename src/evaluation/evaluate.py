@@ -105,12 +105,14 @@ def _gradcam_roi_panel(
     }
 
 
-def _append_record(record: dict, path: Path = METRICS_PATH) -> None:
+def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    data = {"runs": []}
+    data: dict[str, list[dict[str, object]]] = {"runs": []}
     if path.exists():
         try:
-            data = json.loads(path.read_text())
+            raw_data = json.loads(path.read_text())
+            if isinstance(raw_data, dict) and "runs" in raw_data:
+                data = raw_data
         except json.JSONDecodeError:
             pass
     data.setdefault("runs", []).append(record)

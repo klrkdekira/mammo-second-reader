@@ -8,12 +8,16 @@ so a segmentation error cannot carve cavities into faint peripheral tissue.
 """
 
 from pathlib import Path
+from typing import TYPE_CHECKING, cast
+
+if TYPE_CHECKING:
+    import pydicom
 
 import cv2
 import numpy as np
 
 
-def dicom_to_array(ds: "object") -> np.ndarray:
+def dicom_to_array(ds: "pydicom.Dataset | pydicom.FileDataset") -> np.ndarray:
     """Normalise a read DICOM dataset to a float32 array in [0, 1].
 
     Handles `PhotometricInterpretation == "MONOCHROME1"`, where high stored
@@ -29,7 +33,7 @@ def dicom_to_array(ds: "object") -> np.ndarray:
     arr = ds.pixel_array.astype(np.float32)
     if getattr(ds, "PhotometricInterpretation", "") == "MONOCHROME1":
         arr = arr.max() - arr
-    return (arr - arr.min()) / (arr.max() - arr.min() + 1e-8)
+    return cast(np.ndarray, (arr - arr.min()) / (arr.max() - arr.min() + 1e-8))
 
 
 def load_dicom(path: str | Path) -> np.ndarray:
@@ -45,7 +49,7 @@ def apply_clahe(
     """Contrast-limited adaptive histogram equalisation on a [0, 1] array."""
     u8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=tile_grid_size)
-    return clahe.apply(u8).astype(np.float32) / 255.0
+    return cast(np.ndarray, clahe.apply(u8).astype(np.float32) / 255.0)
 
 
 def _ellipse(k: int) -> np.ndarray:
@@ -106,10 +110,14 @@ def _film_border(
     """
 
     def _edge_ids(labels: np.ndarray) -> np.ndarray:
-        edge = np.concatenate([
-            labels[:edge_px].ravel(), labels[-edge_px:].ravel(),
-            labels[:, :edge_px].ravel(), labels[:, -edge_px:].ravel(),
-        ])
+        edge = np.concatenate(
+            [
+                labels[:edge_px].ravel(),
+                labels[-edge_px:].ravel(),
+                labels[:, :edge_px].ravel(),
+                labels[:, -edge_px:].ravel(),
+            ]
+        )
         ids = np.unique(edge)
         return ids[ids != 0]
 
@@ -135,7 +143,7 @@ def _film_border(
         border |= np.isin(labels, ids).astype(np.uint8)
     if not border.any():
         return border
-    return cv2.dilate(border, _ellipse(grow_ksize))
+    return cast(np.ndarray, cv2.dilate(border, _ellipse(grow_ksize)))
 
 
 def segment_breast(
@@ -168,7 +176,7 @@ def segment_breast(
     mask = cv2.dilate(mask, _ellipse(2 * margin + 1)) & notair
     mask = cv2.morphologyEx(_fill_holes(mask), cv2.MORPH_CLOSE, _ellipse(close_ksize))
     mask = _fill_holes(mask) & (1 - border)
-    return mask.astype(np.float32)
+    return cast(np.ndarray, mask.astype(np.float32))
 
 
 def artifact_mask(
@@ -184,8 +192,10 @@ def artifact_mask(
     if breast is None:
         breast = segment_breast(arr)
     keep = (breast > 0).astype(np.uint8)
-    art = _not_air(arr) & (1 - keep)
-    art = cv2.dilate(art, _ellipse(grow_ksize)) & (1 - keep)
+    inv_keep = (1 - keep).astype(np.uint8)
+    art_initial = _not_air(arr) & inv_keep
+    dilated = np.asarray(cv2.dilate(art_initial, _ellipse(grow_ksize)), dtype=np.uint8)
+    art = dilated & inv_keep
     return np.maximum(art, _film_border(arr)).astype(np.float32)
 
 

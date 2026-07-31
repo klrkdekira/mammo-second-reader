@@ -7,29 +7,61 @@ edition) and Woo 2025 (BI-RADS A to D), making the three results
 comparable category-by-category.
 """
 
+from typing import TypedDict
+
 import numpy as np
 import pandas as pd
 
 from src.evaluation.metrics import evaluate
 
 
-def metrics_by_density(test_df: pd.DataFrame, y_prob: np.ndarray,
-                       threshold: float, min_n: int = 10) -> pd.DataFrame:
-    rows = []
+class DensityMetricRow(TypedDict):
+    density: int
+    n: int
+    auc: float | None
+    acc: float | None
+    sens: float | None
+    spec: float | None
+    ppv: float | None
+    skipped_reason: str | None
+
+
+def metrics_by_density(
+    test_df: pd.DataFrame, y_prob: np.ndarray, threshold: float, min_n: int = 10
+) -> pd.DataFrame:
+    densities = np.asarray(test_df["birads_density"].to_numpy())
+    labels = np.asarray(test_df["label"].to_numpy())
+    rows: list[DensityMetricRow] = []
     for d in (1, 2, 3, 4):
-        mask = (test_df["birads_density"] == d).values
+        mask = densities == d
         n = int(mask.sum())
         if n < min_n:
-            rows.append({"density": d, "n": n, "auc": None, "acc": None,
-                         "sens": None, "spec": None, "ppv": None,
-                         "skipped_reason": f"n<{min_n}"})
+            rows.append(
+                {
+                    "density": d,
+                    "n": n,
+                    "auc": None,
+                    "acc": None,
+                    "sens": None,
+                    "spec": None,
+                    "ppv": None,
+                    "skipped_reason": f"n<{min_n}",
+                }
+            )
             continue
-        panel = evaluate(test_df.loc[mask, "label"].values,
-                         y_prob[mask], threshold=threshold)
-        rows.append({"density": d, "n": n, "auc": panel.auc,
-                     "acc": panel.accuracy, "sens": panel.sensitivity,
-                     "spec": panel.specificity, "ppv": panel.ppv,
-                     "skipped_reason": None})
+        panel = evaluate(labels[mask], y_prob[mask], threshold=threshold)
+        rows.append(
+            {
+                "density": d,
+                "n": n,
+                "auc": panel.auc,
+                "acc": panel.accuracy,
+                "sens": panel.sensitivity,
+                "spec": panel.specificity,
+                "ppv": panel.ppv,
+                "skipped_reason": None,
+            }
+        )
     return pd.DataFrame(rows)
 
 
