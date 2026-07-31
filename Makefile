@@ -60,27 +60,12 @@ train-resnet50-transfer:
 train-efficientnet_b4-transfer:
 	$(PY) -m src.training.train --config configs/efficientnet_b4.toml
 
-train-resnet18-transfer:
-	$(PY) -m src.training.train --config configs/resnet18_transfer.toml
-
-train-densenet121-transfer:
-	$(PY) -m src.training.train --config configs/densenet121_transfer.toml
-
-train-efficientnet_b0-transfer:
-	$(PY) -m src.training.train --config configs/efficientnet_b0_transfer.toml
-
-train-mobilenet_v3-transfer:
-	$(PY) -m src.training.train --config configs/mobilenet_v3_transfer.toml
-
-train-convnext_tiny-transfer:
-	$(PY) -m src.training.train --config configs/convnext_tiny_transfer.toml
-
 # All transfer learning
-train-transfer: train-vgg16-transfer train-vgg19-transfer train-resnet18-transfer train-resnet50-transfer train-densenet121-transfer train-efficientnet_b0-transfer train-efficientnet_b4-transfer train-mobilenet_v3-transfer train-convnext_tiny-transfer
+train-transfer: train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer
 
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
-# Evaluation
+# Clean up evaluation results
 clean-results:
 	rm -rf results/metrics.json
 	rm -rf results/figures/*.png
@@ -95,21 +80,22 @@ evaluate:
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_scratch.toml
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_transfer.toml
 	$(PY) -m src.evaluation.evaluate --config configs/vgg19_transfer.toml
-	$(PY) -m src.evaluation.evaluate --config configs/resnet18_transfer.toml
 	$(PY) -m src.evaluation.evaluate --config configs/resnet50_transfer.toml
-	$(PY) -m src.evaluation.evaluate --config configs/densenet121_transfer.toml
-	$(PY) -m src.evaluation.evaluate --config configs/efficientnet_b0_transfer.toml
 	$(PY) -m src.evaluation.evaluate --config configs/efficientnet_b4.toml
-	$(PY) -m src.evaluation.evaluate --config configs/mobilenet_v3_transfer.toml
-	$(PY) -m src.evaluation.evaluate --config configs/convnext_tiny_transfer.toml
 
 figures:
 	$(PY) -m src.reporting.make_figures
 
 results: clean-results evaluate figures
 
-# Clean up the training data cache.
-clean:
+# Clean up trained model checkpoints and history
+clean-models:
+	rm -f models/*.pt models/*.json
+
+# Perform a full clean of cached data, trained models, evaluation results, and python caches
+clean: clean-cache clean-models clean-results
 	rm -rf data/cbis-ddsm/training
+	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+	rm -rf .pytest_cache .mypy_cache .ruff_cache
 
 pipeline: data train results
