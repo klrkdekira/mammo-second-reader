@@ -50,14 +50,14 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
     out_dir = Path(out_dir)
     pairs = _collect_pairs(splits_dir)
     n_masks = sum(len(v) for v in pairs.values())
-    LOGGER.info("Caching %d ROI masks for %d images to %s", n_masks, len(pairs), out_dir)
+    LOGGER.info(
+        "Caching %d ROI masks for %d images to %s", n_masks, len(pairs), out_dir
+    )
 
     skipped = 0
     for image_id, mask_ids in tqdm(sorted(pairs.items())):
         todo = [
-            rid
-            for rid in sorted(mask_ids)
-            if not (out_dir / f"{rid}.npy").exists()
+            rid for rid in sorted(mask_ids) if not (out_dir / f"{rid}.npy").exists()
         ]
         if not todo:
             continue

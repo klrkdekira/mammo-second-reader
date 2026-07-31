@@ -1,7 +1,7 @@
 """Shared mammography PyTorch Dataset."""
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import torch
@@ -17,7 +17,7 @@ class MammogramDataset(Dataset):
         self,
         split_csv: str | Path,
         image_root: str | Path,
-        transform: Any | None = None,
+        transform: Callable[..., dict[str, np.ndarray] | np.ndarray] | None = None,
         cache_suffix: str = ".npy",
     ) -> None:
         self.df = _manifest.read(split_csv)

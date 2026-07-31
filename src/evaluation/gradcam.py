@@ -5,7 +5,7 @@ in Selvaraju et al. 2020, with the layer-mapping for each architecture
 listed below.
 """
 
-from typing import Any
+from typing import cast
 
 import numpy as np
 import torch
@@ -26,13 +26,13 @@ TARGET_LAYERS = {
 
 
 def _resolve_layer(model: torch.nn.Module, dotted: str) -> torch.nn.Module:
-    obj: Any = model
+    curr: object = model
     for part in dotted.split("."):
         if part.isdigit():
-            obj = obj[int(part)]
+            curr = getattr(curr, "__getitem__")(int(part))
         else:
-            obj = getattr(obj, part)
-    return obj
+            curr = getattr(curr, part)
+    return cast(torch.nn.Module, curr)
 
 
 def compute_gradcam(

@@ -65,8 +65,7 @@ def _collect_images(splits_dir: Path) -> dict[str, set[str]]:
 
 def _edges_touched(mask: np.ndarray) -> int:
     return sum(
-        bool(side.any())
-        for side in (mask[0], mask[-1], mask[:, 0], mask[:, -1])
+        bool(side.any()) for side in (mask[0], mask[-1], mask[:, 0], mask[:, -1])
     )
 
 
@@ -76,7 +75,10 @@ def _black_stripe(clean: np.ndarray, breast: np.ndarray, box) -> bool:
     c, m = clean[y0:y1, x0:x1], breast[y0:y1, x0:x1]
     b = STRIPE_BAND_PX
     for cs, ms in (
-        (c[:b], m[:b]), (c[-b:], m[-b:]), (c[:, :b], m[:, :b]), (c[:, -b:], m[:, -b:])
+        (c[:b], m[:b]),
+        (c[-b:], m[-b:]),
+        (c[:, :b], m[:, :b]),
+        (c[:, -b:], m[:, -b:]),
     ):
         inside = ms > 0
         if inside.mean() > 0.2 and float(cs[inside].mean()) < 0.02:
@@ -87,16 +89,21 @@ def _black_stripe(clean: np.ndarray, breast: np.ndarray, box) -> bool:
 def _roi_coverage(mask_dcm: Path, shape: tuple[int, int], box) -> float:
     import pydicom
 
-    roi = np.asarray(pydicom.dcmread(str(mask_dcm)).pixel_array) > 0
-    if roi.shape != shape:
-        roi = cv2.resize(
-            roi.astype(np.uint8), (shape[1], shape[0]), interpolation=cv2.INTER_NEAREST
+    roi_arr = np.asarray(pydicom.dcmread(str(mask_dcm)).pixel_array) > 0
+    if roi_arr.shape != shape:
+        roi_arr = (
+            cv2.resize(
+                roi_arr.astype(np.uint8),
+                (shape[1], shape[0]),
+                interpolation=cv2.INTER_NEAREST,
+            )
+            > 0
         )
-    total = int(roi.sum())
+    total = int(roi_arr.sum())
     if total == 0:
         return 1.0
     y0, y1, x0, x1 = box
-    return float(roi[y0:y1, x0:x1].sum()) / total
+    return float(roi_arr[y0:y1, x0:x1].sum()) / total
 
 
 def _qa_image(image_id: str, img_dcm: Path, mask_ids: set[str], raw_root: Path) -> dict:
@@ -149,7 +156,7 @@ def _qa_image(image_id: str, img_dcm: Path, mask_ids: set[str], raw_root: Path) 
         reasons.append("black stripe at crop edge")
     clipped = {rid: c for rid, c in coverages.items() if c < ROI_COVERAGE_MIN}
     if clipped:
-        worst = min(clipped, key=clipped.get)
+        worst = min(clipped, key=lambda k: clipped[k])
         reasons.append(f"ROI clipped: {worst}={clipped[worst]:.3f}")
     row["flags"] = "; ".join(reasons)
     return row
@@ -166,8 +173,14 @@ def _contact_sheets(
         tile = preprocess_array(load_dicom(dcm), image_size=thumb)
         tile = (np.clip(tile, 0, 1) * 255).astype(np.uint8)
         cv2.putText(
-            tile, Path(image_id).name[-28:], (4, thumb - 8),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.35, 255, 1, cv2.LINE_AA,
+            tile,
+            Path(image_id).name[-28:],
+            (4, thumb - 8),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.35,
+            255,
+            1,
+            cv2.LINE_AA,
         )
         tiles.append(tile)
     rows_per_sheet = cols * 5
@@ -175,13 +188,15 @@ def _contact_sheets(
         chunk = tiles[s : s + rows_per_sheet]
         while len(chunk) % cols:
             chunk.append(np.zeros((thumb, thumb), np.uint8))
-        grid = np.vstack([
-            np.hstack(chunk[r : r + cols]) for r in range(0, len(chunk), cols)
-        ])
+        grid = np.vstack(
+            [np.hstack(chunk[r : r + cols]) for r in range(0, len(chunk), cols)]
+        )
         cv2.imwrite(str(out_dir / f"flagged_{s // rows_per_sheet:02d}.png"), grid)
 
 
-def main(splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int) -> None:
+def main(
+    splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int
+) -> None:
     setup_logging()
     out_dir.mkdir(parents=True, exist_ok=True)
     images = _collect_images(splits_dir)
@@ -209,7 +224,10 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int
     flagged.to_csv(out_dir / "qa_flags.csv", index=False)
     LOGGER.info(
         "Done: %d images, %d flagged, %d skipped. Reports in %s",
-        len(df), len(flagged), skipped, out_dir,
+        len(df),
+        len(flagged),
+        skipped,
+        out_dir,
     )
     if len(flagged):
         _contact_sheets(flagged["image_id"].tolist(), raw_root, out_dir, thumb)
@@ -237,7 +255,9 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int
 )
 @click.option("--thumb", type=int, default=224, show_default=True)
 @click.option("--limit", type=int, default=0, show_default=True, help="0 = all")
-def cli(splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int) -> None:
+def cli(
+    splits_dir: Path, raw_root: Path, out_dir: Path, thumb: int, limit: int
+) -> None:
     main(splits_dir, raw_root, out_dir, thumb, limit)
 
 

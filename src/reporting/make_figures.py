@@ -72,10 +72,10 @@ def plot_roc_subset(
     drawn = 0
     for name in members:
         r = by_name.get(name)
-        roc = r.get("roc") if r else None
-        if not roc:
+        if r is None or not r.get("roc"):
             LOGGER.warning("Run %s missing or has no ROC arrays; skipping", name)
             continue
+        roc = r["roc"]
         ax.plot(roc["fpr"], roc["tpr"], label=f"{name} AUC={r['test']['auc']:.3f}")
         drawn += 1
     if drawn == 0:

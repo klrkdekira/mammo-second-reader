@@ -1,6 +1,6 @@
 """ImageNet-pretrained backbones with a swapped classifier head."""
 
-from typing import Any, NamedTuple, cast
+from typing import NamedTuple, cast
 
 import torch
 import torch.nn as nn
@@ -10,7 +10,9 @@ class ArchSpec(NamedTuple):
     weights_attr: str  # e.g. "VGG16_Weights"
     weights_ver: str  # e.g. "IMAGENET1K_V1"
     head_attr: str  # attribute on the backbone holding the classifier
-    top_block: tuple  # (attr,) or (attr, from_idx) for fine-tune unfreezing
+    top_block: (
+        tuple[str, int] | tuple[str]
+    )  # (attr,) or (attr, from_idx) for fine-tune unfreezing
 
 
 ARCHS: dict[str, ArchSpec] = {
@@ -46,7 +48,7 @@ class ThreeChannelWrapper(nn.Module):
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         if x.size(1) == 1:
             x = x.repeat(1, 3, 1, 1)
-        return self.backbone(x)
+        return cast(torch.Tensor, self.backbone(x))
 
 
 def build_model(
@@ -55,7 +57,7 @@ def build_model(
     head_hidden: int = 256,
     dropout_head: float = 0.5,
     dropout_conv: float = 0.3,
-    **_: Any,
+    **_: object,
 ) -> nn.Module:
     import torchvision.models as M
 

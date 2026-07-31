@@ -61,7 +61,9 @@ def test_unknown_data_key_fails_loudly(tmp_path):
 
 
 def test_unknown_top_level_key_fails_loudly(tmp_path):
-    bad = VALID_SINGLE.replace('run_name = "baseline"', 'run_naem = "baseline"\nrun_name = "baseline"')
+    bad = VALID_SINGLE.replace(
+        'run_name = "baseline"', 'run_naem = "baseline"\nrun_name = "baseline"'
+    )
     with pytest.raises(ValueError, match="run_naem"):
         load_config(_write(tmp_path, bad))
 

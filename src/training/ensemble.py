@@ -10,6 +10,7 @@ import logging
 from pathlib import Path
 
 import click
+import numpy as np
 import torch
 from torch.utils.data import DataLoader
 
@@ -66,7 +67,7 @@ def main(config_path: Path) -> None:
         test_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=cfg.num_workers
     )
 
-    y_true = test_ds.df["label"].values.astype(int)
+    y_true = np.asarray(test_ds.df["label"].values, dtype=np.int64)
     y_prob = ensemble_predict(models, test_loader, device)
 
     # The operating threshold MUST come from validation, never the test set, to
@@ -79,18 +80,21 @@ def main(config_path: Path) -> None:
             cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
         )
         val_loader = DataLoader(
-            val_ds, batch_size=cfg.batch_size, shuffle=False, num_workers=cfg.num_workers
+            val_ds,
+            batch_size=cfg.batch_size,
+            shuffle=False,
+            num_workers=cfg.num_workers,
         )
-        val_true = val_ds.df["label"].values.astype(int)
+        val_true = np.asarray(val_ds.df["label"].values, dtype=np.int64)
         val_prob = ensemble_predict(models, val_loader, device)
-        threshold = youden_threshold(val_true, val_prob)
+        threshold = float(youden_threshold(val_true, val_prob))
     else:
         LOGGER.warning(
             "No val_csv in ensemble config, falling back to a "
             "test-derived threshold, which leaks the test set into "
             "the operating point. Add val_csv to fix."
         )
-        threshold = youden_threshold(y_true, y_prob)
+        threshold = float(youden_threshold(y_true, y_prob))
     panel = evaluate(y_true, y_prob, threshold=threshold)
     LOGGER.info("Ensemble test panel: %s", panel)
 
