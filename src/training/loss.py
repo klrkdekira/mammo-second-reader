@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pandas as pd
 import torch
-import torch.nn as nn
+from torch import nn
 
 
 class SmoothedBCEWithLogitsLoss(nn.Module):

@@ -4,6 +4,10 @@ import json
 import logging
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")  # headless: figures are written to disk, never displayed
+
 import click
 import matplotlib.pyplot as plt
 import numpy as np

@@ -362,10 +362,7 @@ def main(config_path: Path) -> None:
 
     _save_history(cfg.output_dir / f"{cfg.run_name}.history.json", history)
 
-    # restores the best-AUC checkpoint before deriving the operating threshold.
-    # BestAUCCheckpoint saves the best epoch to disk but leaves model at the final epoch.
-    # without this reload, Youden's J is fitted to weights that nobody ever loads.
-    # that creates a mismatch between the checkpoint file and its threshold sidecar.
+    # Reload best-AUC checkpoint before calculating operating threshold.
     best_path = cfg.output_dir / f"{cfg.run_name}.pt"
     if best_path.exists():
         model.load_state_dict(
@@ -373,8 +370,6 @@ def main(config_path: Path) -> None:
         )
     val_y, val_p = _predict(model, val_loader, device)
     panel = evaluate(val_y, val_p)
-    # The final-epoch val AUC (last history entry) vs the reloaded best-epoch
-    # AUC makes the overfitting gap visible without re-reading every epoch.
     final_val_auc = history[-1]["val_auc"] if history else None
     _persist_val_threshold(
         cfg, youden_threshold(val_y, val_p), panel.auc, final_val_auc

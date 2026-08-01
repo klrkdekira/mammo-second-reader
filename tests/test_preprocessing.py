@@ -1,16 +1,4 @@
-"""Regression tests for the preprocessing pipeline on a synthetic film scan.
-
-The synthetic image encodes every artefact the pipeline must handle, film
-frame line with blurred glow, thick frame corner, burned-in view marker,
-faint skin line, interior bright speck, so behaviour is pinned without
-needing DICOM data:
-
-- the view marker and film frame are zeroed, including where the frame
-  crosses breast tissue,
-- faint peripheral tissue is kept (no cavities carved into the breast),
-- interior bright specks (calcification-like) are preserved,
-- the crop box never extends onto zeroed pixels (no black stripe).
-"""
+"""Regression tests for preprocessing pipeline using synthetic scan images."""
 
 import cv2
 import numpy as np
