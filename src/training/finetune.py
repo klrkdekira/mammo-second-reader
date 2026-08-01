@@ -51,7 +51,7 @@ def main(
             p.requires_grad = False
         backbone = getattr(model, "backbone", model)
         classifier = getattr(backbone, "classifier", None)
-        head = classifier[-1] if classifier is not None else getattr(backbone, "fc")
+        head = classifier[-1] if classifier is not None else backbone.fc
         for p in head.parameters():
             p.requires_grad = True
 

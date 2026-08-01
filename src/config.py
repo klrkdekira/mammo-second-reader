@@ -151,7 +151,7 @@ def load_config(path: Path) -> Config:
             else None,
             augment=str(raw["data"].get("augment", "default")),
             num_workers=int(
-                raw["data"].get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2))
+                raw["data"].get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", "2"))
             ),
         ),
         model=ModelConfig(**raw["model"]),
@@ -181,7 +181,7 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
         image_size=int(data.get("image_size", 224)),
         batch_size=int(data.get("batch_size", 32)),
         num_workers=int(
-            data.get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", 2))
+            data.get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", "2"))
         ),
         output_dir=Path(raw.get("output_dir", "models")),
     )

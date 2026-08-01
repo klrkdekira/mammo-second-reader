@@ -5,7 +5,7 @@ A naive Flatten on a 28x28x128 feature map would cost ~25 M parameters in the he
 """
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 
 class BaselineCNN(nn.Module):
