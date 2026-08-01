@@ -5,10 +5,11 @@ Temperature scaling is a single-parameter post-hoc calibration method
 then applied to test logits before the sigmoid.
 """
 
+import itertools
+
 import numpy as np
 import torch
-import torch.nn as nn
-import torch.optim as optim
+from torch import nn, optim
 
 
 class TemperatureScaler(nn.Module):
@@ -54,7 +55,7 @@ def expected_calibration_error(
     labels = np.asarray(labels).ravel().astype(float)
     bin_edges = np.linspace(0, 1, n_bins + 1)
     ece = 0.0
-    for lo, hi in zip(bin_edges[:-1], bin_edges[1:]):
+    for lo, hi in itertools.pairwise(bin_edges):
         mask = (probs >= lo) & (probs < hi)
         if mask.sum() == 0:
             continue
@@ -70,7 +71,7 @@ def reliability_bins(
     """Return (bin_centres, predicted_means, observed_means) for plotting."""
     bin_edges = np.linspace(0, 1, n_bins + 1)
     centres, preds, obs = [], [], []
-    for lo, hi in zip(bin_edges[:-1], bin_edges[1:]):
+    for lo, hi in itertools.pairwise(bin_edges):
         mask = (probs >= lo) & (probs < hi)
         if mask.sum() == 0:
             continue

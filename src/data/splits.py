@@ -95,19 +95,7 @@ def _build_dataframe(
 def collapse_to_image_level(df: pd.DataFrame) -> pd.DataFrame:
     """Collapse per-abnormality rows to one row per image.
 
-    CBIS-DDSM lists one row per abnormality, so a mammogram with two
-    abnormalities appears twice (and one carrying both a mass and a calc
-    appears in both CSVs). For image-level classification that double-counts
-    the image, inflating effective counts and the `pos_weight` denominator in
-    training/loss.py, and, when the abnormalities disagree, assigns the image
-    two contradictory labels. Collapse to one row per image with a
-    malignant-if-any label.
-
-    Per-abnormality fields (lesion_type, roi_mask_id, subtlety, pathology) are
-    taken from a representative abnormality that carries the image label, so
-    the kept ROI mask and subtlety describe the lesion that sets the label.
-    lesion_type becomes "mixed" when an image mixes mass and calc, which
-    lesion_strata then excludes from both single-type buckets.
+    Groups by image_id, setting label to 1 if any abnormality is malignant.
     """
     if df.empty:
         return df

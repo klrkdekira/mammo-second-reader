@@ -7,6 +7,7 @@ and a colour Grad-CAM overlay (jet heatmap blended over the input).
 import base64
 import io
 import json
+import logging
 from functools import lru_cache
 from pathlib import Path
 
@@ -17,14 +18,13 @@ from src.evaluation.gradcam import TARGET_LAYERS, compute_gradcam
 from src.models import build_model
 from src.models.transfer import ARCHS
 
+LOGGER = logging.getLogger(__name__)
+
 MODEL_DIR = Path("models")
 
-# Reject oversized uploads before decoding. Full-field DICOM mammograms are
-# typically 10-30 MB; 100 MB leaves generous headroom while bounding the work
-# a single malformed/hostile upload can trigger.
+# Max upload size (100 MB).
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 
-# checkpoint registry mapping run_name -> architecture.
 MODEL_REGISTRY: dict[str, str] = {
     "baseline": "baseline",
     "regularised_base": "deeper",
@@ -47,9 +47,6 @@ def _load_model(model_name: str) -> torch.nn.Module:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = build_model(MODEL_REGISTRY[model_name], pretrained=False)
     weights = MODEL_DIR / f"{model_name}.pt"
-    # Never serve predictions from an uninitialised network: a randomly
-    # initialised model still returns confident-looking probabilities, which
-    # is unacceptable in a clinical-facing demo.
     if not weights.exists():
         raise FileNotFoundError(
             f"No checkpoint for model {model_name!r} at {weights}. "
@@ -143,7 +140,12 @@ def run_single_inference(
         try:
             overlay_b64 = _overlay_to_b64(image, compute_gradcam(model, tensor, target))
         except Exception:
-            pass
+            # Return prediction without overlay if Grad-CAM fails.
+            LOGGER.warning(
+                "Grad-CAM failed for model %s; returning prediction without overlay",
+                model_name,
+                exc_info=True,
+            )
 
     return {
         "probability": prob,
