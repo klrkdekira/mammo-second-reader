@@ -1,5 +1,10 @@
 PY ?= uv run python3
 
+.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate figures results clean-models clean pipeline
+
+# Default target: clean everything and run the entire pipeline from scratch
+all: clean sync pipeline
+
 sync:
 	uv sync
 
@@ -21,7 +26,7 @@ cache-roi:
 clean-cache:
 	find ./data/cbis-ddsm/ -type f -name "*.npy" -delete
 
-data: splits cache
+data: splits cache cache-roi
 
 # Training
 train-baseline:
