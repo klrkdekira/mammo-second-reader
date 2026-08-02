@@ -44,7 +44,9 @@ def _append_record(record: dict, path: Path = METRICS_PATH) -> None:
             data = json.loads(path.read_text())
         except json.JSONDecodeError:
             pass
-    data.setdefault("runs", []).append(record)
+    runs = {r["model"]: r for r in data.setdefault("runs", [])}
+    runs[record["model"]] = record
+    data["runs"] = list(runs.values())
     path.write_text(json.dumps(data, indent=2) + "\n")
 
 
