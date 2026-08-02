@@ -11,7 +11,9 @@ def test_evaluate_append_record_upserts_by_model(tmp_path):
 
     _append_evaluate_record({"model": "baseline", "test": {"auc": 0.6}}, path=path)
     _append_evaluate_record({"model": "baseline", "test": {"auc": 0.7}}, path=path)
-    _append_evaluate_record({"model": "resnet50_imagenet", "test": {"auc": 0.68}}, path=path)
+    _append_evaluate_record(
+        {"model": "resnet50_imagenet", "test": {"auc": 0.68}}, path=path
+    )
 
     runs = json.loads(path.read_text())["runs"]
     assert len(runs) == 2
