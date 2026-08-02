@@ -111,7 +111,10 @@ def _gradcam_roi_panel(
                 "heatmap (degenerate rectifier output) and the remaining "
                 f"{n_no_roi} had no usable ROI mask"
             )
-        return None, f"no malignant test case has a usable ROI mask ({n_no_roi} checked)"
+        return (
+            None,
+            f"no malignant test case has a usable ROI mask ({n_no_roi} checked)",
+        )
     correct_arr = np.array(correct, dtype=bool)
     n = len(cams)
     return {

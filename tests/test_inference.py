@@ -78,12 +78,8 @@ def test_dicom_upload_is_deidentified_before_decoding(monkeypatch):
         return np.zeros((8, 8), dtype=np.float32)
 
     monkeypatch.setattr(pydicom, "dcmread", fake_dcmread)
-    monkeypatch.setattr(
-        "src.data.preprocessing.dicom_to_array", fake_dicom_to_array
-    )
-    monkeypatch.setattr(
-        "src.data.preprocessing.preprocess_array", lambda arr: arr
-    )
+    monkeypatch.setattr("src.data.preprocessing.dicom_to_array", fake_dicom_to_array)
+    monkeypatch.setattr("src.data.preprocessing.preprocess_array", lambda arr: arr)
 
     inference._preprocess_bytes(b"irrelevant bytes", "scan.dcm")
 

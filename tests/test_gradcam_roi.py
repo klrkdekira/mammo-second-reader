@@ -3,7 +3,11 @@
 import numpy as np
 import pytest
 
-from src.evaluation.gradcam_roi import energy_pointing_game, is_degenerate, pointing_game
+from src.evaluation.gradcam_roi import (
+    energy_pointing_game,
+    is_degenerate,
+    pointing_game,
+)
 
 
 def test_is_degenerate_flags_zero_energy_heatmap():
