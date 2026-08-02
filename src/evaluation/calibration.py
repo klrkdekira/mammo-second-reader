@@ -31,7 +31,9 @@ def fit_temperature(
 ) -> float:
     """LBFGS over a scalar T on BCE-with-logits NLL on val. Returns T."""
     scaler = TemperatureScaler()
-    optimiser = optim.LBFGS([scaler.T], lr=lr, max_iter=max_iter)
+    optimiser = optim.LBFGS(
+        [scaler.T], lr=lr, max_iter=max_iter, line_search_fn="strong_wolfe"
+    )
     criterion = nn.BCEWithLogitsLoss()
 
     def closure() -> torch.Tensor:
@@ -56,7 +58,7 @@ def expected_calibration_error(
     bin_edges = np.linspace(0, 1, n_bins + 1)
     ece = 0.0
     for lo, hi in itertools.pairwise(bin_edges):
-        mask = (probs >= lo) & (probs < hi)
+        mask = (probs >= lo) & (probs <= hi)
         if mask.sum() == 0:
             continue
         avg_conf = float(probs[mask].mean())
@@ -72,7 +74,7 @@ def reliability_bins(
     bin_edges = np.linspace(0, 1, n_bins + 1)
     centres, preds, obs = [], [], []
     for lo, hi in itertools.pairwise(bin_edges):
-        mask = (probs >= lo) & (probs < hi)
+        mask = (probs >= lo) & (probs <= hi)
         if mask.sum() == 0:
             continue
         centres.append((lo + hi) / 2)
