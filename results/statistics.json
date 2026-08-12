@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at_utc": "2026-08-12T16:13:16.718658+00:00",
+  "generated_at_utc": "2026-08-12T18:21:57.226768+00:00",
   "method": {
     "unit": "patient",
     "stratified_by": "patient_any_malignant",
@@ -24,72 +24,98 @@
         "auc": {
           "estimate": 0.6867394416607014,
           "ci_lower": 0.6384695756304266,
-          "ci_upper": 0.7353333468082025
+          "ci_upper": 0.7353333468082025,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.6294573643410852,
           "ci_lower": 0.5903388589849757,
-          "ci_upper": 0.6702619414483821
+          "ci_upper": 0.6702619414483821,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.7840909090909091,
           "ci_lower": 0.7307692307692307,
-          "ci_upper": 0.8366629777187546
+          "ci_upper": 0.8366629777187546,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.5223097112860893,
           "ci_lower": 0.466494672618225,
-          "ci_upper": 0.5801607283127554
+          "ci_upper": 0.5801607283127554,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.532133676092545,
           "ci_lower": 0.49623916661883716,
-          "ci_upper": 0.5714377289377288
+          "ci_upper": 0.5714377289377288,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.77734375,
           "ci_lower": 0.7290836653386454,
-          "ci_upper": 0.8240043956043955
+          "ci_upper": 0.8240043956043955,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.6339969372128637,
           "ci_lower": 0.5960029796899078,
-          "ci_upper": 0.671875
+          "ci_upper": 0.671875,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5756045280194027,
           "ci_lower": 0.5156899133030143,
-          "ci_upper": 0.6447745456727453
+          "ci_upper": 0.6447745456727453,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.22388117882670555,
           "ci_lower": 0.2133213382572401,
-          "ci_upper": 0.23414570032297607
+          "ci_upper": 0.23414570032297607,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6383087505809266,
           "ci_lower": 0.6158454643037073,
-          "ci_upper": 0.6605286481629615
+          "ci_upper": 0.6605286481629615,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.22397784353666647,
           "ci_lower": 0.20710016609076948,
-          "ci_upper": 0.24070283460440903
+          "ci_upper": 0.24070283460440903,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.640964153513355,
           "ci_lower": 0.6011204968148525,
-          "ci_upper": 0.6816830466197319
+          "ci_upper": 0.6816830466197319,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.39015151515151514,
           "ci_lower": 0.322457729468599,
-          "ci_upper": 0.4591518561362919
+          "ci_upper": 0.4591518561362919,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.8136482939632546,
           "ci_lower": 0.7678053762477868,
-          "ci_upper": 0.8549232685994542
+          "ci_upper": 0.8549232685994542,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31092436974789917,
+          "ci_lower": 0.21364306784660766,
+          "ci_upper": 0.41001119402985065,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3469387755102041,
+          "ci_lower": 0.20754716981132076,
+          "ci_upper": 0.5077049180327868,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -103,72 +129,98 @@
         "auc": {
           "estimate": 0.5668396564065855,
           "ci_lower": 0.5177530900882072,
-          "ci_upper": 0.6179924813420768
+          "ci_upper": 0.6179924813420768,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.57984496124031,
           "ci_lower": 0.5385706763326435,
-          "ci_upper": 0.6229582870884202
+          "ci_upper": 0.6229582870884202,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.45454545454545453,
           "ci_lower": 0.3869668193247126,
-          "ci_upper": 0.5209165537636758
+          "ci_upper": 0.5209165537636758,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.6666666666666666,
           "ci_lower": 0.6098111104293223,
-          "ci_upper": 0.7201178536624979
+          "ci_upper": 0.7201178536624979,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.48582995951417,
           "ci_lower": 0.4311544933600146,
-          "ci_upper": 0.5443050734993875
+          "ci_upper": 0.5443050734993875,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6381909547738693,
           "ci_lower": 0.5999874055415617,
-          "ci_upper": 0.6785714285714286
+          "ci_upper": 0.6785714285714286,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.46966731898238745,
           "ci_lower": 0.41163706563706565,
-          "ci_upper": 0.5254952336665891
+          "ci_upper": 0.5254952336665891,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.47552775202307673,
           "ci_lower": 0.4245847338399821,
-          "ci_upper": 0.5368529057107502
+          "ci_upper": 0.5368529057107502,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.24795764770570214,
           "ci_lower": 0.24702984949530743,
-          "ci_upper": 0.24884582459829227
+          "ci_upper": 0.24884582459829227,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6890612524367288,
           "ci_lower": 0.6872050111864715,
-          "ci_upper": 0.6908384891783252
+          "ci_upper": 0.6908384891783252,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.2486090753758975,
           "ci_lower": 0.24799145043945345,
-          "ci_upper": 0.24920374123929104
+          "ci_upper": 0.24920374123929104,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6903649536577763,
           "ci_lower": 0.6891295145266021,
-          "ci_upper": 0.6915545499306625
+          "ci_upper": 0.6915545499306625,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.2803030303030303,
           "ci_lower": 0.2222121212121212,
-          "ci_upper": 0.33955223880597013
+          "ci_upper": 0.33955223880597013,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.8162729658792651,
           "ci_lower": 0.7657883136683018,
-          "ci_upper": 0.8624085124085124
+          "ci_upper": 0.8624085124085124,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31092436974789917,
+          "ci_lower": 0.22429906542056074,
+          "ci_upper": 0.40004672897196236,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3469387755102041,
+          "ci_lower": 0.21049571603427172,
+          "ci_upper": 0.4897959183673469,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -182,72 +234,98 @@
         "auc": {
           "estimate": 0.6350811262228586,
           "ci_lower": 0.5848691924163776,
-          "ci_upper": 0.684017053104487
+          "ci_upper": 0.684017053104487,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5488372093023256,
           "ci_lower": 0.5077393408630508,
-          "ci_upper": 0.5901019169854785
+          "ci_upper": 0.5901019169854785,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.7537878787878788,
           "ci_lower": 0.6973092998955068,
-          "ci_upper": 0.8084332345545977
+          "ci_upper": 0.8084332345545977,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.4068241469816273,
           "ci_lower": 0.35106382978723405,
-          "ci_upper": 0.46356026785714277
+          "ci_upper": 0.46356026785714277,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4682352941176471,
           "ci_lower": 0.4349727042308442,
-          "ci_upper": 0.5033879594826373
+          "ci_upper": 0.5033879594826373,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.7045454545454546,
           "ci_lower": 0.645007215007215,
-          "ci_upper": 0.7600082644628099
+          "ci_upper": 0.7600082644628099,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5776487663280117,
           "ci_lower": 0.5399129172714079,
-          "ci_upper": 0.6156029393678515
+          "ci_upper": 0.6156029393678515,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5272695971871699,
           "ci_lower": 0.4759591581327278,
-          "ci_upper": 0.5937982860766937
+          "ci_upper": 0.5937982860766937,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23360360721736917,
           "ci_lower": 0.22428904225624338,
-          "ci_upper": 0.2430143370282667
+          "ci_upper": 0.2430143370282667,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6602480566963659,
           "ci_lower": 0.6408373952416819,
-          "ci_upper": 0.6802924834742508
+          "ci_upper": 0.6802924834742508,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23605399847067796,
           "ci_lower": 0.2210507654390924,
-          "ci_upper": 0.2514102862374769
+          "ci_upper": 0.2514102862374769,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6693090404684223,
           "ci_lower": 0.6342407019322533,
-          "ci_upper": 0.7057891521310277
+          "ci_upper": 0.7057891521310277,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4053030303030303,
           "ci_lower": 0.3385199042202933,
-          "ci_upper": 0.4712698308640356
+          "ci_upper": 0.4712698308640356,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7690288713910761,
           "ci_lower": 0.7214639416584135,
-          "ci_upper": 0.8135135135135135
+          "ci_upper": 0.8135135135135135,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.35294117647058826,
+          "ci_lower": 0.25217391304347825,
+          "ci_upper": 0.4537831286360698,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.30612244897959184,
+          "ci_lower": 0.16666666666666666,
+          "ci_upper": 0.4594594594594595,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -261,72 +339,98 @@
         "auc": {
           "estimate": 0.6245824385588166,
           "ci_lower": 0.5758971748653497,
-          "ci_upper": 0.6742885591117995
+          "ci_upper": 0.6742885591117995,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5550387596899224,
           "ci_lower": 0.5154309116809116,
-          "ci_upper": 0.5950229994158878
+          "ci_upper": 0.5950229994158878,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.7916666666666666,
           "ci_lower": 0.7356237322515213,
-          "ci_upper": 0.8470352044127188
+          "ci_upper": 0.8470352044127188,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.3910761154855643,
           "ci_lower": 0.3359783152105987,
-          "ci_upper": 0.44772320507910324
+          "ci_upper": 0.44772320507910324,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.47392290249433106,
           "ci_lower": 0.4407158836689038,
-          "ci_upper": 0.5081986590706506
+          "ci_upper": 0.5081986590706506,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.7303921568627451,
           "ci_lower": 0.6712931681681682,
-          "ci_upper": 0.7914892277400003
+          "ci_upper": 0.7914892277400003,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5929078014184397,
           "ci_lower": 0.5561955606644432,
-          "ci_upper": 0.6302158273381295
+          "ci_upper": 0.6302158273381295,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5103652316529526,
           "ci_lower": 0.4612544313403569,
-          "ci_upper": 0.5736032998034715
+          "ci_upper": 0.5736032998034715,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2409971121775042,
           "ci_lower": 0.23331851561348432,
-          "ci_upper": 0.24857463573763894
+          "ci_upper": 0.24857463573763894,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6750126660146843,
           "ci_lower": 0.6593087261927233,
-          "ci_upper": 0.6905677693446342
+          "ci_upper": 0.6905677693446342,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.24363304905483274,
           "ci_lower": 0.23110558855993307,
-          "ci_upper": 0.25617475096135134
+          "ci_upper": 0.25617475096135134,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6815635874532705,
           "ci_lower": 0.6546688533619699,
-          "ci_upper": 0.7089692415118237
+          "ci_upper": 0.7089692415118237,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.3977272727272727,
           "ci_lower": 0.3333333333333333,
-          "ci_upper": 0.4653846153846154
+          "ci_upper": 0.4653846153846154,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7375328083989501,
           "ci_lower": 0.6868413823019086,
-          "ci_upper": 0.7830743089228728
+          "ci_upper": 0.7830743089228728,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.36134453781512604,
+          "ci_lower": 0.2627014448457905,
+          "ci_upper": 0.460329131652661,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3673469387755102,
+          "ci_lower": 0.23214285714285715,
+          "ci_upper": 0.5166810344827586,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -340,72 +444,98 @@
         "auc": {
           "estimate": 0.6280621172353457,
           "ci_lower": 0.5772399953230393,
-          "ci_upper": 0.6778789147632872
+          "ci_upper": 0.6778789147632872,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.6356589147286822,
           "ci_lower": 0.5975595487234123,
-          "ci_upper": 0.6753048780487805
+          "ci_upper": 0.6753048780487805,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.4962121212121212,
           "ci_lower": 0.42857142857142855,
-          "ci_upper": 0.566041204217536
+          "ci_upper": 0.566041204217536,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.7322834645669292,
           "ci_lower": 0.6856330317335431,
-          "ci_upper": 0.7806788511749347
+          "ci_upper": 0.7806788511749347,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.5622317596566524,
           "ci_lower": 0.502301609858097,
-          "ci_upper": 0.6238125763125763
+          "ci_upper": 0.6238125763125763,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6771844660194175,
           "ci_lower": 0.6438946216385241,
-          "ci_upper": 0.712468193384224
+          "ci_upper": 0.712468193384224,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5271629778672032,
           "ci_lower": 0.46789949181253526,
-          "ci_upper": 0.5844431925996205
+          "ci_upper": 0.5844431925996205,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5213082455659858,
           "ci_lower": 0.47011356872379495,
-          "ci_upper": 0.5893607259285075
+          "ci_upper": 0.5893607259285075,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.25501226000008115,
           "ci_lower": 0.24519201935513824,
-          "ci_upper": 0.2645638444837865
+          "ci_upper": 0.2645638444837865,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.7060308254165054,
           "ci_lower": 0.6845369863223348,
-          "ci_upper": 0.7269449057698223
+          "ci_upper": 0.7269449057698223,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.2560137127446517,
           "ci_lower": 0.24574673332676675,
-          "ci_upper": 0.2660017718095456
+          "ci_upper": 0.2660017718095456,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.7086646535897301,
           "ci_lower": 0.6860072210898877,
-          "ci_upper": 0.7307723338301322
+          "ci_upper": 0.7307723338301322,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.42045454545454547,
           "ci_lower": 0.3527021670190275,
-          "ci_upper": 0.48709186460095644
+          "ci_upper": 0.48709186460095644,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7559055118110236,
           "ci_lower": 0.7101827676240209,
-          "ci_upper": 0.8037647226861211
+          "ci_upper": 0.8037647226861211,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3865546218487395,
+          "ci_lower": 0.28445402298850575,
+          "ci_upper": 0.4880641509433959,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3673469387755102,
+          "ci_lower": 0.23072916666666668,
+          "ci_upper": 0.5272853535353534,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -419,72 +549,98 @@
         "auc": {
           "estimate": 0.639276624512845,
           "ci_lower": 0.5901813848622056,
-          "ci_upper": 0.6897653584122327
+          "ci_upper": 0.6897653584122327,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5844961240310077,
           "ci_lower": 0.5439360752540511,
-          "ci_upper": 0.6276940063091482
+          "ci_upper": 0.6276940063091482,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.6590909090909091,
           "ci_lower": 0.5946969696969697,
-          "ci_upper": 0.724531036368608
+          "ci_upper": 0.724531036368608,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.5328083989501312,
           "ci_lower": 0.4774505747126437,
-          "ci_upper": 0.5885621565000629
+          "ci_upper": 0.5885621565000629,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4943181818181818,
           "ci_lower": 0.45320795444107653,
-          "ci_upper": 0.5370384108143752
+          "ci_upper": 0.5370384108143752,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6928327645051194,
           "ci_lower": 0.6457555812081675,
-          "ci_upper": 0.7432454954954955
+          "ci_upper": 0.7432454954954955,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.564935064935065,
           "ci_lower": 0.5192566136467461,
-          "ci_upper": 0.6107614422897051
+          "ci_upper": 0.6107614422897051,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5320120634630232,
           "ci_lower": 0.47989751905052813,
-          "ci_upper": 0.6006875879848536
+          "ci_upper": 0.6006875879848536,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23428891361153703,
           "ci_lower": 0.22424110561270233,
-          "ci_upper": 0.24411425755851524
+          "ci_upper": 0.24411425755851524,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6617844673031713,
           "ci_lower": 0.6407117060780244,
-          "ci_upper": 0.6827639478784834
+          "ci_upper": 0.6827639478784834,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23922799587408078,
           "ci_lower": 0.22263565250299766,
-          "ci_upper": 0.25556630861905744
+          "ci_upper": 0.25556630861905744,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6785929860141001,
           "ci_lower": 0.6397650478881134,
-          "ci_upper": 0.7174976243427962
+          "ci_upper": 0.7174976243427962,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4393939393939394,
           "ci_lower": 0.3706492206492206,
-          "ci_upper": 0.505537128404992
+          "ci_upper": 0.505537128404992,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7270341207349081,
           "ci_lower": 0.6781002638522428,
-          "ci_upper": 0.7755155888212805
+          "ci_upper": 0.7755155888212805,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.36134453781512604,
+          "ci_lower": 0.2636346018322762,
+          "ci_upper": 0.46218685587442526,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.32653061224489793,
+          "ci_lower": 0.18604651162790697,
+          "ci_upper": 0.4888888888888889,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -498,72 +654,98 @@
         "auc": {
           "estimate": 0.5773284021315517,
           "ci_lower": 0.5242311467279673,
-          "ci_upper": 0.6304602657089451
+          "ci_upper": 0.6304602657089451,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5581395348837209,
           "ci_lower": 0.5153812199036918,
-          "ci_upper": 0.6002995149518593
+          "ci_upper": 0.6002995149518593,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.6515151515151515,
           "ci_lower": 0.5860805860805861,
-          "ci_upper": 0.7131797195622436
+          "ci_upper": 0.7131797195622436,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.49343832020997375,
           "ci_lower": 0.43414820473644006,
-          "ci_upper": 0.5510358299491079
+          "ci_upper": 0.5510358299491079,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4712328767123288,
           "ci_lower": 0.4319969151670951,
-          "ci_upper": 0.5107585962424672
+          "ci_upper": 0.5107585962424672,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6714285714285714,
           "ci_lower": 0.6187003730349054,
-          "ci_upper": 0.7230311495484463
+          "ci_upper": 0.7230311495484463,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5468998410174881,
           "ci_lower": 0.5016385535817827,
-          "ci_upper": 0.5890005268307368
+          "ci_upper": 0.5890005268307368,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.47445278363799515,
           "ci_lower": 0.4246026717069529,
-          "ci_upper": 0.5342062214204619
+          "ci_upper": 0.5342062214204619,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2467482566048704,
           "ci_lower": 0.24485562945772993,
-          "ci_upper": 0.24855106128911297
+          "ci_upper": 0.24855106128911297,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6866376225889121,
           "ci_lower": 0.6828478508483483,
-          "ci_upper": 0.690250285908631
+          "ci_upper": 0.690250285908631,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.24320274032949066,
           "ci_lower": 0.2326402252222968,
-          "ci_upper": 0.25342166636956465
+          "ci_upper": 0.25342166636956465,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6801723368706277,
           "ci_lower": 0.657971359984112,
-          "ci_upper": 0.7019280065561702
+          "ci_upper": 0.7019280065561702,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.32575757575757575,
           "ci_lower": 0.2567049808429119,
-          "ci_upper": 0.3992673992673993
+          "ci_upper": 0.3992673992673993,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7611548556430446,
           "ci_lower": 0.7121578690127077,
-          "ci_upper": 0.8083564059310328
+          "ci_upper": 0.8083564059310328,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.2857142857142857,
+          "ci_lower": 0.1926605504587156,
+          "ci_upper": 0.3826179463459759,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3877551020408163,
+          "ci_lower": 0.21424772036474163,
+          "ci_upper": 0.5769444444444443,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -577,72 +759,98 @@
         "auc": {
           "estimate": 0.5960192475940507,
           "ci_lower": 0.5450536787480864,
-          "ci_upper": 0.6452511992815004
+          "ci_upper": 0.6452511992815004,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5116279069767442,
           "ci_lower": 0.46918941523067537,
-          "ci_upper": 0.5511450381679389
+          "ci_upper": 0.5511450381679389,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.7310606060606061,
           "ci_lower": 0.6730002685626245,
-          "ci_upper": 0.7881095161859278
+          "ci_upper": 0.7881095161859278,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.35958005249343833,
           "ci_lower": 0.31034243958353236,
-          "ci_upper": 0.4120488252221484
+          "ci_upper": 0.4120488252221484,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4416475972540046,
           "ci_lower": 0.40774487471526194,
-          "ci_upper": 0.47516356799564147
+          "ci_upper": 0.47516356799564147,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6586538461538461,
           "ci_lower": 0.5961337209302325,
-          "ci_upper": 0.7197951929587
+          "ci_upper": 0.7197951929587,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.550641940085592,
           "ci_lower": 0.509912236849414,
-          "ci_upper": 0.5891266485797181
+          "ci_upper": 0.5891266485797181,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.49740731018052864,
           "ci_lower": 0.4494261783473478,
-          "ci_upper": 0.5557960518851279
+          "ci_upper": 0.5557960518851279,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2504554212934251,
           "ci_lower": 0.2503676997773733,
-          "ci_upper": 0.2505418861396633
+          "ci_upper": 0.2505418861396633,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6940580306474483,
           "ci_lower": 0.6938825861355287,
-          "ci_upper": 0.6942309618302078
+          "ci_upper": 0.6942309618302078,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.2503022129430202,
           "ci_lower": 0.2502437282556662,
-          "ci_upper": 0.2503598605053191
+          "ci_upper": 0.2503598605053191,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.693751608652658,
           "ci_lower": 0.6936346388394065,
-          "ci_upper": 0.6938669042189156
+          "ci_upper": 0.6938669042189156,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.3446969696969697,
           "ci_lower": 0.28417061805101373,
-          "ci_upper": 0.4092664092664093
+          "ci_upper": 0.4092664092664093,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7742782152230971,
           "ci_lower": 0.7253297709923665,
-          "ci_upper": 0.8175044889502763
+          "ci_upper": 0.8175044889502763,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3025210084033613,
+          "ci_lower": 0.21903361344537814,
+          "ci_upper": 0.39814814814814814,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.30612244897959184,
+          "ci_lower": 0.18366496598639456,
+          "ci_upper": 0.4510154061624648,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -656,72 +864,98 @@
         "auc": {
           "estimate": 0.6713194941541398,
           "ci_lower": 0.6216856653956615,
-          "ci_upper": 0.7209601637711373
+          "ci_upper": 0.7209601637711373,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5689922480620155,
           "ci_lower": 0.5323045525902669,
-          "ci_upper": 0.6072567808939401
+          "ci_upper": 0.6072567808939401,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.821969696969697,
           "ci_lower": 0.7703639846743295,
-          "ci_upper": 0.8717948717948718
+          "ci_upper": 0.8717948717948718,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.3937007874015748,
           "ci_lower": 0.3383850126540606,
-          "ci_upper": 0.44681715966095825
+          "ci_upper": 0.44681715966095825,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.484375,
           "ci_lower": 0.4535631176054588,
-          "ci_upper": 0.516855834833997
+          "ci_upper": 0.516855834833997,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.7614213197969543,
           "ci_lower": 0.7061541678282687,
-          "ci_upper": 0.8214327632461434
+          "ci_upper": 0.8214327632461434,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.6095505617977528,
           "ci_lower": 0.5757921931774505,
-          "ci_upper": 0.6435513246192859
+          "ci_upper": 0.6435513246192859,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5642348060272655,
           "ci_lower": 0.5079827437133407,
-          "ci_upper": 0.6320583682048809
+          "ci_upper": 0.6320583682048809,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23464105335195642,
           "ci_lower": 0.21867254884173778,
-          "ci_upper": 0.2508104101945748
+          "ci_upper": 0.2508104101945748,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.677357929498738,
           "ci_lower": 0.6323885962514493,
-          "ci_upper": 0.7269310432079591
+          "ci_upper": 0.7269310432079591,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23399904189094364,
           "ci_lower": 0.21850302788787404,
-          "ci_upper": 0.24959078136597368
+          "ci_upper": 0.24959078136597368,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.673512876687029,
           "ci_lower": 0.6305892517189413,
-          "ci_upper": 0.7203049519275867
+          "ci_upper": 0.7203049519275867,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4015151515151515,
           "ci_lower": 0.3345724907063197,
-          "ci_upper": 0.4690944055944056
+          "ci_upper": 0.4690944055944056,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7979002624671916,
           "ci_lower": 0.7573276485788113,
-          "ci_upper": 0.8391456817311375
+          "ci_upper": 0.8391456817311375,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31092436974789917,
+          "ci_lower": 0.22411483990147785,
+          "ci_upper": 0.40336134453781514,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.30612244897959184,
+          "ci_lower": 0.1790911513859275,
+          "ci_upper": 0.45454545454545453,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -735,72 +969,98 @@
         "auc": {
           "estimate": 0.6695597709377236,
           "ci_lower": 0.6219580908590298,
-          "ci_upper": 0.7167523743688687
+          "ci_upper": 0.7167523743688687,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5581395348837209,
           "ci_lower": 0.5196280356951666,
-          "ci_upper": 0.5960098369372563
+          "ci_upper": 0.5960098369372563,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.8522727272727273,
           "ci_lower": 0.8022225183605781,
-          "ci_upper": 0.8992889086414265
+          "ci_upper": 0.8992889086414265,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.3543307086614173,
           "ci_lower": 0.29742894056847546,
-          "ci_upper": 0.40651206708917476
+          "ci_upper": 0.40651206708917476,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.47770700636942676,
           "ci_lower": 0.4471261825666209,
-          "ci_upper": 0.5089373159057436
+          "ci_upper": 0.5089373159057436,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.7758620689655172,
           "ci_lower": 0.7126189972498413,
-          "ci_upper": 0.836487090367428
+          "ci_upper": 0.836487090367428,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.6122448979591837,
           "ci_lower": 0.5766016713091922,
-          "ci_upper": 0.6454401688360013
+          "ci_upper": 0.6454401688360013,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5755032331681045,
           "ci_lower": 0.516970794232401,
-          "ci_upper": 0.6435281345626132
+          "ci_upper": 0.6435281345626132,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2305585973972512,
           "ci_lower": 0.21508596949180026,
-          "ci_upper": 0.24632203755116497
+          "ci_upper": 0.24632203755116497,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6582390767315602,
           "ci_lower": 0.6188649725420187,
-          "ci_upper": 0.6982036911842264
+          "ci_upper": 0.6982036911842264,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.22973930893192054,
           "ci_lower": 0.21494182524297528,
-          "ci_upper": 0.24464993635147578
+          "ci_upper": 0.24464993635147578,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6543103487242913,
           "ci_lower": 0.6178861125987292,
-          "ci_upper": 0.6913140470135329
+          "ci_upper": 0.6913140470135329,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4015151515151515,
           "ci_lower": 0.3346153846153846,
-          "ci_upper": 0.47012026520782546
+          "ci_upper": 0.47012026520782546,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.8110236220472441,
           "ci_lower": 0.7651403743315508,
-          "ci_upper": 0.8552640078879369
+          "ci_upper": 0.8552640078879369,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31092436974789917,
+          "ci_lower": 0.21051525873507296,
+          "ci_upper": 0.4081765749778172,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3469387755102041,
+          "ci_lower": 0.21052631578947367,
+          "ci_upper": 0.5,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -814,72 +1074,98 @@
         "auc": {
           "estimate": 0.649874731567645,
           "ci_lower": 0.6009196343502569,
-          "ci_upper": 0.6957511302878884
+          "ci_upper": 0.6957511302878884,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.6139534883720931,
           "ci_lower": 0.5718638392857143,
-          "ci_upper": 0.6560157760500226
+          "ci_upper": 0.6560157760500226,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.5227272727272727,
           "ci_lower": 0.454865441417788,
-          "ci_upper": 0.5893679733019668
+          "ci_upper": 0.5893679733019668,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.6771653543307087,
           "ci_lower": 0.623999455040872,
-          "ci_upper": 0.7297332397332397
+          "ci_upper": 0.7297332397332397,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.5287356321839081,
           "ci_lower": 0.47635930735930737,
-          "ci_upper": 0.5833410780669145
+          "ci_upper": 0.5833410780669145,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.671875,
           "ci_lower": 0.6320926409438159,
-          "ci_upper": 0.7113973523491077
+          "ci_upper": 0.7113973523491077,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5257142857142857,
           "ci_lower": 0.47172312966323854,
-          "ci_upper": 0.5788546691403834
+          "ci_upper": 0.5788546691403834,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.527687602502723,
           "ci_lower": 0.48007611511297377,
-          "ci_upper": 0.5867310228545706
+          "ci_upper": 0.5867310228545706,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.22832089543026082,
           "ci_lower": 0.21990779094292293,
-          "ci_upper": 0.23674092411241834
+          "ci_upper": 0.23674092411241834,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6479385481422983,
           "ci_lower": 0.6304640832976836,
-          "ci_upper": 0.6654293786379075
+          "ci_upper": 0.6654293786379075,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23386965077156066,
           "ci_lower": 0.21732169363415477,
-          "ci_upper": 0.25137763759892406
+          "ci_upper": 0.25137763759892406,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6621405288021276,
           "ci_lower": 0.6222033560295133,
-          "ci_upper": 0.7035989296394288
+          "ci_upper": 0.7035989296394288,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4015151515151515,
           "ci_lower": 0.3370360195360195,
-          "ci_upper": 0.46564885496183206
+          "ci_upper": 0.46564885496183206,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7401574803149606,
           "ci_lower": 0.6869897483690587,
-          "ci_upper": 0.7896137196137196
+          "ci_upper": 0.7896137196137196,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.35294117647058826,
+          "ci_lower": 0.26355569155446756,
+          "ci_upper": 0.44332760595647175,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.4897959183673469,
+          "ci_lower": 0.3508771929824561,
+          "ci_upper": 0.6326700680272108,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -893,72 +1179,98 @@
         "auc": {
           "estimate": 0.6147100930565498,
           "ci_lower": 0.5672522206795069,
-          "ci_upper": 0.6625420979268444
+          "ci_upper": 0.6625420979268444,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5875968992248062,
           "ci_lower": 0.5462757357031762,
-          "ci_upper": 0.6273382704252268
+          "ci_upper": 0.6273382704252268,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.48863636363636365,
           "ci_lower": 0.4233542469723065,
-          "ci_upper": 0.5567799070847851
+          "ci_upper": 0.5567799070847851,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.6561679790026247,
           "ci_lower": 0.6033464854063043,
-          "ci_upper": 0.7078130746438509
+          "ci_upper": 0.7078130746438509,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.49615384615384617,
           "ci_lower": 0.44363636363636366,
-          "ci_upper": 0.5490931445603576
+          "ci_upper": 0.5490931445603576,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6493506493506493,
           "ci_lower": 0.610820790378007,
-          "ci_upper": 0.6880029702970296
+          "ci_upper": 0.6880029702970296,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.49236641221374045,
           "ci_lower": 0.43866171003717475,
-          "ci_upper": 0.545128076343546
+          "ci_upper": 0.545128076343546,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5160287870358282,
           "ci_lower": 0.46511149324721657,
-          "ci_upper": 0.5811251897443671
+          "ci_upper": 0.5811251897443671,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2380399094412029,
           "ci_lower": 0.23082063925988977,
-          "ci_upper": 0.24520082178095728
+          "ci_upper": 0.24520082178095728,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6682727729761382,
           "ci_lower": 0.6533298964436942,
-          "ci_upper": 0.6830916327382193
+          "ci_upper": 0.6830916327382193,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23779630729211243,
           "ci_lower": 0.2282688598219147,
-          "ci_upper": 0.24747584764459868
+          "ci_upper": 0.24747584764459868,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6671219701279635,
           "ci_lower": 0.6470718647042318,
-          "ci_upper": 0.6874823328114843
+          "ci_upper": 0.6874823328114843,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.38257575757575757,
           "ci_lower": 0.3233024869866975,
-          "ci_upper": 0.44697192513368983
+          "ci_upper": 0.44697192513368983,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7559055118110236,
           "ci_lower": 0.706199460916442,
-          "ci_upper": 0.8005183047067302
+          "ci_upper": 0.8005183047067302,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3949579831932773,
+          "ci_lower": 0.30971842316975057,
+          "ci_upper": 0.4838875956102427,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.3877551020408163,
+          "ci_lower": 0.2727272727272727,
+          "ci_upper": 0.5111111111111111,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -972,72 +1284,98 @@
         "auc": {
           "estimate": 0.6257456454306849,
           "ci_lower": 0.5764557933091675,
-          "ci_upper": 0.6731998576226191
+          "ci_upper": 0.6731998576226191,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5596899224806201,
           "ci_lower": 0.5186292403248925,
-          "ci_upper": 0.5991054665327686
+          "ci_upper": 0.5991054665327686,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.7462121212121212,
           "ci_lower": 0.6862577985739751,
-          "ci_upper": 0.8051494684952633
+          "ci_upper": 0.8051494684952633,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.4304461942257218,
           "ci_lower": 0.37462429456151847,
-          "ci_upper": 0.4859422734723293
+          "ci_upper": 0.4859422734723293,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4758454106280193,
           "ci_lower": 0.4406729217110573,
-          "ci_upper": 0.5117924528301887
+          "ci_upper": 0.5117924528301887,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.70995670995671,
           "ci_lower": 0.6535076862949453,
-          "ci_upper": 0.7677200506186727
+          "ci_upper": 0.7677200506186727,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5811209439528023,
           "ci_lower": 0.5396768463482954,
-          "ci_upper": 0.6206920767144518
+          "ci_upper": 0.6206920767144518,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5381761180742659,
           "ci_lower": 0.48243387991792325,
-          "ci_upper": 0.6005387516612612
+          "ci_upper": 0.6005387516612612,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23633258291786244,
           "ci_lower": 0.22691991636606448,
-          "ci_upper": 0.24589694157250375
+          "ci_upper": 0.24589694157250375,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6648747661048869,
           "ci_lower": 0.645058185425242,
-          "ci_upper": 0.6848170987889763
+          "ci_upper": 0.6848170987889763,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23860468184972003,
           "ci_lower": 0.2256511605074433,
-          "ci_upper": 0.25159575653353045
+          "ci_upper": 0.25159575653353045,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.66967922268604,
           "ci_lower": 0.6415618623655959,
-          "ci_upper": 0.6978716868126125
+          "ci_upper": 0.6978716868126125,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.38257575757575757,
           "ci_lower": 0.31800320769847634,
-          "ci_upper": 0.444454656862745
+          "ci_upper": 0.444454656862745,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7637795275590551,
           "ci_lower": 0.7139107611548556,
-          "ci_upper": 0.8096542129300992
+          "ci_upper": 0.8096542129300992,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.36134453781512604,
+          "ci_lower": 0.26270972436226675,
+          "ci_upper": 0.46153846153846156,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.32653061224489793,
+          "ci_lower": 0.2,
+          "ci_upper": 0.4694177671068426,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -1051,72 +1389,98 @@
         "auc": {
           "estimate": 0.6679094090511414,
           "ci_lower": 0.6203991627372404,
-          "ci_upper": 0.7167248526064293
+          "ci_upper": 0.7167248526064293,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.6,
           "ci_lower": 0.5619047619047619,
-          "ci_upper": 0.6424053082258886
+          "ci_upper": 0.6424053082258886,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.75,
           "ci_lower": 0.6940222779093462,
-          "ci_upper": 0.8104089219330854
+          "ci_upper": 0.8104089219330854,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.49606299212598426,
           "ci_lower": 0.4388170478025353,
-          "ci_upper": 0.5516416843946176
+          "ci_upper": 0.5516416843946176,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.5076923076923077,
           "ci_lower": 0.4718768116855292,
-          "ci_upper": 0.5470113438045375
+          "ci_upper": 0.5470113438045375,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.7411764705882353,
           "ci_lower": 0.6934306569343066,
-          "ci_upper": 0.7920397080795311
+          "ci_upper": 0.7920397080795311,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.6055045871559633,
           "ci_lower": 0.5656197133458647,
-          "ci_upper": 0.6470588235294118
+          "ci_upper": 0.6470588235294118,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5597736577877159,
           "ci_lower": 0.5034807756464296,
-          "ci_upper": 0.6288070008329806
+          "ci_upper": 0.6288070008329806,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.2289883676143761,
           "ci_lower": 0.2164956902668924,
-          "ci_upper": 0.2410484202187062
+          "ci_upper": 0.2410484202187062,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6543347568748376,
           "ci_lower": 0.6244959239842488,
-          "ci_upper": 0.6833351641688975
+          "ci_upper": 0.6833351641688975,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.228963165104286,
           "ci_lower": 0.21528999140554883,
-          "ci_upper": 0.24213775686887637
+          "ci_upper": 0.24213775686887637,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6567153516051565,
           "ci_lower": 0.6229468530614588,
-          "ci_upper": 0.689770538832857
+          "ci_upper": 0.689770538832857,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.3560606060606061,
           "ci_lower": 0.29341520091520096,
-          "ci_upper": 0.4197115116732601
+          "ci_upper": 0.4197115116732601,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.8293963254593176,
           "ci_lower": 0.7903215493771141,
-          "ci_upper": 0.8664923114457911
+          "ci_upper": 0.8664923114457911,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.29411764705882354,
+          "ci_lower": 0.21212121212121213,
+          "ci_upper": 0.3865546218487395,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.24489795918367346,
+          "ci_lower": 0.13039971949509116,
+          "ci_upper": 0.3783783783783784,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -1130,72 +1494,98 @@
         "auc": {
           "estimate": 0.6057424640101806,
           "ci_lower": 0.5572118708760523,
-          "ci_upper": 0.6556979248401711
+          "ci_upper": 0.6556979248401711,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.5596899224806201,
           "ci_lower": 0.5186335403726708,
-          "ci_upper": 0.6021349722494903
+          "ci_upper": 0.6021349722494903,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.6477272727272727,
           "ci_lower": 0.5882352941176471,
-          "ci_upper": 0.7088158346200034
+          "ci_upper": 0.7088158346200034,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.49868766404199477,
           "ci_lower": 0.43978776862288227,
-          "ci_upper": 0.5593774966934547
+          "ci_upper": 0.5593774966934547,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.4723756906077348,
           "ci_lower": 0.43512933293404205,
-          "ci_upper": 0.5126796677500902
+          "ci_upper": 0.5126796677500902,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6713780918727915,
           "ci_lower": 0.6204302540525168,
-          "ci_upper": 0.7212738439733064
+          "ci_upper": 0.7212738439733064,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5463258785942492,
           "ci_lower": 0.5057471264367817,
-          "ci_upper": 0.5882494117647058
+          "ci_upper": 0.5882494117647058,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5034926862296527,
           "ci_lower": 0.45391758325211007,
-          "ci_upper": 0.5641225254205191
+          "ci_upper": 0.5641225254205191,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23732319668382088,
           "ci_lower": 0.23258646518125678,
-          "ci_upper": 0.2419300870539511
+          "ci_upper": 0.2419300870539511,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6675293651026942,
           "ci_lower": 0.6579151648852855,
-          "ci_upper": 0.6768423067640275
+          "ci_upper": 0.6768423067640275,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.23396877396353877,
           "ci_lower": 0.22530760193479174,
-          "ci_upper": 0.24235746884966816
+          "ci_upper": 0.24235746884966816,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6603346951246717,
           "ci_lower": 0.6423478876005405,
-          "ci_upper": 0.6778633192583345
+          "ci_upper": 0.6778633192583345,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.2840909090909091,
           "ci_lower": 0.22691914498141263,
-          "ci_upper": 0.3471698113207547
+          "ci_upper": 0.3471698113207547,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.8503937007874016,
           "ci_lower": 0.8053333333333333,
-          "ci_upper": 0.8909646777470511
+          "ci_upper": 0.8909646777470511,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31932773109243695,
+          "ci_lower": 0.22058534043538675,
+          "ci_upper": 0.4198511450381679,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.30612244897959184,
+          "ci_lower": 0.18181818181818182,
+          "ci_upper": 0.4400294117647057,
+          "n_valid_resamples": 2000
         }
       }
     },
@@ -1209,72 +1599,413 @@
         "auc": {
           "estimate": 0.6744313210848644,
           "ci_lower": 0.6274194444156614,
-          "ci_upper": 0.7222450843019534
+          "ci_upper": 0.7222450843019534,
+          "n_valid_resamples": 2000
         },
         "accuracy": {
           "estimate": 0.6341085271317829,
           "ci_lower": 0.594850902485294,
-          "ci_upper": 0.6744923155283904
+          "ci_upper": 0.6744923155283904,
+          "n_valid_resamples": 2000
         },
         "sensitivity": {
           "estimate": 0.5227272727272727,
           "ci_lower": 0.4521072796934866,
-          "ci_upper": 0.5923181818181817
+          "ci_upper": 0.5923181818181817,
+          "n_valid_resamples": 2000
         },
         "specificity": {
           "estimate": 0.7112860892388452,
           "ci_lower": 0.6610058857370448,
-          "ci_upper": 0.7591647275547798
+          "ci_upper": 0.7591647275547798,
+          "n_valid_resamples": 2000
         },
         "ppv": {
           "estimate": 0.5564516129032258,
           "ci_lower": 0.5042355225988701,
-          "ci_upper": 0.6136388021849395
+          "ci_upper": 0.6136388021849395,
+          "n_valid_resamples": 2000
         },
         "npv": {
           "estimate": 0.6826196473551638,
           "ci_lower": 0.6455696202531646,
-          "ci_upper": 0.721678568475269
+          "ci_upper": 0.721678568475269,
+          "n_valid_resamples": 2000
         },
         "f1": {
           "estimate": 0.5390625,
           "ci_lower": 0.4828939152154305,
-          "ci_upper": 0.5949167283971091
+          "ci_upper": 0.5949167283971091,
+          "n_valid_resamples": 2000
         },
         "average_precision": {
           "estimate": 0.5603496156887587,
           "ci_lower": 0.5069941764196972,
-          "ci_upper": 0.6275378646807322
+          "ci_upper": 0.6275378646807322,
+          "n_valid_resamples": 2000
         },
         "brier_score": {
           "estimate": 0.23407644451232273,
           "ci_lower": 0.2213745917266872,
-          "ci_upper": 0.24643944133798426
+          "ci_upper": 0.24643944133798426,
+          "n_valid_resamples": 2000
         },
         "negative_log_likelihood": {
           "estimate": 0.6634779964076903,
           "ci_lower": 0.6331641684692267,
-          "ci_upper": 0.6934824013363718
+          "ci_upper": 0.6934824013363718,
+          "n_valid_resamples": 2000
         },
         "calibrated_brier_score": {
           "estimate": 0.2352119505623691,
           "ci_lower": 0.22105193640770088,
-          "ci_upper": 0.24879280333092388
+          "ci_upper": 0.24879280333092388,
+          "n_valid_resamples": 2000
         },
         "calibrated_negative_log_likelihood": {
           "estimate": 0.6687879644620693,
           "ci_lower": 0.6336008757375997,
-          "ci_upper": 0.7044058645894525
+          "ci_upper": 0.7044058645894525,
+          "n_valid_resamples": 2000
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.4015151515151515,
           "ci_lower": 0.33460076045627374,
-          "ci_upper": 0.4752851711026616
+          "ci_upper": 0.4752851711026616,
+          "n_valid_resamples": 2000
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.7979002624671916,
           "ci_lower": 0.7559039779118519,
-          "ci_upper": 0.8359385333994709
+          "ci_upper": 0.8359385333994709,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.31932773109243695,
+          "ci_lower": 0.22793571636575422,
+          "ci_upper": 0.4166868932038834,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.32653061224489793,
+          "ci_lower": 0.18421052631578946,
+          "ci_upper": 0.4791874999999999,
+          "n_valid_resamples": 2000
+        }
+      }
+    },
+    "vgg16_imagenet_448": {
+      "n_cases": 645,
+      "n_patients": 349,
+      "threshold": 0.4845938384532928,
+      "fixed_specificity_target": 0.8,
+      "fixed_specificity_threshold": 0.6004798018876017,
+      "metrics": {
+        "auc": {
+          "estimate": 0.7250308200111351,
+          "ci_lower": 0.6766832375933947,
+          "ci_upper": 0.7719828368500965,
+          "n_valid_resamples": 2000
+        },
+        "accuracy": {
+          "estimate": 0.6356589147286822,
+          "ci_lower": 0.5949710700921355,
+          "ci_upper": 0.6769254658385093,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity": {
+          "estimate": 0.7727272727272727,
+          "ci_lower": 0.7153846153846154,
+          "ci_upper": 0.828996282527881,
+          "n_valid_resamples": 2000
+        },
+        "specificity": {
+          "estimate": 0.5406824146981627,
+          "ci_lower": 0.4828473296333364,
+          "ci_upper": 0.5984584142918825,
+          "n_valid_resamples": 2000
+        },
+        "ppv": {
+          "estimate": 0.5382585751978892,
+          "ci_lower": 0.5013185794249794,
+          "ci_upper": 0.5785706498780371,
+          "n_valid_resamples": 2000
+        },
+        "npv": {
+          "estimate": 0.7744360902255639,
+          "ci_lower": 0.7246376811594203,
+          "ci_upper": 0.8231340592774212,
+          "n_valid_resamples": 2000
+        },
+        "f1": {
+          "estimate": 0.6345256609642301,
+          "ci_lower": 0.5942414560944912,
+          "ci_upper": 0.6747370973888742,
+          "n_valid_resamples": 2000
+        },
+        "average_precision": {
+          "estimate": 0.6086077578138676,
+          "ci_lower": 0.5506044947657441,
+          "ci_upper": 0.680599521837574,
+          "n_valid_resamples": 2000
+        },
+        "brier_score": {
+          "estimate": 0.21413808852362343,
+          "ci_lower": 0.19680208470099086,
+          "ci_upper": 0.23191555015915943,
+          "n_valid_resamples": 2000
+        },
+        "negative_log_likelihood": {
+          "estimate": 0.618299305312144,
+          "ci_lower": 0.5766136342246098,
+          "ci_upper": 0.6628951794549711,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_brier_score": {
+          "estimate": 0.21342172335889809,
+          "ci_lower": 0.19725244786113513,
+          "ci_upper": 0.22994840494478108,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_negative_log_likelihood": {
+          "estimate": 0.6154410553386761,
+          "ci_lower": 0.577410917569258,
+          "ci_upper": 0.655453699997512,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.48863636363636365,
+          "ci_lower": 0.4198319142689371,
+          "ci_upper": 0.5539033457249071,
+          "n_valid_resamples": 2000
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": 0.800524934383202,
+          "ci_lower": 0.7527465062111801,
+          "ci_upper": 0.8453865336658354,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.42857142857142855,
+          "ci_lower": 0.3333333333333333,
+          "ci_upper": 0.5304347826086957,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.4489795918367347,
+          "ci_lower": 0.2982362821948488,
+          "ci_upper": 0.6122448979591837,
+          "n_valid_resamples": 2000
+        }
+      }
+    },
+    "vgg16_imagenet_448_seed7": {
+      "n_cases": 645,
+      "n_patients": 349,
+      "threshold": 0.4669063687324524,
+      "fixed_specificity_target": 0.8,
+      "fixed_specificity_threshold": 0.6818869788614056,
+      "metrics": {
+        "auc": {
+          "estimate": 0.7295693151992364,
+          "ci_lower": 0.6826808737995979,
+          "ci_upper": 0.7737651581036042,
+          "n_valid_resamples": 2000
+        },
+        "accuracy": {
+          "estimate": 0.648062015503876,
+          "ci_lower": 0.6048951354326187,
+          "ci_upper": 0.6896578875916373,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity": {
+          "estimate": 0.7348484848484849,
+          "ci_lower": 0.6703014665942422,
+          "ci_upper": 0.7937772893337689,
+          "n_valid_resamples": 2000
+        },
+        "specificity": {
+          "estimate": 0.5879265091863517,
+          "ci_lower": 0.5305352927289896,
+          "ci_upper": 0.6438050289663875,
+          "n_valid_resamples": 2000
+        },
+        "ppv": {
+          "estimate": 0.5527065527065527,
+          "ci_lower": 0.5112343857887138,
+          "ci_upper": 0.5950938780049302,
+          "n_valid_resamples": 2000
+        },
+        "npv": {
+          "estimate": 0.7619047619047619,
+          "ci_lower": 0.7142733990147784,
+          "ci_upper": 0.8085123937925707,
+          "n_valid_resamples": 2000
+        },
+        "f1": {
+          "estimate": 0.6308943089430894,
+          "ci_lower": 0.5860900788796558,
+          "ci_upper": 0.6751592356687898,
+          "n_valid_resamples": 2000
+        },
+        "average_precision": {
+          "estimate": 0.643265279164367,
+          "ci_lower": 0.5828394391765508,
+          "ci_upper": 0.7094788668488785,
+          "n_valid_resamples": 2000
+        },
+        "brier_score": {
+          "estimate": 0.22345884819575718,
+          "ci_lower": 0.20131502228334403,
+          "ci_upper": 0.24741421729030574,
+          "n_valid_resamples": 2000
+        },
+        "negative_log_likelihood": {
+          "estimate": 0.66601166845281,
+          "ci_lower": 0.6010979381357925,
+          "ci_upper": 0.7333224106055315,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_brier_score": {
+          "estimate": 0.21428233095370677,
+          "ci_lower": 0.1977462355893653,
+          "ci_upper": 0.23149996663424247,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_negative_log_likelihood": {
+          "estimate": 0.6205000382446221,
+          "ci_lower": 0.5805139928017372,
+          "ci_upper": 0.6616017643973932,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.5113636363636364,
+          "ci_lower": 0.4440193300415217,
+          "ci_upper": 0.579164568295003,
+          "n_valid_resamples": 2000
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": 0.8083989501312336,
+          "ci_lower": 0.7640750670241286,
+          "ci_upper": 0.8493949674865705,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.4369747899159664,
+          "ci_lower": 0.33593333333333336,
+          "ci_upper": 0.5384615384615384,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.4897959183673469,
+          "ci_lower": 0.3499709302325581,
+          "ci_upper": 0.6341580675422138,
+          "n_valid_resamples": 2000
+        }
+      }
+    },
+    "vgg16_imagenet_448_seed2026": {
+      "n_cases": 645,
+      "n_patients": 349,
+      "threshold": 0.4993051886558532,
+      "fixed_specificity_target": 0.8,
+      "fixed_specificity_threshold": 0.6350061985626207,
+      "metrics": {
+        "auc": {
+          "estimate": 0.7226497256024814,
+          "ci_lower": 0.6741457385234206,
+          "ci_upper": 0.7695466604273706,
+          "n_valid_resamples": 2000
+        },
+        "accuracy": {
+          "estimate": 0.6465116279069767,
+          "ci_lower": 0.603448275862069,
+          "ci_upper": 0.688716865377937,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity": {
+          "estimate": 0.75,
+          "ci_lower": 0.688212927756654,
+          "ci_upper": 0.8082787535244361,
+          "n_valid_resamples": 2000
+        },
+        "specificity": {
+          "estimate": 0.5748031496062992,
+          "ci_lower": 0.5157813347802497,
+          "ci_upper": 0.6325208333333332,
+          "n_valid_resamples": 2000
+        },
+        "ppv": {
+          "estimate": 0.55,
+          "ci_lower": 0.5096939554192136,
+          "ci_upper": 0.5919617200328406,
+          "n_valid_resamples": 2000
+        },
+        "npv": {
+          "estimate": 0.7684210526315789,
+          "ci_lower": 0.7197231833910035,
+          "ci_upper": 0.8166104382929642,
+          "n_valid_resamples": 2000
+        },
+        "f1": {
+          "estimate": 0.6346153846153846,
+          "ci_lower": 0.5906212797619047,
+          "ci_upper": 0.6773688707088489,
+          "n_valid_resamples": 2000
+        },
+        "average_precision": {
+          "estimate": 0.6029539240651394,
+          "ci_lower": 0.5407550924065294,
+          "ci_upper": 0.6746067304192013,
+          "n_valid_resamples": 2000
+        },
+        "brier_score": {
+          "estimate": 0.21845628613784246,
+          "ci_lower": 0.19975529903504896,
+          "ci_upper": 0.2377890606730008,
+          "n_valid_resamples": 2000
+        },
+        "negative_log_likelihood": {
+          "estimate": 0.6319830792917693,
+          "ci_lower": 0.5843709680407595,
+          "ci_upper": 0.6816003498757586,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_brier_score": {
+          "estimate": 0.2148878155466634,
+          "ci_lower": 0.19986624473511094,
+          "ci_upper": 0.23012697329059864,
+          "n_valid_resamples": 2000
+        },
+        "calibrated_negative_log_likelihood": {
+          "estimate": 0.6181807477055649,
+          "ci_lower": 0.5827900807576012,
+          "ci_upper": 0.6535729431195119,
+          "n_valid_resamples": 2000
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.5075757575757576,
+          "ci_lower": 0.4431818181818182,
+          "ci_upper": 0.5740796519410977,
+          "n_valid_resamples": 2000
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": 0.7952755905511811,
+          "ci_lower": 0.7480089749645725,
+          "ci_upper": 0.8393782383419689,
+          "n_valid_resamples": 2000
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.46218487394957986,
+          "ci_lower": 0.3618996960486322,
+          "ci_upper": 0.5612434643278797,
+          "n_valid_resamples": 2000
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.5306122448979592,
+          "ci_lower": 0.38177272727272726,
+          "ci_upper": 0.6792641509433961,
+          "n_valid_resamples": 2000
         }
       }
     }
@@ -1375,6 +2106,24 @@
       "exists": true,
       "size_bytes": 265950,
       "sha256": "0960fefdd59e882fc89cda8cf1c97816b3b4676d306dbd01688e7fcf818bff91"
+    },
+    "vgg16_imagenet_448": {
+      "path": "results/predictions/vgg16_imagenet_448.test.csv",
+      "exists": true,
+      "size_bytes": 261970,
+      "sha256": "2bcdef55d34221acd1f3e4fb25ece5c08acb888ca1bfcb640e93898593c8fbaa"
+    },
+    "vgg16_imagenet_448_seed7": {
+      "path": "results/predictions/vgg16_imagenet_448_seed7.test.csv",
+      "exists": true,
+      "size_bytes": 264543,
+      "sha256": "76046ac99742058e9f51ee565aceccc3ba71f239bc1b8e802f7bd04bb237ffbc"
+    },
+    "vgg16_imagenet_448_seed2026": {
+      "path": "results/predictions/vgg16_imagenet_448_seed2026.test.csv",
+      "exists": true,
+      "size_bytes": 269084,
+      "sha256": "d9cdcc138a02a6f0388a85682759267c8d4f6e3cfd21ab2753aaddbbd4adba71"
     }
   },
   "paired_comparisons": {
@@ -1384,37 +2133,57 @@
           "estimate": 0.07530024656008916,
           "ci_lower": 0.033034465968032084,
           "ci_upper": 0.11775246913495141,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.001999000499750125
         },
         "sensitivity": {
           "estimate": 0.09090909090909094,
           "ci_lower": 0.0404337966938601,
           "ci_upper": 0.14663037310256774,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.001999000499750125
         },
         "specificity": {
           "estimate": 0.034120734908136496,
           "ci_lower": -0.018532394792612802,
           "ci_upper": 0.08695938969829067,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.23588205897051473
         },
         "average_precision": {
           "estimate": 0.06682749584673686,
           "ci_lower": 0.014639834903937905,
           "ci_upper": 0.12192172326828589,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.013993003498250875
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": 0.05681818181818177,
           "ci_lower": -0.018941194262011737,
           "ci_upper": 0.12977950566134114,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.14492753623188406
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.023622047244094446,
           "ci_lower": -0.021333333333333315,
           "ci_upper": 0.0681849230004967,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.3248375812093953
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.00840336134453784,
+          "ci_lower": -0.08850092777619187,
+          "ci_upper": 0.10606866537717599,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.9435282358820589
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.0,
+          "ci_lower": -0.13159136047666334,
+          "ci_upper": 0.13890503875968985,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 1.0
         }
       }
     },
@@ -1424,37 +2193,297 @@
           "estimate": 0.015419947506561615,
           "ci_lower": -0.003194006030351487,
           "ci_upper": 0.034494421777610744,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.10994502748625687
         },
         "sensitivity": {
           "estimate": -0.037878787878787956,
           "ci_lower": -0.07662835249042144,
           "ci_upper": 0.0,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.05297351324337831
         },
         "specificity": {
           "estimate": 0.12860892388451445,
           "ci_lower": 0.09185859580052493,
           "ci_upper": 0.16755355089131685,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.0009995002498750624
         },
         "average_precision": {
           "estimate": 0.01136972199213715,
           "ci_lower": -0.011586815045428644,
           "ci_upper": 0.0328453489065007,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.39480259870064965
         },
         "sensitivity_at_fixed_specificity": {
           "estimate": -0.011363636363636354,
           "ci_lower": -0.049627862595419875,
           "ci_upper": 0.02621722846441943,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.6126936531734133
         },
         "specificity_at_fixed_specificity": {
           "estimate": 0.015748031496062964,
           "ci_lower": -0.01243781094527363,
           "ci_upper": 0.04199751346871113,
+          "n_valid_resamples": 2000,
           "p_two_sided": 0.303848075962019
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.0,
+          "ci_lower": -0.0597046817196071,
+          "ci_upper": 0.0546875,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 1.0
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.040816326530612235,
+          "ci_lower": -0.03280054644808746,
+          "ci_upper": 0.125,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.43778110944527737
+        }
+      }
+    },
+    "vgg16_imagenet_448_minus_vgg16_imagenet": {
+      "first_minus_second": {
+        "auc": {
+          "estimate": 0.05371132585699523,
+          "ci_lower": 0.01895276102478515,
+          "ci_upper": 0.08671745488271802,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0069965017491254375
+        },
+        "sensitivity": {
+          "estimate": -0.04924242424242431,
+          "ci_lower": -0.09924614664677833,
+          "ci_upper": 0.0,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.06496751624187906
+        },
+        "specificity": {
+          "estimate": 0.14698162729658787,
+          "ci_lower": 0.09999360613810745,
+          "ci_upper": 0.19837116159609489,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "average_precision": {
+          "estimate": 0.044372951786602055,
+          "ci_lower": 0.005904448275435084,
+          "ci_upper": 0.08295844095270959,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.030984507746126936
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.08712121212121215,
+          "ci_lower": 0.019598416289592746,
+          "ci_upper": 0.15129151291512916,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.014992503748125937
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": 0.002624671916010457,
+          "ci_lower": -0.03485724402563901,
+          "ci_upper": 0.04030481133755696,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.9485257371314343
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.11764705882352938,
+          "ci_lower": 0.043103448275862044,
+          "ci_upper": 0.19999999999999996,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.14285714285714285,
+          "ci_lower": 0.020408163265306145,
+          "ci_upper": 0.2777777777777778,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.041979010494752625
+        }
+      }
+    },
+    "vgg16_imagenet_448_minus_resnet50_imagenet": {
+      "first_minus_second": {
+        "auc": {
+          "estimate": 0.07515608844349009,
+          "ci_lower": 0.03393816660512495,
+          "ci_upper": 0.1165414390315748,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "sensitivity": {
+          "estimate": 0.25,
+          "ci_lower": 0.17623982952344058,
+          "ci_upper": 0.32062125010563075,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "specificity": {
+          "estimate": -0.13648293963254599,
+          "ci_lower": -0.18575063613231546,
+          "ci_upper": -0.08671868711261374,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "average_precision": {
+          "estimate": 0.0809201553111446,
+          "ci_lower": 0.027792827276379377,
+          "ci_upper": 0.14049934642547143,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.00399800099950025
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.08712121212121215,
+          "ci_lower": 0.01127713947790828,
+          "ci_upper": 0.16603925353925345,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.03298350824587706
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": 0.0603674540682414,
+          "ci_lower": 0.013404825737265424,
+          "ci_upper": 0.10820220676421188,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.012993503248375811
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.07563025210084029,
+          "ci_lower": -0.039603960396039584,
+          "ci_upper": 0.1916826923076922,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.23588205897051473
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": -0.040816326530612235,
+          "ci_lower": -0.18181818181818182,
+          "ci_upper": 0.12123059866962296,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.6906546726636682
+        }
+      }
+    },
+    "vgg16_imagenet_448_seed7_minus_vgg16_imagenet_seed7": {
+      "first_minus_second": {
+        "auc": {
+          "estimate": 0.06165990614809502,
+          "ci_lower": 0.02452579947550287,
+          "ci_upper": 0.09737071248189495,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "sensitivity": {
+          "estimate": -0.015151515151515138,
+          "ci_lower": -0.08059065934065938,
+          "ci_upper": 0.044613826776896195,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.6736631684157921
+        },
+        "specificity": {
+          "estimate": 0.09186351706036744,
+          "ci_lower": 0.040496344682867384,
+          "ci_upper": 0.14536452738990333,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0029985007496251873
+        },
+        "average_precision": {
+          "estimate": 0.08349162137665112,
+          "ci_lower": 0.04014705864038,
+          "ci_upper": 0.12464390445556947,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.15530303030303028,
+          "ci_lower": 0.09629273504273507,
+          "ci_upper": 0.21756112503873132,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": -0.02099737532808399,
+          "ci_lower": -0.06091606188315444,
+          "ci_upper": 0.017860585751009943,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.30184907546226886
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.14285714285714285,
+          "ci_lower": 0.06592505854800935,
+          "ci_upper": 0.2232142857142857,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.24489795918367346,
+          "ci_lower": 0.12244897959183676,
+          "ci_upper": 0.37039682539682534,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        }
+      }
+    },
+    "vgg16_imagenet_448_seed2026_minus_vgg16_imagenet_seed2026": {
+      "first_minus_second": {
+        "auc": {
+          "estimate": 0.04821840451761705,
+          "ci_lower": 0.01083601134706794,
+          "ci_upper": 0.08526253540413148,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.013993003498250875
+        },
+        "sensitivity": {
+          "estimate": 0.2272727272727273,
+          "ci_lower": 0.16175904977375563,
+          "ci_upper": 0.29297535831766913,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "specificity": {
+          "estimate": -0.13648293963254599,
+          "ci_lower": -0.18948043184885294,
+          "ci_upper": -0.08051426552721895,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.0009995002498750624
+        },
+        "average_precision": {
+          "estimate": 0.04260430837638063,
+          "ci_lower": -0.008721529375766401,
+          "ci_upper": 0.09213601184732871,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.10794602698650675
+        },
+        "sensitivity_at_fixed_specificity": {
+          "estimate": 0.10606060606060608,
+          "ci_lower": 0.042137581399414384,
+          "ci_upper": 0.16923076923076924,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.001999000499750125
+        },
+        "specificity_at_fixed_specificity": {
+          "estimate": -0.002624671916010457,
+          "ci_lower": -0.05102177967961373,
+          "ci_upper": 0.044569524561518935,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.95952023988006
+        },
+        "calcification_sensitivity_at_fixed_specificity": {
+          "estimate": 0.1428571428571429,
+          "ci_lower": 0.06556044248967081,
+          "ci_upper": 0.22642698588869503,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.001999000499750125
+        },
+        "dense_breast_sensitivity_at_fixed_specificity": {
+          "estimate": 0.20408163265306128,
+          "ci_lower": 0.07315964523281597,
+          "ci_upper": 0.34547202797202786,
+          "n_valid_resamples": 2000,
+          "p_two_sided": 0.00399800099950025
         }
       }
     }
@@ -1505,6 +2534,30 @@
           "model": "vgg16_imagenet_seed2026",
           "seed": 2026,
           "auc": 0.6744313210848644
+        }
+      ]
+    },
+    "vgg16_imagenet_448": {
+      "n_seeds": 3,
+      "auc_mean": 0.7257499536042843,
+      "auc_standard_deviation": 0.003515401099515778,
+      "auc_min": 0.7226497256024814,
+      "auc_max": 0.7295693151992364,
+      "runs": [
+        {
+          "model": "vgg16_imagenet_448_seed7",
+          "seed": 7,
+          "auc": 0.7295693151992364
+        },
+        {
+          "model": "vgg16_imagenet_448",
+          "seed": 42,
+          "auc": 0.7250308200111351
+        },
+        {
+          "model": "vgg16_imagenet_448_seed2026",
+          "seed": 2026,
+          "auc": 0.7226497256024814
         }
       ]
     }
