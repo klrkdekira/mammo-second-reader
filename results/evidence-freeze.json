@@ -1,0 +1,186 @@
+{
+  "version": 2,
+  "frozen_at_utc": "2026-08-12T15:15:38.054993+00:00",
+  "metrics": {
+    "path": "results/metrics.json",
+    "size_bytes": 392490,
+    "sha256": "7138868a7ec2c1d616ee0430947c1a957bdf7758a11f52f190f31795d9e00f31"
+  },
+  "git_commit": "23ec46ce9fab8f5fa80223c3fddab8e8b62cc16a",
+  "source": "cuda_sync",
+  "preprocessing_fingerprint": "8c5a437036dca1077117a09e50f5c4088ff32d74edc9994983af763bf7a12c5e",
+  "evaluation_fingerprint": "dce13c21b8a92d9484769f94322fb2083850af374991bac2b8539e8f8266a95c",
+  "models": [
+    "ensemble",
+    "baseline",
+    "regularised_base",
+    "regularised_heavy_aug",
+    "regularised_label_smooth",
+    "regularised_mixup",
+    "regularised_combined",
+    "vgg16_scratch",
+    "vgg16_imagenet",
+    "vgg19_imagenet",
+    "resnet50_imagenet",
+    "efficientnet_b4_imagenet"
+  ],
+  "n_runs": 12,
+  "dirty_override": false,
+  "figures": [
+    {
+      "path": "results/figures/baseline_curves.png",
+      "size_bytes": 71885,
+      "sha256": "8a7586c5782f200d847ca4576ac7189abc72105b6954d2ceddf257e9231f83d4"
+    },
+    {
+      "path": "results/figures/confusion_baseline.png",
+      "size_bytes": 19426,
+      "sha256": "bb69315d78c85547b3cad4bad11bbfcb47f0394f154ef628a42c3d08021f00fa"
+    },
+    {
+      "path": "results/figures/confusion_efficientnet_b4_imagenet.png",
+      "size_bytes": 21652,
+      "sha256": "f09c717b6b6eff5be1f22694bc96e50c0935eed92ae8585a03b9edec8f07c679"
+    },
+    {
+      "path": "results/figures/confusion_ensemble.png",
+      "size_bytes": 19669,
+      "sha256": "542bc77a7557e1ae87a81204204f0f54f23546f23765f8bb71140e9436fc4e09"
+    },
+    {
+      "path": "results/figures/confusion_regularised_base.png",
+      "size_bytes": 20357,
+      "sha256": "19deba49209ef027f2abcd5db260b2fa7b1fa26acfa3add91230ef6d67c13452"
+    },
+    {
+      "path": "results/figures/confusion_regularised_combined.png",
+      "size_bytes": 21643,
+      "sha256": "8f467e56c6f52e5d3aad4f9d2c4062b4cf19dd10153b3448be140f1266617023"
+    },
+    {
+      "path": "results/figures/confusion_regularised_heavy_aug.png",
+      "size_bytes": 21658,
+      "sha256": "d5efda21e6d8a60972c0a7c772fcb8b010fa1d6564796ba451e2159d636a50d4"
+    },
+    {
+      "path": "results/figures/confusion_regularised_label_smooth.png",
+      "size_bytes": 21908,
+      "sha256": "c34d87cd7c3c53a0f74858df57b43c3cc0cb76b3cf04a3de1a51668dee118185"
+    },
+    {
+      "path": "results/figures/confusion_regularised_mixup.png",
+      "size_bytes": 21446,
+      "sha256": "fa36aab0f4bcf2935eee3967d2a73ef7090080afdab2ea89053546b784edafbc"
+    },
+    {
+      "path": "results/figures/confusion_resnet50_imagenet.png",
+      "size_bytes": 21871,
+      "sha256": "39b13398394c276fb1cc3c951b3da14075e2b83f14a1bf160790a4e247f8d3b6"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_imagenet.png",
+      "size_bytes": 21503,
+      "sha256": "c2bab64aff198f4b34445764f05cc4f6e097d23ecc3976383c6974f910b14a62"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_scratch.png",
+      "size_bytes": 20882,
+      "sha256": "e214891944932754b264b072e5bc99b8022bfb3ede7f40763194aa4a16fc8800"
+    },
+    {
+      "path": "results/figures/confusion_vgg19_imagenet.png",
+      "size_bytes": 21353,
+      "sha256": "1f61cd856031544aef5ddb334ef8bc44db17b6a66435671481c2d0022ed92ebf"
+    },
+    {
+      "path": "results/figures/decision_curve.png",
+      "size_bytes": 98435,
+      "sha256": "cc9a240e7c03f18e3c0ff4bb3bc01a5ba304db545745eb328c14d5d54ce830c0"
+    },
+    {
+      "path": "results/figures/density_strata.png",
+      "size_bytes": 127303,
+      "sha256": "6d5ec529a811c5859c6f9ff2b5ec03ff0dab816a6b1af1522728aa67762b428e"
+    },
+    {
+      "path": "results/figures/gradcam_roi.png",
+      "size_bytes": 122820,
+      "sha256": "16d544a3c474d022809224b24a5d7fdd7c38a285b6cf2153302470a2e46f0122"
+    },
+    {
+      "path": "results/figures/lesion_strata.png",
+      "size_bytes": 117241,
+      "sha256": "042737a821beea8d634d37532def963fe8fa746938cb8f23196304bd346e7045"
+    },
+    {
+      "path": "results/figures/reliability_baseline.png",
+      "size_bytes": 41213,
+      "sha256": "21069948e84f24b3daeb9f07057a27980a310f2afa25f6e5ccbefcc3ea48dae4"
+    },
+    {
+      "path": "results/figures/reliability_efficientnet_b4_imagenet.png",
+      "size_bytes": 54087,
+      "sha256": "5493e7c4354f9f70d3ae99fd634b628f303b7d3598e0efd7af399fdb2bcc6bb4"
+    },
+    {
+      "path": "results/figures/reliability_regularised_base.png",
+      "size_bytes": 52770,
+      "sha256": "d6800888d7468d7e9540666777395442de40874b7f1c3dda3fbd834210dbcb09"
+    },
+    {
+      "path": "results/figures/reliability_regularised_combined.png",
+      "size_bytes": 50519,
+      "sha256": "3389ebcb1b99dd27dc1a6306edb169372babefeb25feb7fc93549a72ccef9ae2"
+    },
+    {
+      "path": "results/figures/reliability_regularised_heavy_aug.png",
+      "size_bytes": 51116,
+      "sha256": "2109440251edf59f235cad957955da44ccda3a84550c56a882db2a68fce5b1ce"
+    },
+    {
+      "path": "results/figures/reliability_regularised_label_smooth.png",
+      "size_bytes": 54605,
+      "sha256": "b8745c90c3f0f05e7d5ba0e686897919fb6b332ff88caa7cfd257c411fa276e1"
+    },
+    {
+      "path": "results/figures/reliability_regularised_mixup.png",
+      "size_bytes": 56452,
+      "sha256": "5fbcbd5d79ed77adaa843d567468cd142ad76da694cfe7fc8dac5c47d1d8328a"
+    },
+    {
+      "path": "results/figures/reliability_resnet50_imagenet.png",
+      "size_bytes": 56275,
+      "sha256": "7a5965be19c61857f1a94db8642c6ee5c31bc1095c2881ec9f94bd621f411d94"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_imagenet.png",
+      "size_bytes": 56177,
+      "sha256": "2a4e4a5c20ad3a26392607f411e5d994ae3d1fbb825f1ed6e56f8537c3d77267"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_scratch.png",
+      "size_bytes": 41906,
+      "sha256": "d6d2b699e7a734640e6f9ddc4f33013adf266aea9d2bb367689016cff338de2b"
+    },
+    {
+      "path": "results/figures/reliability_vgg19_imagenet.png",
+      "size_bytes": 57534,
+      "sha256": "9dd8e88367fb24b0ddbdc646d84176db0857fe93a7de062ca946fcec1ae56967"
+    },
+    {
+      "path": "results/figures/roc_baseline_vs_vgg.png",
+      "size_bytes": 65918,
+      "sha256": "64ef98ea8c21e3548b4ecb11568781eb71486b3c42a4718195781fe8d1f69348"
+    },
+    {
+      "path": "results/figures/roc_comparison.png",
+      "size_bytes": 133342,
+      "sha256": "238ccd5b619943c2ae45ba91f3e53e693a0abb5648cc62774737da96b8868b87"
+    },
+    {
+      "path": "results/figures/transfer_curves.png",
+      "size_bytes": 60598,
+      "sha256": "7c37b714a450ab126e2a254670f23845afae2ec04a096f30fd3ec7ea889ac498"
+    }
+  ]
+}
