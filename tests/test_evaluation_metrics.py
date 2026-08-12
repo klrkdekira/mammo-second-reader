@@ -6,7 +6,13 @@ import pytest
 import torch
 
 from src.evaluation.density_strata import metrics_by_density
-from src.evaluation.metrics import evaluate, youden_threshold
+from src.evaluation.metrics import (
+    evaluate,
+    precision_recall_points,
+    probability_metrics,
+    threshold_at_specificity,
+    youden_threshold,
+)
 from src.training.loss import SmoothedBCEWithLogitsLoss, make_criterion
 
 
@@ -38,6 +44,36 @@ def test_youden_threshold():
     y_prob = np.array([0.1, 0.2, 0.3, 0.7, 0.8, 0.9])
     thresh = youden_threshold(y_true, y_prob)
     assert 0.3 <= thresh <= 0.7
+
+
+def test_threshold_at_specificity_uses_requested_operating_point():
+    labels = np.array([0, 0, 0, 0, 1, 1, 1, 1])
+    probabilities = np.array([0.1, 0.2, 0.4, 0.8, 0.3, 0.5, 0.7, 0.9])
+
+    threshold = threshold_at_specificity(labels, probabilities, 0.75)
+    panel = evaluate(labels, probabilities, threshold=threshold)
+
+    assert panel.specificity >= 0.75
+    assert panel.sensitivity == pytest.approx(0.75)
+
+
+def test_probability_metrics_and_precision_recall():
+    labels = np.array([0, 0, 1, 1])
+    probabilities = np.array([0.1, 0.2, 0.8, 0.9])
+
+    quality = probability_metrics(labels, probabilities)
+    curve = precision_recall_points(labels, probabilities)
+
+    assert quality.average_precision == pytest.approx(1.0)
+    assert quality.brier_score < 0.05
+    assert quality.negative_log_likelihood > 0.0
+    assert curve["average_precision"] == pytest.approx(1.0)
+    assert len(curve["precision"]) == len(curve["recall"])
+
+
+def test_metrics_reject_invalid_probabilities():
+    with pytest.raises(ValueError, match="between 0 and 1"):
+        evaluate(np.array([0, 1]), np.array([0.2, 1.1]), threshold=0.5)
 
 
 def test_metrics_by_density():

@@ -229,6 +229,10 @@ models/*.json
 results/*
 !results/metrics.json
 !results/evidence-freeze.json
+!results/statistics.json
+!results/predictions/
+results/predictions/*
+!results/predictions/*.csv
 !results/figures/
 results/figures/*
 !results/figures/*.png
