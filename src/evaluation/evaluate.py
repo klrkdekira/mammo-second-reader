@@ -265,6 +265,7 @@ def main(
             "run_name": cfg.run_name,
             "seed": cfg.seed,
             "image_size": cfg.data.image_size,
+            "image_root": str(cfg.data.image_root),
             "threshold_source": "validation_sidecar",
         },
     )

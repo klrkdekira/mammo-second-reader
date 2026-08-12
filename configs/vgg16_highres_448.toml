@@ -1,0 +1,29 @@
+# Focused resolution experiment.
+#
+# Primary comparison: paired test AUC against vgg16_imagenet at 224 pixels.
+# Secondary safeguards: calcification and BI-RADS 4 sensitivity at the
+# validation-derived 80% specificity threshold. ResNet-50 is retained as the
+# reference for the more balanced operating point.
+# Promotion gate: the paired AUC difference must be positive with a 95% CI
+# above zero, and neither secondary sensitivity point estimate may fall by
+# more than 0.05. Passing this first run triggers repeats at seeds 7 and 2026
+# before the model can replace the current headline model.
+seed = 42
+run_name = "vgg16_imagenet_448"
+output_dir = "models"
+
+[data]
+train_csv = "data/cbis-ddsm/training/train.csv"
+val_csv = "data/cbis-ddsm/training/val.csv"
+test_csv = "data/cbis-ddsm/training/test.csv"
+image_root = "data/cbis-ddsm/cache_448"
+image_size = 448
+
+[model]
+name = "vgg16"
+
+[train]
+epochs = 25
+batch_size = 8
+scheduler = "cosine"
+early_stop_patience = 10

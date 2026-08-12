@@ -17,7 +17,7 @@ import pandas as pd
 from tqdm import tqdm
 
 from src.config import setup_logging
-from src.data.dicom_to_png import _find_dicom
+from src.data.dicom_to_png import _cache_has_shape, _find_dicom
 from src.data.preprocessing import breast_bbox, breast_mask, load_dicom
 
 LOGGER = logging.getLogger(__name__)
@@ -57,7 +57,9 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
     skipped = 0
     for image_id, mask_ids in tqdm(sorted(pairs.items())):
         todo = [
-            rid for rid in sorted(mask_ids) if not (out_dir / f"{rid}.npy").exists()
+            rid
+            for rid in sorted(mask_ids)
+            if not _cache_has_shape(out_dir / f"{rid}.npy", image_size)
         ]
         if not todo:
             continue

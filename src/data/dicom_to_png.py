@@ -14,6 +14,16 @@ from src.data.preprocessing import preprocess
 LOGGER = logging.getLogger(__name__)
 
 
+def _cache_has_shape(path: Path, image_size: int) -> bool:
+    """Return true when an existing array has the requested square shape."""
+    if not path.is_file():
+        return False
+    try:
+        return np.load(path, mmap_mode="r").shape == (image_size, image_size)
+    except (OSError, ValueError):
+        return False
+
+
 def _find_dicom(raw_root: Path, image_id: str) -> Path | None:
     # image_id is already a relative path from raw_root (no extension)
     direct = raw_root / f"{image_id}.dcm"
@@ -47,8 +57,10 @@ def main(
     skipped = 0
     for image_id in tqdm(sorted(seen)):
         out_path = out_dir / f"{image_id}.npy"
-        if out_path.exists():
+        if _cache_has_shape(out_path, image_size):
             continue
+        if out_path.exists():
+            LOGGER.info("Rebuilding cache with the wrong shape: %s", out_path)
         dcm = _find_dicom(raw_root, image_id)
         if dcm is None:
             LOGGER.warning("No DICOM found for %s", image_id)

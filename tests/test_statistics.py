@@ -25,7 +25,7 @@ def _frame(name="model", seed=42, probabilities=None):
             "split": "test",
             "image_id": [f"i{index}" for index in range(8)],
             "patient_id": ["n1", "n1", "n2", "n2", "p1", "p1", "p2", "p2"],
-            "birads_density": [1, 1, 2, 2, 3, 3, 4, 4],
+            "birads_density": [1, 1, 2, 2, 4, 3, 4, 3],
             "lesion_type": ["mass"] * 4 + ["calcification"] * 4,
             "label": labels,
             "logit": np.log(probabilities / (1.0 - probabilities)),
@@ -63,6 +63,12 @@ def test_paired_comparison_uses_matched_cases():
     result = paired_comparison(better, worse, n_resamples=40, seed=5)
 
     assert result["first_minus_second"]["auc"]["estimate"] > 0
+    assert (
+        result["first_minus_second"]["calcification_sensitivity_at_fixed_specificity"][
+            "n_valid_resamples"
+        ]
+        == 40
+    )
     mismatched = worse.copy()
     mismatched.loc[0, "patient_id"] = "different"
     with pytest.raises(ValueError, match="patient_id"):
@@ -93,3 +99,28 @@ def test_generate_statistics_and_seed_summary(tmp_path):
     assert result["seed_repeats"]["model"]["n_seeds"] == 3
     assert json.loads(output.read_text())["method"]["unit"] == "patient"
     assert seed_repeat_summary({"model": _frame()}) == {}
+
+
+def test_focused_model_is_compared_with_both_references(tmp_path):
+    predictions = tmp_path / "predictions"
+    predictions.mkdir()
+    names = [
+        "vgg16_imagenet_448",
+        "vgg16_imagenet",
+        "resnet50_imagenet",
+    ]
+    for name in names:
+        _frame(name).to_csv(predictions / f"{name}.test.csv", index=False)
+    metrics = tmp_path / "metrics.json"
+    metrics.write_text(json.dumps({"runs": [{"model": name} for name in names]}))
+
+    result = generate_statistics(
+        metrics,
+        predictions,
+        tmp_path / "statistics.json",
+        n_resamples=20,
+        seed=2,
+    )
+
+    assert "vgg16_imagenet_448_minus_vgg16_imagenet" in result["paired_comparisons"]
+    assert "vgg16_imagenet_448_minus_resnet50_imagenet" in result["paired_comparisons"]

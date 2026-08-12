@@ -28,6 +28,17 @@ REQUIRED_PAIRED_COMPARISONS = {
     "vgg16_imagenet_minus_vgg16_scratch",
     "ensemble_minus_vgg16_imagenet",
 }
+FOCUSED_MODEL = "vgg16_imagenet_448"
+FOCUSED_COMPARISONS = {
+    f"{FOCUSED_MODEL}_minus_vgg16_imagenet",
+    f"{FOCUSED_MODEL}_minus_resnet50_imagenet",
+}
+FOCUSED_SEED_COMPARISONS = {
+    "vgg16_imagenet_448_seed7": "vgg16_imagenet_448_seed7_minus_vgg16_imagenet_seed7",
+    "vgg16_imagenet_448_seed2026": (
+        "vgg16_imagenet_448_seed2026_minus_vgg16_imagenet_seed2026"
+    ),
+}
 
 
 def _resolve_recorded_path(recorded: str, root: Path) -> Path:
@@ -118,9 +129,13 @@ def freeze_evidence(
         raise ValueError("Statistics and metrics contain different model sets.")
     if set(statistics["prediction_files"]) != set(model_names):
         raise ValueError("Statistics does not cover every model prediction file.")
-    missing_comparisons = REQUIRED_PAIRED_COMPARISONS - set(
-        statistics["paired_comparisons"]
-    )
+    required_comparisons = set(REQUIRED_PAIRED_COMPARISONS)
+    if FOCUSED_MODEL in model_names:
+        required_comparisons.update(FOCUSED_COMPARISONS)
+    for model, comparison in FOCUSED_SEED_COMPARISONS.items():
+        if model in model_names:
+            required_comparisons.add(comparison)
+    missing_comparisons = required_comparisons - set(statistics["paired_comparisons"])
     if missing_comparisons:
         raise ValueError(
             f"Statistics is missing paired comparisons: {sorted(missing_comparisons)}"
@@ -137,6 +152,16 @@ def freeze_evidence(
     ensemble = next((run for run in runs if run["model"] == "ensemble"), None)
     if ensemble is not None and "gradcam_policy" not in ensemble:
         raise ValueError("The ensemble must record its Grad-CAM audit policy.")
+    incomplete_fixed_strata = [
+        run["model"]
+        for run in runs
+        if not {"density_strata", "lesion_strata"}.issubset(run["fixed_specificity"])
+    ]
+    if incomplete_fixed_strata:
+        raise ValueError(
+            "Run records are missing fixed-specificity subgroup audits: "
+            f"{incomplete_fixed_strata}"
+        )
 
     commits = {run["provenance"]["git"]["commit"] for run in runs}
     sources = {run["provenance"]["git"].get("source", "git") for run in runs}

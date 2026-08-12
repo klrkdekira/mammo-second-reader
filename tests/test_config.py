@@ -102,3 +102,17 @@ def test_shipped_ensemble_config_loads():
     cfg = load_ensemble_config("configs/ensemble.toml")
     assert cfg.run_name == "ensemble"
     assert len(cfg.members) == 4
+
+
+def test_focused_highres_config_is_controlled():
+    focused = load_config("configs/vgg16_highres_448.toml")
+    reference = load_config("configs/vgg16_transfer.toml")
+
+    assert focused.run_name == "vgg16_imagenet_448"
+    assert focused.data.image_size == 448
+    assert focused.train.batch_size == 8
+    assert focused.model == reference.model
+    assert focused.seed == reference.seed
+    assert focused.train.epochs == reference.train.epochs
+    assert focused.train.scheduler == reference.train.scheduler
+    assert focused.train.early_stop_patience == reference.train.early_stop_patience
