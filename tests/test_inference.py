@@ -4,6 +4,7 @@ and single-application normalisation."""
 import io
 
 import numpy as np
+import pydicom
 import pytest
 
 from src.data.preprocessing import normalise
@@ -57,3 +58,29 @@ def test_malformed_dicom_raises_value_error():
 def test_malformed_image_raises_value_error():
     with pytest.raises(ValueError, match="PNG/JPEG"):
         inference._preprocess_bytes(b"not an image", "scan.png")
+
+
+def test_dicom_upload_is_deidentified_before_decoding(monkeypatch):
+    # A synthetic dataset carrying PatientName. dcmread and dicom_to_array are
+    # patched so this exercises the wiring in _preprocess_bytes without needing
+    # a byte-valid encoded DICOM file or a realistic mammogram-shaped image.
+    ds = pydicom.Dataset()
+    ds.PatientName = "Test^Patient"
+    ds.PatientID = "12345"
+
+    captured = {}
+
+    def fake_dcmread(*_args, **_kwargs):
+        return ds
+
+    def fake_dicom_to_array(dataset):
+        captured["patient_name_present"] = "PatientName" in dataset
+        return np.zeros((8, 8), dtype=np.float32)
+
+    monkeypatch.setattr(pydicom, "dcmread", fake_dcmread)
+    monkeypatch.setattr("src.data.preprocessing.dicom_to_array", fake_dicom_to_array)
+    monkeypatch.setattr("src.data.preprocessing.preprocess_array", lambda arr: arr)
+
+    inference._preprocess_bytes(b"irrelevant bytes", "scan.dcm")
+
+    assert captured["patient_name_present"] is False

@@ -1,8 +1,12 @@
 PY ?= uv run python3
 
-.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate figures results clean-models clean pipeline
+# Figures are written to disk, never displayed. Without this matplotlib picks
+# TkAgg and dies on a headless host with "couldn't connect to display".
+export MPLBACKEND := Agg
 
-# Default target: clean everything and run the entire pipeline from scratch
+.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate evaluate-ensemble figures results clean-models clean pipeline
+
+# Default target
 all: clean sync pipeline
 
 sync:
@@ -11,15 +15,13 @@ sync:
 webapp:
 	$(PY) -m src.web.app
 
-# Build train/validation/test splits
+# Data preprocessing
 splits:
 	$(PY) -m src.data.splits
 
-# Preprocess DICOM images to PNG
 cache:
 	$(PY) -m src.data.dicom_to_png
 
-# Pre-crop ROI lesion masks
 cache-roi:
 	$(PY) -m src.data.cache_roi_masks
 
@@ -47,7 +49,7 @@ train-regularised-mixup:
 train-regularised-combined:
 	$(PY) -m src.training.train --config configs/regularised_combined.toml
 
-# All regularisation ablations
+# Regularisation ablations
 train-regularisation: train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined
 
 train-vgg16-scratch:
@@ -65,17 +67,17 @@ train-resnet50-transfer:
 train-efficientnet_b4-transfer:
 	$(PY) -m src.training.train --config configs/efficientnet_b4.toml
 
-# All transfer learning
+# Transfer learning
 train-transfer: train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer
 
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
-# Clean up evaluation results
+# Evaluation & figures
 clean-results:
 	rm -rf results/metrics.json
 	rm -rf results/figures/*.png
 
-evaluate:
+evaluate: evaluate-ensemble
 	$(PY) -m src.evaluation.evaluate --config configs/baseline.toml
 	$(PY) -m src.evaluation.evaluate --config configs/regularised_base.toml
 	$(PY) -m src.evaluation.evaluate --config configs/regularised_heavy_aug.toml
@@ -88,16 +90,19 @@ evaluate:
 	$(PY) -m src.evaluation.evaluate --config configs/resnet50_transfer.toml
 	$(PY) -m src.evaluation.evaluate --config configs/efficientnet_b4.toml
 
+# Ensemble model evaluation
+evaluate-ensemble:
+	$(PY) -m src.training.ensemble --config configs/ensemble.toml
+
 figures:
 	$(PY) -m src.reporting.make_figures
 
 results: clean-results evaluate figures
 
-# Clean up trained model checkpoints and history
+# Cleanup
 clean-models:
 	rm -f models/*.pt models/*.json
 
-# Perform a full clean of cached data, trained models, evaluation results, and python caches
 clean: clean-cache clean-models clean-results
 	rm -rf data/cbis-ddsm/training
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

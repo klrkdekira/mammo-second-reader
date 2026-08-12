@@ -1,10 +1,7 @@
 """DICOM to model-input tensor pipeline.
 
-The scans are digitised film: a flat, near-black air background plus three
-kinds of bright artefact — the film frame, the burned-in view marker, and
-scanner specks. The breast is found as the largest above-air component and
-bright pixels *outside* it are zeroed. Breast pixels are never masked out,
-so a segmentation error cannot carve cavities into faint peripheral tissue.
+Segment breast tissue, remove film/view artifacts, apply optional CLAHE,
+and crop/resize to model dimensions.
 """
 
 from pathlib import Path
@@ -18,17 +15,9 @@ import numpy as np
 
 
 def dicom_to_array(ds: "pydicom.Dataset | pydicom.FileDataset") -> np.ndarray:
-    """Normalise a read DICOM dataset to a float32 array in [0, 1].
+    """Normalise DICOM pixel values to float32 in [0, 1].
 
-    Handles `PhotometricInterpretation == "MONOCHROME1"`, where high stored
-    values are *dark*. CBIS-DDSM is a conversion of the film-based DDSM and
-    some series carry this convention; without the flip such an image reaches
-    the network inverted (breast dark, air bright), which also defeats the
-    air-threshold segmentation in `_not_air`. The flip is a no-op for the
-    usual MONOCHROME2 series.
-
-    Rescale slope/intercept is deliberately not applied: min-max normalisation
-    is invariant to a positive affine transform, so it would change nothing.
+    Inverts MONOCHROME1 images so high values represent bright tissue.
     """
     arr = ds.pixel_array.astype(np.float32)
     if getattr(ds, "PhotometricInterpretation", "") == "MONOCHROME1":
@@ -37,7 +26,7 @@ def dicom_to_array(ds: "pydicom.Dataset | pydicom.FileDataset") -> np.ndarray:
 
 
 def load_dicom(path: str | Path) -> np.ndarray:
-    """Read a DICOM as a float32 array scaled to [0, 1]."""
+    """Read DICOM file as float32 array in [0, 1]."""
     import pydicom
 
     return dicom_to_array(pydicom.dcmread(str(path)))
@@ -46,7 +35,7 @@ def load_dicom(path: str | Path) -> np.ndarray:
 def apply_clahe(
     arr: np.ndarray, clip_limit: float = 2.0, tile_grid_size: tuple[int, int] = (8, 8)
 ) -> np.ndarray:
-    """Contrast-limited adaptive histogram equalisation on a [0, 1] array."""
+    """Apply CLAHE to a float32 array in [0, 1]."""
     u8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     clahe = cv2.createCLAHE(clipLimit=clip_limit, tileGridSize=tile_grid_size)
     return cast(np.ndarray, clahe.apply(u8).astype(np.float32) / 255.0)
@@ -57,7 +46,7 @@ def _ellipse(k: int) -> np.ndarray:
 
 
 def _fill_holes(mask: np.ndarray) -> np.ndarray:
-    """Fill fully-enclosed holes, keeping the (concave) outline. Returns uint8."""
+    """Fill internal holes in a binary uint8 mask."""
     contours, _ = cv2.findContours(
         (mask > 0).astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
     )
@@ -72,13 +61,7 @@ def _not_air(
     blur_ksize: int = 5,
     open_ksize: int = 15,
 ) -> np.ndarray:
-    """Binary uint8 mask of everything brighter than film air.
-
-    The background is flat and near zero, so a low fixed threshold traces the
-    faint skin line; Otsu's bimodal split lands mid-tissue (~0.3 on these
-    scans) and cuts the breast outline. Opening breaks the thin bridges
-    between breast, film frame, and marker halos.
-    """
+    """Binary uint8 mask for non-air pixels."""
     u8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     mask = (cv2.medianBlur(u8, blur_ksize) > round(air_thresh * 255)).astype(np.uint8)
     return cv2.morphologyEx(mask, cv2.MORPH_OPEN, _ellipse(open_ksize))
@@ -93,21 +76,7 @@ def _film_border(
     glow_thresh: float = 0.03,
     grow_ksize: int = 9,
 ) -> np.ndarray:
-    """Binary uint8 mask of the film frame's white border and its glow.
-
-    Three rules, layered:
-    - anything above-air in the outer `band_frac` strip is film edge — the
-      frame line and its blurred glow live there, and tissue that far out
-      sits behind them and is unreadable anyway;
-    - thin saturated residue connected to the edge: the frame line where it
-      fuses with dense tissue past the strip (an opening keeps thick blobs
-      so only the line remains);
-    - saturated components that touch the edge but stay confined near it:
-      thick frame corners reaching past the strip.
-    Saturated tissue survives: it is thick and extends far inland, and
-    bright specks in the tissue are thin but never edge-touching. The whole
-    mask is dilated a little so any remaining glow goes with it.
-    """
+    """Binary uint8 mask of outer film border lines and glow."""
 
     def _edge_ids(labels: np.ndarray) -> np.ndarray:
         edge = np.concatenate(
@@ -121,9 +90,6 @@ def _film_border(
         ids = np.unique(edge)
         return ids[ids != 0]
 
-    # Same blur and threshold arithmetic as `_not_air` so that, within the
-    # band, border is a superset of not-air and the breast mask cannot keep
-    # a sliver the artefact pass then blacks out.
     band = max(1, round(max(arr.shape) * band_frac))
     u8 = (np.clip(arr, 0.0, 1.0) * 255).astype(np.uint8)
     border = (cv2.medianBlur(u8, 5) > round(glow_thresh * 255)).astype(np.uint8)
@@ -152,16 +118,7 @@ def segment_breast(
     edge_margin_frac: float = 0.01,
     close_ksize: int = 25,
 ) -> np.ndarray:
-    """Binary breast mask: largest above-air component, holes filled.
-
-    The film frame runs along the image edge and can touch the breast, so its
-    white line is subtracted and a thin edge margin is cleared before picking
-    the largest component. The mask is then grown back over that margin —
-    chest-wall tissue usually reaches the edge — but only onto above-air
-    pixels, so the frame stays out. The border is re-subtracted at the end
-    because closing regrows the mask into it, which would drag the crop box
-    onto zeroed pixels and leave a black stripe at the crop edge.
-    """
+    """Segment largest non-air component as the breast region mask."""
     border = _film_border(arr)
     notair = _not_air(arr, air_thresh) & (1 - border)
     margin = max(1, round(max(arr.shape) * edge_margin_frac))

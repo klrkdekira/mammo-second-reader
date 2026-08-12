@@ -45,13 +45,9 @@ def youden_threshold(y_true: np.ndarray, y_prob: np.ndarray) -> float:
 def evaluate(
     y_true: np.ndarray, y_prob: np.ndarray, threshold: float | None = None
 ) -> MetricPanel:
-    """Compute the full metric panel at the given (or Youden) threshold.
+    """Compute performance metrics at given or Youden's J threshold.
 
-    WARNING: `threshold=None` fits Youden's J on the *same* `y_true`/`y_prob`
-    passed here. That is only valid on validation data (as in `train.py` /
-    `finetune.py`, which select the operating point). For any test-set panel
-    pass an explicit validation-derived `threshold` — fitting on the test set
-    is threshold leakage and inflates the reported operating-point metrics.
+    Pass a validation-derived threshold for test set evaluation to prevent leakage.
     """
     y_true = np.asarray(y_true).ravel().astype(int)
     y_prob = np.asarray(y_prob).ravel().astype(float)

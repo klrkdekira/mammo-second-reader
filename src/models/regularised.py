@@ -4,7 +4,7 @@ Weight-decay regularisation lives in the optimiser (TrainConfig.weight_decay), n
 """
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 from src.models.baseline import BaselineCNN
 
