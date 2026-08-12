@@ -32,5 +32,7 @@ def test_build_audit_covers_probability_and_subgroup_results():
     assert "raw" in audit.record["probability_metrics"]
     assert "precision_recall" in audit.record
     assert audit.record["fixed_specificity"]["threshold_source"] == "validation"
+    assert len(audit.record["fixed_specificity"]["density_strata"]) == 4
+    assert len(audit.record["fixed_specificity"]["lesion_strata"]) == 2
     assert len(audit.record["density_strata"]) == 4
     assert len(audit.record["lesion_strata"]) == 2

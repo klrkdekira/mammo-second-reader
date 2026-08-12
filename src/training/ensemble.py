@@ -167,6 +167,7 @@ def main(config_path: Path) -> None:
             "run_name": cfg.run_name,
             "seed": cfg.seed,
             "image_size": cfg.image_size,
+            "image_root": str(cfg.image_root),
             "threshold_source": "validation_predictions",
         },
     )

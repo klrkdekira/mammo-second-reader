@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study evaluate-vgg16-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi cache-highres clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -24,6 +24,11 @@ cache:
 
 cache-roi:
 	$(PY) -m src.data.cache_roi_masks
+
+# A separate cache prevents 224-pixel arrays from being mistaken for 448-pixel data.
+cache-highres:
+	$(PY) -m src.data.dicom_to_png --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
+	$(PY) -m src.data.cache_roi_masks --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
 
 clean-cache:
 	find ./data/cbis-ddsm/ -type f -name "*.npy" -delete
@@ -58,6 +63,13 @@ train-vgg16-scratch:
 train-vgg16-transfer:
 	$(PY) -m src.training.train --config configs/vgg16_transfer.toml
 
+train-vgg16-highres: cache-highres
+	$(PY) -m src.training.train --config configs/vgg16_highres_448.toml
+
+train-vgg16-highres-seed-study: cache-highres
+	$(PY) -m src.training.train --config configs/vgg16_highres_448.toml --seed 7 --run-name vgg16_imagenet_448_seed7
+	$(PY) -m src.training.train --config configs/vgg16_highres_448.toml --seed 2026 --run-name vgg16_imagenet_448_seed2026
+
 train-vgg19-transfer:
 	$(PY) -m src.training.train --config configs/vgg19_transfer.toml
 
@@ -82,6 +94,13 @@ evaluate-vgg16-seed-study:
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_transfer.toml --seed 7 --run-name vgg16_imagenet_seed7
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_scratch.toml --seed 2026 --run-name vgg16_scratch_seed2026
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_transfer.toml --seed 2026 --run-name vgg16_imagenet_seed2026
+
+evaluate-vgg16-highres: cache-highres
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_highres_448.toml
+
+evaluate-vgg16-highres-seed-study: cache-highres
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_highres_448.toml --seed 7 --run-name vgg16_imagenet_448_seed7
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_highres_448.toml --seed 2026 --run-name vgg16_imagenet_448_seed2026
 
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
@@ -114,14 +133,36 @@ statistics:
 figures:
 	$(PY) -m src.reporting.make_figures
 
-# Recheck existing models, rebuild the figures, and freeze the results.
-evaluate-existing: evaluate
+# Recheck every existing checkpoint, including the four seed repeats.
+evaluate-existing:
+	$(MAKE) evaluate
+	$(MAKE) evaluate-vgg16-seed-study
 
 freeze-evidence:
 	$(PY) -m src.evaluation.freeze
 
 reproduce-existing:
 	$(MAKE) evaluate-existing
+	$(MAKE) statistics
+	$(MAKE) figures
+	$(MAKE) freeze-evidence
+
+# Build the 448-pixel cache, train once, then rebuild one coherent evidence set.
+reproduce-focused-highres:
+	$(MAKE) cache-highres
+	$(MAKE) train-vgg16-highres
+	$(MAKE) evaluate-existing
+	$(MAKE) evaluate-vgg16-highres
+	$(MAKE) statistics
+	$(MAKE) figures
+	$(MAKE) freeze-evidence
+
+# Run only if the seed-42 candidate passes the promotion gate in its config.
+reproduce-focused-highres-seeds:
+	$(MAKE) train-vgg16-highres-seed-study
+	$(MAKE) evaluate-existing
+	$(MAKE) evaluate-vgg16-highres
+	$(MAKE) evaluate-vgg16-highres-seed-study
 	$(MAKE) statistics
 	$(MAKE) figures
 	$(MAKE) freeze-evidence

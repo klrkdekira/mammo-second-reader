@@ -65,7 +65,7 @@ def _run(
         "calibration": {},
         "decision_curve": {},
         "density_strata": [],
-        "fixed_specificity": {},
+        "fixed_specificity": {"density_strata": [], "lesion_strata": []},
         "lesion_strata": [],
         "precision_recall": {},
         "probability_metrics": {},
@@ -171,4 +171,18 @@ def test_freeze_evidence_requires_case_level_predictions(tmp_path):
     metrics.write_text(json.dumps({"runs": [_run("model", evidence)]}) + "\n")
     _statistics(statistics, ["model"], other)
     with pytest.raises(ValueError, match="different test predictions"):
+        freeze_evidence(metrics, output, statistics_path=statistics)
+
+
+def test_focused_model_requires_both_pre_registered_comparisons(tmp_path):
+    metrics = tmp_path / "metrics.json"
+    output = tmp_path / "freeze.json"
+    statistics = tmp_path / "statistics.json"
+    evidence = tmp_path / "evidence.bin"
+    evidence.write_bytes(b"frozen")
+    model = "vgg16_imagenet_448"
+    metrics.write_text(json.dumps({"runs": [_run(model, evidence)]}) + "\n")
+    _statistics(statistics, [model], evidence)
+
+    with pytest.raises(ValueError, match="vgg16_imagenet_448_minus"):
         freeze_evidence(metrics, output, statistics_path=statistics)

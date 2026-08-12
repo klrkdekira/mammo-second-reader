@@ -524,6 +524,16 @@ def main(
         members=["baseline", "vgg16_scratch", "vgg16_imagenet"],
         title="ROC: baseline vs VGG-16 (scratch vs ImageNet)",
     )
+    plot_roc_subset(
+        metrics_path,
+        figures_dir / "roc_highres_comparison.png",
+        members=[
+            "vgg16_imagenet_448",
+            "vgg16_imagenet",
+            "resnet50_imagenet",
+        ],
+        title="ROC: focused 448-pixel experiment",
+    )
     plot_learning_curve(
         models_dir / "baseline.history.json",
         figures_dir / "baseline_curves.png",

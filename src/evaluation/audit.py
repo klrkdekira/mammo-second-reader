@@ -86,8 +86,23 @@ def build_audit(
     fixed_threshold = threshold_at_specificity(
         val_labels, val_probability, fixed_specificity
     )
+    fixed_density = metrics_by_density(
+        test_df, test_probability, fixed_threshold
+    ).to_dict(orient="records")
     raw_quality = probability_metrics(test_labels, test_probability)
     calibrated_quality = probability_metrics(test_labels, test_calibrated)
+    fixed_specificity_record: dict[str, object] = {
+        "target": fixed_specificity,
+        "threshold_source": "validation",
+        "threshold": fixed_threshold,
+        "validation": _panel_dict(
+            evaluate(val_labels, val_probability, threshold=fixed_threshold)
+        ),
+        "test": _panel_dict(
+            evaluate(test_labels, test_probability, threshold=fixed_threshold)
+        ),
+        "density_strata": fixed_density,
+    }
     record: dict[str, object] = {
         "density_strata": metrics_by_density(
             test_df, test_probability, operating_threshold
@@ -113,21 +128,15 @@ def build_audit(
             key: np.asarray(value).tolist()
             for key, value in decision_curve(test_labels, test_calibrated).items()
         },
-        "fixed_specificity": {
-            "target": fixed_specificity,
-            "threshold_source": "validation",
-            "threshold": fixed_threshold,
-            "validation": _panel_dict(
-                evaluate(val_labels, val_probability, threshold=fixed_threshold)
-            ),
-            "test": _panel_dict(
-                evaluate(test_labels, test_probability, threshold=fixed_threshold)
-            ),
-        },
+        "fixed_specificity": fixed_specificity_record,
     }
     if "lesion_type" in test_df.columns:
-        record["lesion_strata"] = metrics_by_lesion_type(
+        lesion_strata = metrics_by_lesion_type(
             test_df, test_probability, operating_threshold
+        ).to_dict(orient="records")
+        record["lesion_strata"] = lesion_strata
+        fixed_specificity_record["lesion_strata"] = metrics_by_lesion_type(
+            test_df, test_probability, fixed_threshold
         ).to_dict(orient="records")
 
     return AuditOutput(

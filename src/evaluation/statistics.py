@@ -18,9 +18,18 @@ from src.evaluation.provenance import describe_file
 from src.evaluation.results_io import write_json_atomic
 
 STATISTICS_VERSION = 1
+FOCUSED_MODEL = "vgg16_imagenet_448"
+FOCUSED_SEED_MODELS = (
+    f"{FOCUSED_MODEL}_seed7",
+    f"{FOCUSED_MODEL}_seed2026",
+)
 DEFAULT_COMPARISONS = (
     ("vgg16_imagenet", "vgg16_scratch"),
     ("ensemble", "vgg16_imagenet"),
+    (FOCUSED_MODEL, "vgg16_imagenet"),
+    (FOCUSED_MODEL, "resnet50_imagenet"),
+    (FOCUSED_SEED_MODELS[0], "vgg16_imagenet_seed7"),
+    (FOCUSED_SEED_MODELS[1], "vgg16_imagenet_seed2026"),
 )
 REQUIRED_COLUMNS = {
     "run_name",
@@ -123,6 +132,17 @@ def _metric_values(frame: pd.DataFrame, indices: np.ndarray) -> dict[str, float]
         probabilities,
         threshold=float(frame["fixed_specificity_threshold"].iloc[0]),
     )
+    fixed_threshold = float(frame["fixed_specificity_threshold"].iloc[0])
+    lesion_types = sample["lesion_type"].astype(str).str.strip().str.lower().to_numpy()
+    densities = sample["birads_density"].to_numpy()
+
+    def subgroup_sensitivity(mask: np.ndarray) -> float:
+        positive = mask & (labels == 1)
+        if not positive.any():
+            return float("nan")
+        predicted = probabilities >= fixed_threshold
+        return float(predicted[positive].mean())
+
     return {
         "auc": panel.auc,
         "accuracy": panel.accuracy,
@@ -140,15 +160,25 @@ def _metric_values(frame: pd.DataFrame, indices: np.ndarray) -> dict[str, float]
         ),
         "sensitivity_at_fixed_specificity": fixed_panel.sensitivity,
         "specificity_at_fixed_specificity": fixed_panel.specificity,
+        "calcification_sensitivity_at_fixed_specificity": subgroup_sensitivity(
+            lesion_types == "calcification"
+        ),
+        "dense_breast_sensitivity_at_fixed_specificity": subgroup_sensitivity(
+            densities == 4
+        ),
     }
 
 
-def _summary(estimate: float, samples: np.ndarray) -> dict[str, float]:
-    lower, upper = np.quantile(samples, [0.025, 0.975])
+def _summary(estimate: float, samples: np.ndarray) -> dict[str, float | int]:
+    valid = samples[np.isfinite(samples)]
+    if not np.isfinite(estimate) or valid.size == 0:
+        raise ValueError("A metric has no valid bootstrap samples.")
+    lower, upper = np.quantile(valid, [0.025, 0.975])
     return {
         "estimate": float(estimate),
         "ci_lower": float(lower),
         "ci_upper": float(upper),
+        "n_valid_resamples": int(valid.size),
     }
 
 
@@ -208,6 +238,8 @@ def paired_comparison(
         "average_precision",
         "sensitivity_at_fixed_specificity",
         "specificity_at_fixed_specificity",
+        "calcification_sensitivity_at_fixed_specificity",
+        "dense_breast_sensitivity_at_fixed_specificity",
     )
     differences: dict[str, list[float]] = {name: [] for name in names}
     for indices in patient_stratified_samples(first, n_resamples, seed):
@@ -219,10 +251,11 @@ def paired_comparison(
     metrics: dict[str, object] = {}
     for name in names:
         values = np.asarray(differences[name], dtype=float)
+        valid = values[np.isfinite(values)]
         result = _summary(first_estimate[name] - second_estimate[name], values)
-        n = len(values)
-        lower_tail = (np.count_nonzero(values <= 0.0) + 1) / (n + 1)
-        upper_tail = (np.count_nonzero(values >= 0.0) + 1) / (n + 1)
+        n = len(valid)
+        lower_tail = (np.count_nonzero(valid <= 0.0) + 1) / (n + 1)
+        upper_tail = (np.count_nonzero(valid >= 0.0) + 1) / (n + 1)
         result["p_two_sided"] = float(min(1.0, 2.0 * min(lower_tail, upper_tail)))
         metrics[name] = result
     return {"first_minus_second": metrics}
