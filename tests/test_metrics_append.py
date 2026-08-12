@@ -2,6 +2,8 @@
 
 import json
 
+import pytest
+
 from src.evaluation.evaluate import _append_record as _append_evaluate_record
 from src.training.ensemble import _append_record as _append_ensemble_record
 
@@ -31,3 +33,13 @@ def test_ensemble_append_record_upserts_by_model(tmp_path):
     runs = json.loads(path.read_text())["runs"]
     assert len(runs) == 1
     assert runs[0]["test"]["auc"] == 0.65
+
+
+def test_append_refuses_to_overwrite_corrupt_results(tmp_path):
+    path = tmp_path / "metrics.json"
+    path.write_text("not json")
+
+    with pytest.raises(ValueError, match="valid JSON"):
+        _append_evaluate_record({"model": "baseline"}, path=path)
+
+    assert path.read_text() == "not json"

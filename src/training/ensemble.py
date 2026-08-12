@@ -5,7 +5,6 @@ sigmoid probabilities over the test set, and appends a metrics record to
 results/metrics.json.
 """
 
-import json
 import logging
 from pathlib import Path
 
@@ -18,6 +17,8 @@ from src.config import get_device, load_ensemble_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.metrics import evaluate, youden_threshold
+from src.evaluation.provenance import build_run_provenance
+from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
 from src.models.ensemble import ensemble_predict
 
@@ -37,17 +38,7 @@ def _load_member(name: str, output_dir: Path, device: torch.device) -> torch.nn.
 
 
 def _append_record(record: dict, path: Path = METRICS_PATH) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data: dict = {"runs": []}
-    if path.exists():
-        try:
-            data = json.loads(path.read_text())
-        except json.JSONDecodeError:
-            pass
-    runs = {r["model"]: r for r in data.setdefault("runs", [])}
-    runs[record["model"]] = record
-    data["runs"] = list(runs.values())
-    path.write_text(json.dumps(data, indent=2) + "\n")
+    upsert_run_record(record, path)
 
 
 def main(config_path: Path) -> None:
@@ -115,6 +106,22 @@ def main(config_path: Path) -> None:
         "test": {**dataclasses.asdict(panel), "confusion": panel.confusion.tolist()},
         "roc": {"fpr": fpr.tolist(), "tpr": tpr.tolist()},
     }
+    manifests = [cfg.test_csv]
+    if cfg.val_csv is not None:
+        manifests.insert(0, cfg.val_csv)
+    record["provenance"] = build_run_provenance(
+        config_path=config_path,
+        checkpoint_paths=[cfg.output_dir / f"{name}.pt" for name in cfg.members],
+        manifest_paths=manifests,
+        extra={
+            "run_name": cfg.run_name,
+            "seed": cfg.seed,
+            "image_size": cfg.image_size,
+            "threshold_source": (
+                "validation_predictions" if cfg.val_csv else "test_predictions"
+            ),
+        },
+    )
     _append_record(record)
     LOGGER.info("Ensemble done. Test AUC = %.4f", panel.auc)
 

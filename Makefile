@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate evaluate-ensemble figures results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate evaluate-existing evaluate-ensemble figures freeze-evidence reproduce-existing results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -96,6 +96,14 @@ evaluate-ensemble:
 
 figures:
 	$(PY) -m src.reporting.make_figures
+
+# Recheck existing models, rebuild the figures, and freeze the results.
+evaluate-existing: evaluate
+
+freeze-evidence:
+	$(PY) -m src.evaluation.freeze
+
+reproduce-existing: evaluate-existing figures freeze-evidence
 
 results: clean-results evaluate figures
 

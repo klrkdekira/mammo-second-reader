@@ -227,6 +227,7 @@ models/*.json
 results/
 sync_cuda.sh
 sync_results.sh
+.cuda-commit
 
 # Scratch file for temporary notes
 SCRATCH.md
@@ -235,3 +236,4 @@ scratches
 # DICOM files
 *.dcm
 .DS_Store
+References
