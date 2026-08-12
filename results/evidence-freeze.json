@@ -1,15 +1,15 @@
 {
   "version": 3,
-  "frozen_at_utc": "2026-08-12T16:13:21.203017+00:00",
+  "frozen_at_utc": "2026-08-12T18:22:05.345551+00:00",
   "metrics": {
     "path": "results/metrics.json",
-    "size_bytes": 1531818,
-    "sha256": "16ddf4604e406a20c231060660c0275dfe08e49db03f0e409a03f82a2ba0e2ab"
+    "size_bytes": 1849604,
+    "sha256": "e2a022132ae64cea7bbdf89a28b0abb758bc41a88b01920d351b2491a1ad3d6b"
   },
   "statistics": {
     "path": "results/statistics.json",
-    "size_bytes": 49146,
-    "sha256": "cba59280c617b7e8fbd68986b5f77acd7331aceade27b3898337ab5b687deee2",
+    "size_bytes": 87106,
+    "sha256": "ceacfc92135565c1929f91794edfc6f2f32f2892a08b0896d22eed64437c18a0",
     "method": {
       "unit": "patient",
       "stratified_by": "patient_any_malignant",
@@ -23,10 +23,10 @@
       "seed": 42
     }
   },
-  "git_commit": "696261f31372b4a23ce89061da551831ea64e113",
+  "git_commit": "6424d2819f836c5c8bcc69bf26d61d9c154268b0",
   "source": "cuda_sync",
-  "preprocessing_fingerprint": "8c5a437036dca1077117a09e50f5c4088ff32d74edc9994983af763bf7a12c5e",
-  "evaluation_fingerprint": "04f0dc97b3a6d4b665dd905bce9a530668ef0bd9ba421c5bf23ae1f3df7d4632",
+  "preprocessing_fingerprint": "6e35b1bc213c649d4ae0c590f4405bce22bbbd23b8fc7064e177e85bde3b2173",
+  "evaluation_fingerprint": "1ddbce224f8426955bc77e3cb4f425c0f01627e6c7d61009719ad39fe071863b",
   "models": [
     "ensemble",
     "baseline",
@@ -43,15 +43,18 @@
     "vgg16_scratch_seed7",
     "vgg16_imagenet_seed7",
     "vgg16_scratch_seed2026",
-    "vgg16_imagenet_seed2026"
+    "vgg16_imagenet_seed2026",
+    "vgg16_imagenet_448",
+    "vgg16_imagenet_448_seed7",
+    "vgg16_imagenet_448_seed2026"
   ],
-  "n_runs": 16,
+  "n_runs": 19,
   "dirty_override": false,
   "figures": [
     {
       "path": "results/figures/auc_confidence_intervals.png",
-      "size_bytes": 69974,
-      "sha256": "c536a9db343aebdea3aed9ce0f7053c50fc55bd3ece8e45e8bd347d064699e1d"
+      "size_bytes": 83765,
+      "sha256": "f85e6d612c1c5b30307668dd32f39c86b27ed1a5a631c590e8aebbe1f59ee976"
     },
     {
       "path": "results/figures/baseline_curves.png",
@@ -109,6 +112,21 @@
       "sha256": "c2bab64aff198f4b34445764f05cc4f6e097d23ecc3976383c6974f910b14a62"
     },
     {
+      "path": "results/figures/confusion_vgg16_imagenet_448.png",
+      "size_bytes": 21796,
+      "sha256": "ee85eaf9db959f7bcb15e37f9ea153f6f89aacb603b73718f9219ce880cc4907"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_imagenet_448_seed2026.png",
+      "size_bytes": 22674,
+      "sha256": "6c450e6af3958884f1356747b7e415113b27eebff0a0bb26b8208250afaf49a6"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_imagenet_448_seed7.png",
+      "size_bytes": 21910,
+      "sha256": "9b684392d7e5eef204e1703b335e946e8ac49dd93d73366b9e4b069be7b2341d"
+    },
+    {
       "path": "results/figures/confusion_vgg16_imagenet_seed2026.png",
       "size_bytes": 22343,
       "sha256": "89e21b9a2e9b6f623710ebfb9b1166db9354a6fb641f69d4b35c27f4d602e32d"
@@ -140,33 +158,33 @@
     },
     {
       "path": "results/figures/decision_curve.png",
-      "size_bytes": 117548,
-      "sha256": "8230fdd231ed69d0a7e32c9d3424a697507edf4041348501992129707fabb5b5"
+      "size_bytes": 137111,
+      "sha256": "99a67e19fa8c3bba99b80783a3c3872a4e8e80ebc5794416afb5dee8e645c567"
     },
     {
       "path": "results/figures/density_strata.png",
-      "size_bytes": 172885,
-      "sha256": "d6831b1d4c72d54e918b6e76e198afd9359f31e6d9209abfcafc835d77dc08b2"
+      "size_bytes": 199778,
+      "sha256": "b93c68f8c8646c43b96853c964fb718f1ecec212aa3cd6ccc21c3660ca42c9db"
     },
     {
       "path": "results/figures/fixed_specificity.png",
-      "size_bytes": 69211,
-      "sha256": "3d1f95e08feaa419f368adce2059c652c616f3fe24e1339c3f60c5f291983817"
+      "size_bytes": 81382,
+      "sha256": "e19d5ef140740a2d59007527820f54b8db571eebdd356618a8690b6d7eec475f"
     },
     {
       "path": "results/figures/gradcam_roi.png",
-      "size_bytes": 155763,
-      "sha256": "bab5810a1fd096935d20ef63b1c58a018f40568d02110849c57e1f17ea28db3c"
+      "size_bytes": 182962,
+      "sha256": "29ee261d408528fb855cb4d251a63c3e79766f81eed1d77f65a4afdf91692d0d"
     },
     {
       "path": "results/figures/lesion_strata.png",
-      "size_bytes": 159172,
-      "sha256": "6089a953a47d50bc89c5ea641d00282212a06cb9546878f40ba698cfde78829d"
+      "size_bytes": 194286,
+      "sha256": "fd7c71664d41114bc012eb973c673eeff7df119a06b446a15e45c9d8d25bb143"
     },
     {
       "path": "results/figures/precision_recall.png",
-      "size_bytes": 161140,
-      "sha256": "421769a1263b044944aa8af365290bd0f6e358e618851c14fffc3e1d8a7b6255"
+      "size_bytes": 179918,
+      "sha256": "3c45ecdfc813d62bffce58186d9149f987fcea4e7309a0d72c1fff765fb0df94"
     },
     {
       "path": "results/figures/reliability_baseline.png",
@@ -219,6 +237,21 @@
       "sha256": "2a4e4a5c20ad3a26392607f411e5d994ae3d1fbb825f1ed6e56f8537c3d77267"
     },
     {
+      "path": "results/figures/reliability_vgg16_imagenet_448.png",
+      "size_bytes": 57305,
+      "sha256": "6101f4a77dbaf64ac500052f8e05ad7fd9b5488471786aaea668b05dd2b5e7ee"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_imagenet_448_seed2026.png",
+      "size_bytes": 54892,
+      "sha256": "b19a86a91545226ec738db49108773a949b3c76f4d708e1041fd5b6a764746c6"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_imagenet_448_seed7.png",
+      "size_bytes": 57420,
+      "sha256": "c7b0bbf04bc45102ffb79840fd499077010f5e5b7554819873e8905b9e4b470a"
+    },
+    {
       "path": "results/figures/reliability_vgg16_imagenet_seed2026.png",
       "size_bytes": 58277,
       "sha256": "30528a7de9586df2ec0296835bf2f50efb5943defdcaf83d3054a8bf6c2406fa"
@@ -255,8 +288,13 @@
     },
     {
       "path": "results/figures/roc_comparison.png",
-      "size_bytes": 153827,
-      "sha256": "724ab32840e7403312307a82a35e17d4f8aa02b404a516dd6b64137f3d8055de"
+      "size_bytes": 173538,
+      "sha256": "38c4a8975c492614c00f1c0431c61c83b89183971a3b8d45a6f3ce33815efdcc"
+    },
+    {
+      "path": "results/figures/roc_highres_comparison.png",
+      "size_bytes": 64976,
+      "sha256": "055077d61b70edbc4df257c7003edd9bbb5ae27fbd5adb63b366eb6bfa79307d"
     },
     {
       "path": "results/figures/transfer_curves.png",
