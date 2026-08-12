@@ -1,15 +1,32 @@
 {
-  "version": 2,
-  "frozen_at_utc": "2026-08-12T15:15:38.054993+00:00",
+  "version": 3,
+  "frozen_at_utc": "2026-08-12T16:13:21.203017+00:00",
   "metrics": {
     "path": "results/metrics.json",
-    "size_bytes": 392490,
-    "sha256": "7138868a7ec2c1d616ee0430947c1a957bdf7758a11f52f190f31795d9e00f31"
+    "size_bytes": 1531818,
+    "sha256": "16ddf4604e406a20c231060660c0275dfe08e49db03f0e409a03f82a2ba0e2ab"
   },
-  "git_commit": "23ec46ce9fab8f5fa80223c3fddab8e8b62cc16a",
+  "statistics": {
+    "path": "results/statistics.json",
+    "size_bytes": 49146,
+    "sha256": "cba59280c617b7e8fbd68986b5f77acd7331aceade27b3898337ab5b687deee2",
+    "method": {
+      "unit": "patient",
+      "stratified_by": "patient_any_malignant",
+      "n_resamples": 2000,
+      "confidence_level": 0.95,
+      "interval": "percentile",
+      "paired_resampling": "same_patient_samples",
+      "p_value": "two_sided_bootstrap_with_plus_one_correction",
+      "multiplicity_adjustment": "none",
+      "calibration_uncertainty": "conditional_on_saved_temperature",
+      "seed": 42
+    }
+  },
+  "git_commit": "696261f31372b4a23ce89061da551831ea64e113",
   "source": "cuda_sync",
   "preprocessing_fingerprint": "8c5a437036dca1077117a09e50f5c4088ff32d74edc9994983af763bf7a12c5e",
-  "evaluation_fingerprint": "dce13c21b8a92d9484769f94322fb2083850af374991bac2b8539e8f8266a95c",
+  "evaluation_fingerprint": "04f0dc97b3a6d4b665dd905bce9a530668ef0bd9ba421c5bf23ae1f3df7d4632",
   "models": [
     "ensemble",
     "baseline",
@@ -22,11 +39,20 @@
     "vgg16_imagenet",
     "vgg19_imagenet",
     "resnet50_imagenet",
-    "efficientnet_b4_imagenet"
+    "efficientnet_b4_imagenet",
+    "vgg16_scratch_seed7",
+    "vgg16_imagenet_seed7",
+    "vgg16_scratch_seed2026",
+    "vgg16_imagenet_seed2026"
   ],
-  "n_runs": 12,
+  "n_runs": 16,
   "dirty_override": false,
   "figures": [
+    {
+      "path": "results/figures/auc_confidence_intervals.png",
+      "size_bytes": 69974,
+      "sha256": "c536a9db343aebdea3aed9ce0f7053c50fc55bd3ece8e45e8bd347d064699e1d"
+    },
     {
       "path": "results/figures/baseline_curves.png",
       "size_bytes": 71885,
@@ -83,9 +109,29 @@
       "sha256": "c2bab64aff198f4b34445764f05cc4f6e097d23ecc3976383c6974f910b14a62"
     },
     {
+      "path": "results/figures/confusion_vgg16_imagenet_seed2026.png",
+      "size_bytes": 22343,
+      "sha256": "89e21b9a2e9b6f623710ebfb9b1166db9354a6fb641f69d4b35c27f4d602e32d"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_imagenet_seed7.png",
+      "size_bytes": 22018,
+      "sha256": "7b2314a4bf5ccc3f6c9e5ee4795cda8ed11780256ee8598d41cb4238cc570dbf"
+    },
+    {
       "path": "results/figures/confusion_vgg16_scratch.png",
       "size_bytes": 20882,
       "sha256": "e214891944932754b264b072e5bc99b8022bfb3ede7f40763194aa4a16fc8800"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_scratch_seed2026.png",
+      "size_bytes": 21134,
+      "sha256": "1570bab521adba08d3627e115a8636991405eaff7cea30c7d2f03e6017a4302a"
+    },
+    {
+      "path": "results/figures/confusion_vgg16_scratch_seed7.png",
+      "size_bytes": 21933,
+      "sha256": "1da942189d0203bd329082a5f79fbafeb53682f6f416e2d915035eee7f3b8fac"
     },
     {
       "path": "results/figures/confusion_vgg19_imagenet.png",
@@ -94,23 +140,33 @@
     },
     {
       "path": "results/figures/decision_curve.png",
-      "size_bytes": 98435,
-      "sha256": "cc9a240e7c03f18e3c0ff4bb3bc01a5ba304db545745eb328c14d5d54ce830c0"
+      "size_bytes": 117548,
+      "sha256": "8230fdd231ed69d0a7e32c9d3424a697507edf4041348501992129707fabb5b5"
     },
     {
       "path": "results/figures/density_strata.png",
-      "size_bytes": 127303,
-      "sha256": "6d5ec529a811c5859c6f9ff2b5ec03ff0dab816a6b1af1522728aa67762b428e"
+      "size_bytes": 172885,
+      "sha256": "d6831b1d4c72d54e918b6e76e198afd9359f31e6d9209abfcafc835d77dc08b2"
+    },
+    {
+      "path": "results/figures/fixed_specificity.png",
+      "size_bytes": 69211,
+      "sha256": "3d1f95e08feaa419f368adce2059c652c616f3fe24e1339c3f60c5f291983817"
     },
     {
       "path": "results/figures/gradcam_roi.png",
-      "size_bytes": 122820,
-      "sha256": "16d544a3c474d022809224b24a5d7fdd7c38a285b6cf2153302470a2e46f0122"
+      "size_bytes": 155763,
+      "sha256": "bab5810a1fd096935d20ef63b1c58a018f40568d02110849c57e1f17ea28db3c"
     },
     {
       "path": "results/figures/lesion_strata.png",
-      "size_bytes": 117241,
-      "sha256": "042737a821beea8d634d37532def963fe8fa746938cb8f23196304bd346e7045"
+      "size_bytes": 159172,
+      "sha256": "6089a953a47d50bc89c5ea641d00282212a06cb9546878f40ba698cfde78829d"
+    },
+    {
+      "path": "results/figures/precision_recall.png",
+      "size_bytes": 161140,
+      "sha256": "421769a1263b044944aa8af365290bd0f6e358e618851c14fffc3e1d8a7b6255"
     },
     {
       "path": "results/figures/reliability_baseline.png",
@@ -121,6 +177,11 @@
       "path": "results/figures/reliability_efficientnet_b4_imagenet.png",
       "size_bytes": 54087,
       "sha256": "5493e7c4354f9f70d3ae99fd634b628f303b7d3598e0efd7af399fdb2bcc6bb4"
+    },
+    {
+      "path": "results/figures/reliability_ensemble.png",
+      "size_bytes": 53715,
+      "sha256": "b0700548ea408833ac72dc5218a62e1599f0207a482aae0bc6464d58b3ad9471"
     },
     {
       "path": "results/figures/reliability_regularised_base.png",
@@ -158,9 +219,29 @@
       "sha256": "2a4e4a5c20ad3a26392607f411e5d994ae3d1fbb825f1ed6e56f8537c3d77267"
     },
     {
+      "path": "results/figures/reliability_vgg16_imagenet_seed2026.png",
+      "size_bytes": 58277,
+      "sha256": "30528a7de9586df2ec0296835bf2f50efb5943defdcaf83d3054a8bf6c2406fa"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_imagenet_seed7.png",
+      "size_bytes": 55312,
+      "sha256": "e85704f3ea85cde796cc70a7337c31cc1bfe3e41b23d71181150800938aac6e9"
+    },
+    {
       "path": "results/figures/reliability_vgg16_scratch.png",
       "size_bytes": 41906,
       "sha256": "d6d2b699e7a734640e6f9ddc4f33013adf266aea9d2bb367689016cff338de2b"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_scratch_seed2026.png",
+      "size_bytes": 48514,
+      "sha256": "3597490fdffe7fece65f63369e043c5a1fb7af7e263bd41c60570d4baa155f4e"
+    },
+    {
+      "path": "results/figures/reliability_vgg16_scratch_seed7.png",
+      "size_bytes": 52057,
+      "sha256": "ad22b450e7e6dd4565d57bcab5ab5bf35e9e552aecf3e3dfb4662da981c1dd0e"
     },
     {
       "path": "results/figures/reliability_vgg19_imagenet.png",
@@ -169,13 +250,13 @@
     },
     {
       "path": "results/figures/roc_baseline_vs_vgg.png",
-      "size_bytes": 65918,
-      "sha256": "64ef98ea8c21e3548b4ecb11568781eb71486b3c42a4718195781fe8d1f69348"
+      "size_bytes": 65766,
+      "sha256": "cd069b5b0395119141d2a5e35f5c1a631a034a9277a0e22549af010666ab2c2b"
     },
     {
       "path": "results/figures/roc_comparison.png",
-      "size_bytes": 133342,
-      "sha256": "238ccd5b619943c2ae45ba91f3e53e693a0abb5648cc62774737da96b8868b87"
+      "size_bytes": 153827,
+      "sha256": "724ab32840e7403312307a82a35e17d4f8aa02b404a516dd6b64137f3d8055de"
     },
     {
       "path": "results/figures/transfer_curves.png",
