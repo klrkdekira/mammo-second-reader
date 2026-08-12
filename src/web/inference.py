@@ -87,10 +87,13 @@ def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
     if filename.lower().endswith(".dcm"):
         import pydicom
 
+        from src.data.deidentify import strip_identifying_tags
         from src.data.preprocessing import dicom_to_array
 
         try:
-            arr = dicom_to_array(pydicom.dcmread(io.BytesIO(contents)))
+            dataset = pydicom.dcmread(io.BytesIO(contents))
+            strip_identifying_tags(dataset)
+            arr = dicom_to_array(dataset)
         except Exception as exc:
             raise ValueError(
                 f"Could not decode the file as a DICOM image: {exc}"

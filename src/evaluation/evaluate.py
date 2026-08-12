@@ -17,14 +17,17 @@ from src.config import Config, get_device, load_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.calibration import (
+    CALIBRATION_VERSION,
     expected_calibration_error,
-    fit_temperature,
+    fit_temperature_with_diagnostics,
     reliability_bins,
 )
 from src.evaluation.decision_curve import decision_curve
 from src.evaluation.density_strata import metrics_by_density
 from src.evaluation.lesion_strata import metrics_by_lesion_type
 from src.evaluation.metrics import evaluate
+from src.evaluation.provenance import build_run_provenance
+from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
 
 LOGGER = logging.getLogger(__name__)
@@ -128,19 +131,7 @@ def _gradcam_roi_panel(
 
 
 def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data: dict[str, list[dict[str, object]]] = {"runs": []}
-    if path.exists():
-        try:
-            raw_data = json.loads(path.read_text())
-            if isinstance(raw_data, dict) and "runs" in raw_data:
-                data = raw_data
-        except json.JSONDecodeError:
-            pass
-    runs = {r["model"]: r for r in data.setdefault("runs", [])}
-    runs[record["model"]] = record
-    data["runs"] = list(runs.values())
-    path.write_text(json.dumps(data, indent=2) + "\n")
+    upsert_run_record(record, path)
 
 
 def main(config_path: Path) -> None:
@@ -222,14 +213,17 @@ def main(config_path: Path) -> None:
             num_workers=cfg.data.num_workers,
         )
         val_true, val_logits = _predict_logits(model, val_loader, device)
-        temperature = fit_temperature(
+        temperature_fit = fit_temperature_with_diagnostics(
             torch.tensor(val_logits, dtype=torch.float32),
             torch.tensor(val_true, dtype=torch.float32),
         )
+        temperature = temperature_fit.temperature
         cal_prob = 1.0 / (1.0 + np.exp(-test_logits / temperature))
         centres, pred_mean, obs_mean = reliability_bins(cal_prob, y_true)
         record["calibration"] = {
+            "version": CALIBRATION_VERSION,
             "temperature": temperature,
+            "fit": temperature_fit.to_dict(),
             "ece_before": expected_calibration_error(y_prob, y_true),
             "ece_after": expected_calibration_error(cal_prob, y_true),
             "reliability": {
@@ -259,6 +253,19 @@ def main(config_path: Path) -> None:
         record["gradcam_roi"] = gradcam_roi
     else:
         LOGGER.warning("Grad-CAM-ROI (novelty A) skipped: %s", gradcam_skip_reason)
+
+    record["provenance"] = build_run_provenance(
+        config_path=config_path,
+        checkpoint_paths=[weights_path],
+        manifest_paths=[cfg.data.train_csv, cfg.data.val_csv, cfg.data.test_csv],
+        threshold_path=cfg.output_dir / f"{cfg.run_name}.threshold.json",
+        extra={
+            "run_name": cfg.run_name,
+            "seed": cfg.seed,
+            "image_size": cfg.data.image_size,
+            "threshold_source": "validation_sidecar",
+        },
+    )
 
     _append_record(record)
 

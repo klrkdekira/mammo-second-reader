@@ -5,5 +5,3 @@
 /results/*
 /data/*
 __pycache__
-pyproject.toml
-uv.lock
