@@ -224,7 +224,14 @@ data/inbreast
 # Model
 models/*.pt
 models/*.json
-results/
+
+# Keep generated evidence, but ignore other result files.
+results/*
+!results/metrics.json
+!results/evidence-freeze.json
+!results/figures/
+results/figures/*
+!results/figures/*.png
 sync_cuda.sh
 sync_results.sh
 .cuda-commit
