@@ -29,7 +29,7 @@ def _resolve_layer(model: torch.nn.Module, dotted: str) -> torch.nn.Module:
     curr: object = model
     for part in dotted.split("."):
         if part.isdigit():
-            curr = getattr(curr, "__getitem__")(int(part))
+            curr = curr.__getitem__(int(part))
         else:
             curr = getattr(curr, part)
     return cast(torch.nn.Module, curr)

@@ -1,6 +1,6 @@
 from typing import Any
 
-import torch.nn as nn
+from torch import nn
 
 from src.models.baseline import BaselineCNN
 from src.models.regularised import DeeperCNN

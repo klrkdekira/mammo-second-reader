@@ -20,6 +20,18 @@ Metrics:
 import numpy as np
 
 
+def is_degenerate(cam: np.ndarray) -> bool:
+    """True when a Grad-CAM heatmap carries no energy anywhere in the frame.
+
+    A rectifier that zeroes every location (e.g. an all-negative weighted sum)
+    leaves downstream metrics looking like real, if bad, localisation instead
+    of absent data: pointing_game falls back to argmax at (0, 0) and
+    centroid_distance's `cam.max() * 0.5` threshold selects the whole frame.
+    Callers should exclude these cases rather than score them.
+    """
+    return float(cam.sum()) <= 0.0
+
+
 def pointing_game(cam: np.ndarray, roi: np.ndarray) -> bool:
     y, x = np.unravel_index(int(cam.argmax()), cam.shape)
     return bool(roi[y, x])

@@ -62,7 +62,7 @@ def _gradcam_roi_panel(
     y_prob: np.ndarray,
     threshold: float,
     device: torch.device,
-) -> dict | None:
+) -> tuple[dict | None, str | None]:
     """Quantitative Grad-CAM-vs-ROI stats over the malignant test cases.
 
     For every malignant case, score the best single model's Grad-CAM heatmap
@@ -70,39 +70,61 @@ def _gradcam_roi_panel(
     distance; see gradcam_roi), then report them for all malignant cases and
     split by predicted-correct (TP) vs predicted-incorrect (FN). The expected
     pattern is high agreement on TP and low on FN; its absence flags a model
-    that is right for the wrong reasons. Returns None when no malignant case
-    has a usable ROI mask (so evaluation degrades gracefully).
+    that is right for the wrong reasons.
+
+    Cases with a zero-energy heatmap (see gradcam_roi.is_degenerate) are
+    excluded rather than scored, since every metric here reads a degenerate
+    all-zero cam as a plausible-looking bad localiser rather than absent data.
+    Returns (None, reason) when no malignant case yields a usable, non-degenerate
+    ROI/cam pair, so evaluation degrades gracefully with an explicit cause.
     """
     from src.evaluation.gradcam import TARGET_LAYERS, compute_gradcam
-    from src.evaluation.gradcam_roi import grad_cam_subset_stats
+    from src.evaluation.gradcam_roi import grad_cam_subset_stats, is_degenerate
 
     target_layer = TARGET_LAYERS.get(model_name.lower())
     if target_layer is None:
-        return None
+        return None, f"no Grad-CAM target layer registered for model '{model_name}'"
     mal_idx = np.where(test_ds.df["label"].values == 1)[0]
     cams: list[np.ndarray] = []
     rois: list[np.ndarray] = []
     correct: list[bool] = []
+    n_no_roi = 0
+    n_degenerate = 0
     for i in mal_idx:
         image, _ = test_ds[int(i)]
         cam = compute_gradcam(model, image.unsqueeze(0).to(device), target_layer)
         roi = test_ds.load_roi(int(i), cam.shape)
         if roi is None:
+            n_no_roi += 1
+            continue
+        if is_degenerate(cam):
+            n_degenerate += 1
             continue
         cams.append(cam)
         rois.append(roi)
         # malignant case predicted positive => true positive (correct)
         correct.append(bool(y_prob[i] >= threshold))
     if not cams:
-        return None
+        if n_degenerate:
+            return None, (
+                f"{n_degenerate} malignant case(s) had a zero-energy Grad-CAM "
+                "heatmap (degenerate rectifier output) and the remaining "
+                f"{n_no_roi} had no usable ROI mask"
+            )
+        return (
+            None,
+            f"no malignant test case has a usable ROI mask ({n_no_roi} checked)",
+        )
     correct_arr = np.array(correct, dtype=bool)
     n = len(cams)
     return {
         "n_malignant_scored": n,
+        "n_degenerate_excluded": n_degenerate,
+        "n_no_roi_excluded": n_no_roi,
         "all": grad_cam_subset_stats(cams, rois, np.ones(n, dtype=bool)),
         "tp": grad_cam_subset_stats(cams, rois, correct_arr),
         "fn": grad_cam_subset_stats(cams, rois, ~correct_arr),
-    }
+    }, None
 
 
 def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None:
@@ -115,7 +137,9 @@ def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None
                 data = raw_data
         except json.JSONDecodeError:
             pass
-    data.setdefault("runs", []).append(record)
+    runs = {r["model"]: r for r in data.setdefault("runs", [])}
+    runs[record["model"]] = record
+    data["runs"] = list(runs.values())
     path.write_text(json.dumps(data, indent=2) + "\n")
 
 
@@ -228,17 +252,13 @@ def main(config_path: Path) -> None:
 
     # Quantitative Grad-CAM vs ROI. Computed on malignant test cases when
     # roi_mask_id is present and masks are on disk, skipped otherwise.
-    gradcam_roi = _gradcam_roi_panel(
+    gradcam_roi, gradcam_skip_reason = _gradcam_roi_panel(
         model, test_ds, cfg.model.name, y_prob, threshold, device
     )
     if gradcam_roi is not None:
         record["gradcam_roi"] = gradcam_roi
     else:
-        LOGGER.warning(
-            "Grad-CAM-ROI (novelty A) skipped: no usable ROI masks "
-            "for the malignant test cases (need a roi_mask_id column "
-            "plus mask files; re-run make_splits and cache masks)."
-        )
+        LOGGER.warning("Grad-CAM-ROI (novelty A) skipped: %s", gradcam_skip_reason)
 
     _append_record(record)
 

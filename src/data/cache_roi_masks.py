@@ -76,6 +76,8 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
                 continue
             mask = pydicom.dcmread(str(mask_dcm)).pixel_array
             mask = (np.asarray(mask) > 0).astype(np.uint8)
+            if mask.ndim == 3:
+                mask = mask.any(axis=0).astype(np.uint8)
             if mask.shape != img.shape:
                 mask = cv2.resize(
                     mask,

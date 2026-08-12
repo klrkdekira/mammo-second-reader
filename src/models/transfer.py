@@ -3,7 +3,7 @@
 from typing import NamedTuple, cast
 
 import torch
-import torch.nn as nn
+from torch import nn
 
 
 class ArchSpec(NamedTuple):

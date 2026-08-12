@@ -1,9 +1,7 @@
 def build_app():
     import gradio as gr
 
-    import src.web.evaluation_page as evaluation_page
-    import src.web.finetune_page as finetune_page
-    import src.web.inference_page as inference_page
+    from src.web import evaluation_page, finetune_page, inference_page
     from src.web.constants import DISCLAIMER, TITLE
 
     with gr.Blocks() as app:
