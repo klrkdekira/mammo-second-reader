@@ -16,17 +16,14 @@ from torch.utils.data import DataLoader
 from src.config import Config, get_device, load_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
-from src.evaluation.calibration import (
-    CALIBRATION_VERSION,
-    expected_calibration_error,
-    fit_temperature_with_diagnostics,
-    reliability_bins,
-)
-from src.evaluation.decision_curve import decision_curve
-from src.evaluation.density_strata import metrics_by_density
-from src.evaluation.lesion_strata import metrics_by_lesion_type
+from src.evaluation.audit import build_audit, logits_to_probability
 from src.evaluation.metrics import evaluate
-from src.evaluation.provenance import build_run_provenance
+from src.evaluation.predictions import (
+    build_prediction_frame,
+    prediction_path,
+    write_predictions_atomic,
+)
+from src.evaluation.provenance import build_run_provenance, sha256_file
 from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
 
@@ -134,9 +131,16 @@ def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None
     upsert_run_record(record, path)
 
 
-def main(config_path: Path) -> None:
+def main(
+    config_path: Path, *, seed: int | None = None, run_name: str | None = None
+) -> None:
     setup_logging()
     cfg = load_config(config_path)
+    cfg = dataclasses.replace(
+        cfg,
+        seed=cfg.seed if seed is None else seed,
+        run_name=cfg.run_name if run_name is None else run_name,
+    )
     device = get_device()
 
     weights_path = cfg.output_dir / f"{cfg.run_name}.pt"
@@ -164,7 +168,9 @@ def main(config_path: Path) -> None:
         num_workers=cfg.data.num_workers,
     )
     y_true, test_logits = _predict_logits(model, test_loader, device)
-    y_prob = 1.0 / (1.0 + np.exp(-test_logits))
+    if not np.array_equal(y_true.astype(int), test_ds.df["label"].to_numpy(dtype=int)):
+        raise ValueError("Test predictions do not match manifest order.")
+    y_prob = logits_to_probability(test_logits)
     threshold = _load_threshold(cfg)
     panel = evaluate(y_true, y_prob, threshold=threshold)
     LOGGER.info("Test panel: %s", panel)
@@ -180,85 +186,81 @@ def main(config_path: Path) -> None:
     fpr, tpr, _ = roc_curve(y_true, y_prob)
     record["roc"] = {"fpr": fpr.tolist(), "tpr": tpr.tolist()}
 
-    # Density-stratified metrics. Strata with fewer than min_n cases are skipped.
-    record["density_strata"] = metrics_by_density(
-        test_ds.df, y_prob, threshold
-    ).to_dict(orient="records")
-
-    # Mass-vs-calcification stratified metrics, motivating (or rejecting)
-    # separate per-lesion-type training. Skipped on splits predating the
-    # lesion_type column.
-    if "lesion_type" in test_ds.df.columns:
-        record["lesion_strata"] = metrics_by_lesion_type(
-            test_ds.df, y_prob, threshold
-        ).to_dict(orient="records")
-    else:
-        LOGGER.warning(
-            "lesion_strata skipped: test CSV has no lesion_type column; "
-            "re-run make splits to regenerate it."
-        )
-
-    # Temperature scaling on validation logits. Calibrated probabilities feed the decision curve.
-    cal_prob = y_prob
-    if Path(cfg.data.val_csv).exists():
-        val_ds = MammogramDataset(
-            cfg.data.val_csv,
-            cfg.data.image_root,
-            transform=val_augment(cfg.data.image_size),
-        )
-        val_loader = DataLoader(
-            val_ds,
-            batch_size=cfg.train.batch_size,
-            shuffle=False,
-            num_workers=cfg.data.num_workers,
-        )
-        val_true, val_logits = _predict_logits(model, val_loader, device)
-        temperature_fit = fit_temperature_with_diagnostics(
-            torch.tensor(val_logits, dtype=torch.float32),
-            torch.tensor(val_true, dtype=torch.float32),
-        )
-        temperature = temperature_fit.temperature
-        cal_prob = 1.0 / (1.0 + np.exp(-test_logits / temperature))
-        centres, pred_mean, obs_mean = reliability_bins(cal_prob, y_true)
-        record["calibration"] = {
-            "version": CALIBRATION_VERSION,
-            "temperature": temperature,
-            "fit": temperature_fit.to_dict(),
-            "ece_before": expected_calibration_error(y_prob, y_true),
-            "ece_after": expected_calibration_error(cal_prob, y_true),
-            "reliability": {
-                "bin_centre": centres.tolist(),
-                "pred_mean": pred_mean.tolist(),
-                "obs_mean": obs_mean.tolist(),
-            },
-        }
-    else:
-        LOGGER.warning(
-            "val_csv %s not found; skipping calibration and using "
-            "uncalibrated probabilities for the decision curve",
-            cfg.data.val_csv,
-        )
-
-    # Decision-curve analysis on calibrated probabilities.
-    record["decision_curve"] = {
-        k: np.asarray(v).tolist() for k, v in decision_curve(y_true, cal_prob).items()
-    }
+    val_ds = MammogramDataset(
+        cfg.data.val_csv,
+        cfg.data.image_root,
+        transform=val_augment(cfg.data.image_size),
+    )
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=cfg.train.batch_size,
+        shuffle=False,
+        num_workers=cfg.data.num_workers,
+    )
+    val_true, val_logits = _predict_logits(model, val_loader, device)
+    if not np.array_equal(val_true.astype(int), val_ds.df["label"].to_numpy(dtype=int)):
+        raise ValueError("Validation predictions do not match manifest order.")
+    audit = build_audit(
+        val_ds.df,
+        val_logits,
+        test_ds.df,
+        test_logits,
+        operating_threshold=threshold,
+    )
+    record.update(audit.record)
 
     # Quantitative Grad-CAM vs ROI. Computed on malignant test cases when
     # roi_mask_id is present and masks are on disk, skipped otherwise.
     gradcam_roi, gradcam_skip_reason = _gradcam_roi_panel(
-        model, test_ds, cfg.model.name, y_prob, threshold, device
+        model, test_ds, cfg.model.name, audit.test_probability, threshold, device
     )
     if gradcam_roi is not None:
         record["gradcam_roi"] = gradcam_roi
     else:
         LOGGER.warning("Grad-CAM-ROI (novelty A) skipped: %s", gradcam_skip_reason)
 
+    checkpoint_hash = sha256_file(weights_path)
+    validation_predictions = prediction_path(cfg.run_name, "validation")
+    test_predictions = prediction_path(cfg.run_name, "test")
+    write_predictions_atomic(
+        build_prediction_frame(
+            val_ds.df,
+            run_name=cfg.run_name,
+            split="validation",
+            logits=val_logits,
+            probabilities=audit.validation_probability,
+            calibrated_probabilities=audit.validation_calibrated_probability,
+            threshold=threshold,
+            fixed_specificity_target=audit.fixed_specificity_target,
+            fixed_specificity_threshold=audit.fixed_specificity_threshold,
+            seed=cfg.seed,
+            checkpoint_sha256=checkpoint_hash,
+        ),
+        validation_predictions,
+    )
+    write_predictions_atomic(
+        build_prediction_frame(
+            test_ds.df,
+            run_name=cfg.run_name,
+            split="test",
+            logits=test_logits,
+            probabilities=audit.test_probability,
+            calibrated_probabilities=audit.test_calibrated_probability,
+            threshold=threshold,
+            fixed_specificity_target=audit.fixed_specificity_target,
+            fixed_specificity_threshold=audit.fixed_specificity_threshold,
+            seed=cfg.seed,
+            checkpoint_sha256=checkpoint_hash,
+        ),
+        test_predictions,
+    )
+
     record["provenance"] = build_run_provenance(
         config_path=config_path,
         checkpoint_paths=[weights_path],
         manifest_paths=[cfg.data.train_csv, cfg.data.val_csv, cfg.data.test_csv],
         threshold_path=cfg.output_dir / f"{cfg.run_name}.threshold.json",
+        prediction_paths=[validation_predictions, test_predictions],
         extra={
             "run_name": cfg.run_name,
             "seed": cfg.seed,
@@ -278,8 +280,10 @@ def main(config_path: Path) -> None:
     required=True,
     help="TOML experiment config.",
 )
-def cli(config_path: Path) -> None:
-    main(config_path)
+@click.option("--seed", type=int, help="Override the config seed.")
+@click.option("--run-name", help="Read and save this run under a different name.")
+def cli(config_path: Path, seed: int | None, run_name: str | None) -> None:
+    main(config_path, seed=seed, run_name=run_name)
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer clean-results evaluate evaluate-existing evaluate-ensemble figures freeze-evidence reproduce-existing results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study evaluate-vgg16-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -70,12 +70,26 @@ train-efficientnet_b4-transfer:
 # Transfer learning
 train-transfer: train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer
 
+# Seed 42 is the existing run. These two repeats complete a three-seed VGG-16 study.
+train-vgg16-seed-study:
+	$(PY) -m src.training.train --config configs/vgg16_scratch.toml --seed 7 --run-name vgg16_scratch_seed7
+	$(PY) -m src.training.train --config configs/vgg16_transfer.toml --seed 7 --run-name vgg16_imagenet_seed7
+	$(PY) -m src.training.train --config configs/vgg16_scratch.toml --seed 2026 --run-name vgg16_scratch_seed2026
+	$(PY) -m src.training.train --config configs/vgg16_transfer.toml --seed 2026 --run-name vgg16_imagenet_seed2026
+
+evaluate-vgg16-seed-study:
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_scratch.toml --seed 7 --run-name vgg16_scratch_seed7
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_transfer.toml --seed 7 --run-name vgg16_imagenet_seed7
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_scratch.toml --seed 2026 --run-name vgg16_scratch_seed2026
+	$(PY) -m src.evaluation.evaluate --config configs/vgg16_transfer.toml --seed 2026 --run-name vgg16_imagenet_seed2026
+
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
 # Evaluation & figures
 clean-results:
-	rm -rf results/metrics.json
-	rm -rf results/figures/*.png
+	rm -f results/metrics.json results/statistics.json results/evidence-freeze.json
+	rm -rf results/predictions
+	rm -f results/figures/*.png
 
 evaluate: evaluate-ensemble
 	$(PY) -m src.evaluation.evaluate --config configs/baseline.toml
@@ -94,6 +108,9 @@ evaluate: evaluate-ensemble
 evaluate-ensemble:
 	$(PY) -m src.training.ensemble --config configs/ensemble.toml
 
+statistics:
+	$(PY) -m src.evaluation.statistics
+
 figures:
 	$(PY) -m src.reporting.make_figures
 
@@ -103,9 +120,18 @@ evaluate-existing: evaluate
 freeze-evidence:
 	$(PY) -m src.evaluation.freeze
 
-reproduce-existing: evaluate-existing figures freeze-evidence
+reproduce-existing:
+	$(MAKE) evaluate-existing
+	$(MAKE) statistics
+	$(MAKE) figures
+	$(MAKE) freeze-evidence
 
-results: clean-results evaluate figures
+results:
+	$(MAKE) clean-results
+	$(MAKE) evaluate
+	$(MAKE) statistics
+	$(MAKE) figures
+	$(MAKE) freeze-evidence
 
 # Cleanup
 clean-models:

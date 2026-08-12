@@ -24,6 +24,12 @@ def _load_metrics(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+def _load_statistics(path: Path) -> dict:
+    if not path.exists():
+        return {"models": {}}
+    return json.loads(path.read_text())
+
+
 def plot_roc_comparison(metrics_path: Path, out_path: Path) -> None:
     """One ROC curve per model on a shared axis.
 
@@ -57,6 +63,103 @@ def plot_roc_comparison(metrics_path: Path, out_path: Path) -> None:
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
     ax.set_title("ROC comparison")
+    ax.legend()
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_precision_recall(metrics_path: Path, out_path: Path) -> None:
+    """Compare precision and recall for every evaluated model."""
+    runs = [
+        run
+        for run in _load_metrics(metrics_path)["runs"]
+        if run.get("precision_recall")
+    ]
+    if not runs:
+        LOGGER.warning("No precision-recall data; skipping")
+        return
+    fig, ax = plt.subplots(figsize=(7, 6))
+    for run in runs:
+        curve = run["precision_recall"]
+        ax.plot(
+            curve["recall"],
+            curve["precision"],
+            label=f"{run['model']} AP={curve['average_precision']:.3f}",
+        )
+    ax.set_xlabel("Recall")
+    ax.set_ylabel("Precision")
+    ax.set_title("Precision-recall comparison")
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.legend(fontsize=7)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_auc_intervals(statistics_path: Path, out_path: Path) -> None:
+    """Show patient-bootstrap AUC estimates and 95% intervals."""
+    models = _load_statistics(statistics_path).get("models", {})
+    if not models:
+        LOGGER.warning("No statistics data; skipping AUC intervals")
+        return
+    rows = []
+    for name, model in models.items():
+        auc = model["metrics"]["auc"]
+        rows.append((name, auc["estimate"], auc["ci_lower"], auc["ci_upper"]))
+    rows.sort(key=lambda row: row[1])
+    names = [row[0] for row in rows]
+    estimates = np.asarray([row[1] for row in rows])
+    lower = np.asarray([row[2] for row in rows])
+    upper = np.asarray([row[3] for row in rows])
+
+    fig, ax = plt.subplots(figsize=(7, max(5, len(rows) * 0.42)))
+    y = np.arange(len(rows))
+    ax.errorbar(
+        estimates,
+        y,
+        xerr=np.vstack((estimates - lower, upper - estimates)),
+        fmt="o",
+        capsize=3,
+    )
+    ax.axvline(0.5, linestyle="--", color="grey", linewidth=0.8)
+    ax.set_yticks(y)
+    ax.set_yticklabels(names)
+    ax.set_xlabel("Test AUC with patient-bootstrap 95% CI")
+    ax.set_title("AUC uncertainty")
+    ax.set_xlim(0, 1)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=120, bbox_inches="tight")
+    plt.close(fig)
+
+
+def plot_fixed_specificity(metrics_path: Path, out_path: Path) -> None:
+    """Compare test sensitivity at the shared validation specificity target."""
+    runs = [
+        run
+        for run in _load_metrics(metrics_path)["runs"]
+        if run.get("fixed_specificity")
+    ]
+    if not runs:
+        LOGGER.warning("No fixed-specificity data; skipping")
+        return
+    runs.sort(key=lambda run: run["fixed_specificity"]["test"]["sensitivity"])
+    names = [run["model"] for run in runs]
+    sensitivity = [run["fixed_specificity"]["test"]["sensitivity"] for run in runs]
+    specificity = [run["fixed_specificity"]["test"]["specificity"] for run in runs]
+    target = float(runs[0]["fixed_specificity"]["target"])
+    y = np.arange(len(runs))
+    width = 0.38
+    fig, ax = plt.subplots(figsize=(8, max(5, len(runs) * 0.42)))
+    ax.barh(y - width / 2, sensitivity, width, label="test sensitivity")
+    ax.barh(y + width / 2, specificity, width, label="test specificity")
+    ax.axvline(target, linestyle="--", color="grey", label=f"target {target:.0%}")
+    ax.set_yticks(y)
+    ax.set_yticklabels(names)
+    ax.set_xlabel("Rate")
+    ax.set_xlim(0, 1)
+    ax.set_title("Performance at a validation-set specificity target")
     ax.legend()
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -404,11 +507,17 @@ def plot_gradcam_roi(metrics_path: Path, out_dir: Path) -> None:
 
 
 def main(
-    metrics_path: Path, figures_dir: Path, models_dir: Path = Path("models")
+    metrics_path: Path,
+    figures_dir: Path,
+    models_dir: Path = Path("models"),
+    statistics_path: Path = Path("results/statistics.json"),
 ) -> None:
     setup_logging()
     figures_dir.mkdir(parents=True, exist_ok=True)
     plot_roc_comparison(metrics_path, figures_dir / "roc_comparison.png")
+    plot_precision_recall(metrics_path, figures_dir / "precision_recall.png")
+    plot_auc_intervals(statistics_path, figures_dir / "auc_confidence_intervals.png")
+    plot_fixed_specificity(metrics_path, figures_dir / "fixed_specificity.png")
     plot_roc_subset(
         metrics_path,
         figures_dir / "roc_baseline_vs_vgg.png",
@@ -443,6 +552,14 @@ def main(
     help="Path to results/metrics.json produced by evaluate.py.",
 )
 @click.option(
+    "--statistics",
+    "statistics_path",
+    type=click.Path(path_type=Path),
+    default=Path("results/statistics.json"),
+    show_default=True,
+    help="Path to patient-bootstrap statistics.",
+)
+@click.option(
     "--figures-dir",
     type=click.Path(path_type=Path),
     default=Path("results/figures"),
@@ -456,8 +573,13 @@ def main(
     show_default=True,
     help="Directory holding the per-run *.history.json files.",
 )
-def cli(metrics_path: Path, figures_dir: Path, models_dir: Path) -> None:
-    main(metrics_path, figures_dir, models_dir)
+def cli(
+    metrics_path: Path,
+    statistics_path: Path,
+    figures_dir: Path,
+    models_dir: Path,
+) -> None:
+    main(metrics_path, figures_dir, models_dir, statistics_path)
 
 
 if __name__ == "__main__":

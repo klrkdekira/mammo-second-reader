@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 
-PROVENANCE_VERSION = 2
+PROVENANCE_VERSION = 3
 
 
 def sha256_file(path: Path) -> str:
@@ -84,6 +84,7 @@ def build_run_provenance(
     checkpoint_paths: Iterable[Path],
     manifest_paths: Iterable[Path],
     threshold_path: Path | None = None,
+    prediction_paths: Iterable[Path] = (),
     extra: dict[str, object] | None = None,
     repo_root: Path | None = None,
 ) -> dict[str, object]:
@@ -98,13 +99,26 @@ def build_run_provenance(
     ]
     evaluation_paths = [
         root / "src/evaluation/calibration.py",
+        root / "src/evaluation/decision_curve.py",
+        root / "src/evaluation/density_strata.py",
+        root / "src/evaluation/gradcam.py",
+        root / "src/evaluation/gradcam_roi.py",
+        root / "src/evaluation/lesion_strata.py",
         root / "src/evaluation/metrics.py",
+        root / "src/evaluation/audit.py",
+        root / "src/evaluation/predictions.py",
+        root / "src/evaluation/statistics.py",
         root / "src/evaluation/evaluate.py",
         root / "src/evaluation/provenance.py",
         root / "src/evaluation/results_io.py",
         root / "src/evaluation/freeze.py",
         root / "src/training/ensemble.py",
+        root / "src/models/__init__.py",
+        root / "src/models/baseline.py",
         root / "src/models/ensemble.py",
+        root / "src/models/regularised.py",
+        root / "src/models/transfer.py",
+        root / "src/reporting/make_figures.py",
     ]
     preprocessing = [describe_file(path, root) for path in preprocessing_paths]
     evaluation = [describe_file(path, root) for path in evaluation_paths]
@@ -150,6 +164,9 @@ def build_run_provenance(
             if threshold_path is not None
             else None
         ),
+        "prediction_files": [
+            describe_file(Path(path), root) for path in prediction_paths
+        ],
         "code": {
             "preprocessing_fingerprint": _combined_fingerprint(preprocessing),
             "evaluation_fingerprint": _combined_fingerprint(evaluation),

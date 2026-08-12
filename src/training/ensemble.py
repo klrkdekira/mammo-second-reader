@@ -11,12 +11,20 @@ from pathlib import Path
 import click
 import numpy as np
 import torch
+from sklearn.metrics import roc_curve
 from torch.utils.data import DataLoader
 
 from src.config import get_device, load_ensemble_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
+from src.evaluation.audit import build_audit, probability_to_logits
 from src.evaluation.metrics import evaluate, youden_threshold
+from src.evaluation.predictions import (
+    build_prediction_frame,
+    checkpoint_set_hash,
+    prediction_path,
+    write_predictions_atomic,
+)
 from src.evaluation.provenance import build_run_provenance
 from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
@@ -63,37 +71,23 @@ def main(config_path: Path) -> None:
     y_true = np.asarray(test_ds.df["label"].values, dtype=np.int64)
     y_prob = ensemble_predict(models, test_loader, device)
 
-    # The operating threshold MUST come from validation, never the test set, to
-    # match the single-model discipline in evaluate.py. Deriving Youden's J on
-    # the test labels and then scoring those same labels is test-set leakage
-    # that inflates sensitivity/specificity/PPV/F1 (AUC, being threshold-free,
-    # is unaffected).
-    if cfg.val_csv:
-        val_ds = MammogramDataset(
-            cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
-        )
-        val_loader = DataLoader(
-            val_ds,
-            batch_size=cfg.batch_size,
-            shuffle=False,
-            num_workers=cfg.num_workers,
-        )
-        val_true = np.asarray(val_ds.df["label"].values, dtype=np.int64)
-        val_prob = ensemble_predict(models, val_loader, device)
-        threshold = float(youden_threshold(val_true, val_prob))
-    else:
-        LOGGER.warning(
-            "No val_csv in ensemble config, falling back to a "
-            "test-derived threshold, which leaks the test set into "
-            "the operating point. Add val_csv to fix."
-        )
-        threshold = float(youden_threshold(y_true, y_prob))
+    # Choose the threshold on validation data so test labels stay untouched.
+    if cfg.val_csv is None:
+        raise ValueError("Ensemble evaluation requires val_csv.")
+    val_ds = MammogramDataset(
+        cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
+    )
+    val_loader = DataLoader(
+        val_ds,
+        batch_size=cfg.batch_size,
+        shuffle=False,
+        num_workers=cfg.num_workers,
+    )
+    val_true = np.asarray(val_ds.df["label"].values, dtype=np.int64)
+    val_prob = ensemble_predict(models, val_loader, device)
+    threshold = float(youden_threshold(val_true, val_prob))
     panel = evaluate(y_true, y_prob, threshold=threshold)
     LOGGER.info("Ensemble test panel: %s", panel)
-
-    # Store ROC points so the ensemble appears in the model-comparison overlay
-    # alongside the single models (make_figures skips records without them).
-    from sklearn.metrics import roc_curve
 
     fpr, tpr, _ = roc_curve(y_true, y_prob)
 
@@ -106,20 +100,74 @@ def main(config_path: Path) -> None:
         "test": {**dataclasses.asdict(panel), "confusion": panel.confusion.tolist()},
         "roc": {"fpr": fpr.tolist(), "tpr": tpr.tolist()},
     }
+    val_logits = probability_to_logits(val_prob)
+    test_logits = probability_to_logits(y_prob)
+    audit = build_audit(
+        val_ds.df,
+        val_logits,
+        test_ds.df,
+        test_logits,
+        operating_threshold=threshold,
+    )
+    record.update(audit.record)
+    record["gradcam_policy"] = {
+        "scope": "member_level",
+        "reason": (
+            "The probability ensemble has no single convolutional feature map. "
+            "Its four members retain separate Grad-CAM audits."
+        ),
+        "members": cfg.members,
+    }
+
+    checkpoint_paths = [cfg.output_dir / f"{name}.pt" for name in cfg.members]
+    checkpoint_hash = checkpoint_set_hash(checkpoint_paths)
+    validation_predictions = prediction_path(cfg.run_name, "validation")
+    test_predictions = prediction_path(cfg.run_name, "test")
+    write_predictions_atomic(
+        build_prediction_frame(
+            val_ds.df,
+            run_name=cfg.run_name,
+            split="validation",
+            logits=val_logits,
+            probabilities=audit.validation_probability,
+            calibrated_probabilities=audit.validation_calibrated_probability,
+            threshold=threshold,
+            fixed_specificity_target=audit.fixed_specificity_target,
+            fixed_specificity_threshold=audit.fixed_specificity_threshold,
+            seed=cfg.seed,
+            checkpoint_sha256=checkpoint_hash,
+        ),
+        validation_predictions,
+    )
+    write_predictions_atomic(
+        build_prediction_frame(
+            test_ds.df,
+            run_name=cfg.run_name,
+            split="test",
+            logits=test_logits,
+            probabilities=audit.test_probability,
+            calibrated_probabilities=audit.test_calibrated_probability,
+            threshold=threshold,
+            fixed_specificity_target=audit.fixed_specificity_target,
+            fixed_specificity_threshold=audit.fixed_specificity_threshold,
+            seed=cfg.seed,
+            checkpoint_sha256=checkpoint_hash,
+        ),
+        test_predictions,
+    )
     manifests = [cfg.test_csv]
     if cfg.val_csv is not None:
         manifests.insert(0, cfg.val_csv)
     record["provenance"] = build_run_provenance(
         config_path=config_path,
-        checkpoint_paths=[cfg.output_dir / f"{name}.pt" for name in cfg.members],
+        checkpoint_paths=checkpoint_paths,
         manifest_paths=manifests,
+        prediction_paths=[validation_predictions, test_predictions],
         extra={
             "run_name": cfg.run_name,
             "seed": cfg.seed,
             "image_size": cfg.image_size,
-            "threshold_source": (
-                "validation_predictions" if cfg.val_csv else "test_predictions"
-            ),
+            "threshold_source": "validation_predictions",
         },
     )
     _append_record(record)

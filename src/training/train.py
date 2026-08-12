@@ -275,9 +275,16 @@ def _fit(
     return history
 
 
-def main(config_path: Path) -> None:
+def main(
+    config_path: Path, *, seed: int | None = None, run_name: str | None = None
+) -> None:
     setup_logging()
     cfg = load_config(config_path)
+    cfg = dataclasses.replace(
+        cfg,
+        seed=cfg.seed if seed is None else seed,
+        run_name=cfg.run_name if run_name is None else run_name,
+    )
     set_global_seed(cfg.seed)
 
     device = get_device()
@@ -390,8 +397,10 @@ def main(config_path: Path) -> None:
     required=True,
     help="TOML experiment config.",
 )
-def cli(config_path: Path) -> None:
-    main(config_path)
+@click.option("--seed", type=int, help="Override the config seed.")
+@click.option("--run-name", help="Save this run under a different name.")
+def cli(config_path: Path, seed: int | None, run_name: str | None) -> None:
+    main(config_path, seed=seed, run_name=run_name)
 
 
 if __name__ == "__main__":
