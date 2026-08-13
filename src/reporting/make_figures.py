@@ -12,10 +12,59 @@ import click
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from matplotlib.axes import Axes
+from matplotlib.figure import Figure
+from matplotlib.legend import Legend
 
 from src.config import setup_logging
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _legend_outside_right(ax: Axes, *, fontsize: float = 8) -> Legend:
+    """Place a dense legend beside, rather than over, a plotting area."""
+    return ax.legend(
+        loc="center left",
+        bbox_to_anchor=(1.02, 0.5),
+        borderaxespad=0.0,
+        fontsize=fontsize,
+        frameon=True,
+    )
+
+
+def _legend_below(
+    ax: Axes, *, columns: int, fontsize: float = 8, y_anchor: float = -0.13
+) -> Legend:
+    """Place a compact legend below a single plotting area."""
+    return ax.legend(
+        loc="upper center",
+        bbox_to_anchor=(0.5, y_anchor),
+        borderaxespad=0.0,
+        ncol=columns,
+        fontsize=fontsize,
+        frameon=True,
+    )
+
+
+def _shared_legend_below(
+    fig: Figure,
+    axes: np.ndarray,
+    *,
+    columns: int = 3,
+    fontsize: float = 7,
+) -> Legend:
+    """Give a multi-panel figure one legend in reserved space below its axes."""
+    handles, labels = axes.flat[0].get_legend_handles_labels()
+    return fig.legend(
+        handles,
+        labels,
+        loc="lower center",
+        bbox_to_anchor=(0.5, 0.015),
+        borderaxespad=0.0,
+        ncol=min(columns, max(len(labels), 1)),
+        fontsize=fontsize,
+        frameon=True,
+    )
 
 
 def _load_metrics(path: Path) -> dict:
@@ -63,7 +112,7 @@ def plot_roc_comparison(metrics_path: Path, out_path: Path) -> None:
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
     ax.set_title("ROC comparison")
-    ax.legend()
+    _legend_outside_right(ax)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
     plt.close(fig)
@@ -92,7 +141,7 @@ def plot_precision_recall(metrics_path: Path, out_path: Path) -> None:
     ax.set_title("Precision-recall comparison")
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
-    ax.legend(fontsize=7)
+    _legend_outside_right(ax, fontsize=7)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
     plt.close(fig)
@@ -160,7 +209,7 @@ def plot_fixed_specificity(metrics_path: Path, out_path: Path) -> None:
     ax.set_xlabel("Rate")
     ax.set_xlim(0, 1)
     ax.set_title("Performance at a validation-set specificity target")
-    ax.legend()
+    _legend_below(ax, columns=3, fontsize=8, y_anchor=-0.06)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
     plt.close(fig)
@@ -193,7 +242,7 @@ def plot_roc_subset(
     ax.set_xlabel("False positive rate")
     ax.set_ylabel("True positive rate")
     ax.set_title(title)
-    ax.legend()
+    _legend_outside_right(ax)
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
     plt.close(fig)
@@ -296,7 +345,7 @@ def plot_density_strata(metrics_path: Path, out_dir: Path) -> None:
     x = np.arange(len(densities))
     bar_width = 0.8 / max(len(runs), 1)
 
-    fig, axes = plt.subplots(1, 3, figsize=(13, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(13, 6))
     for ax, (key, label) in zip(axes, metrics_spec):
         for i, r in enumerate(runs):
             by_density = {s["density"]: s for s in r["density_strata"]}
@@ -310,9 +359,10 @@ def plot_density_strata(metrics_path: Path, out_dir: Path) -> None:
         ax.set_title(f"{label} by density")
         ax.set_ylim(0, 1)
         ax.axhline(0.5, linestyle="--", color="grey", linewidth=0.8)
-        ax.legend(fontsize=7)
 
-    fig.suptitle("Density-stratified metrics", y=1.02)
+    fig.suptitle("Density-stratified metrics", y=0.97)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.34, wspace=0.20)
+    _shared_legend_below(fig, axes)
     out_path = out_dir / "density_strata.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -343,7 +393,7 @@ def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
     x = np.arange(len(lesions))
     bar_width = 0.8 / max(len(runs), 1)
 
-    fig, axes = plt.subplots(1, 3, figsize=(13, 4))
+    fig, axes = plt.subplots(1, 3, figsize=(13, 6))
     for ax, (key, label) in zip(axes, metrics_spec):
         for i, r in enumerate(runs):
             by_lesion = {s["lesion_type"]: s for s in r["lesion_strata"]}
@@ -357,9 +407,10 @@ def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
         ax.set_title(f"{label} by lesion type")
         ax.set_ylim(0, 1)
         ax.axhline(0.5, linestyle="--", color="grey", linewidth=0.8)
-        ax.legend(fontsize=7)
 
-    fig.suptitle("Lesion-type-stratified metrics", y=1.02)
+    fig.suptitle("Lesion-type-stratified metrics", y=0.97)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.34, wspace=0.20)
+    _shared_legend_below(fig, axes)
     out_path = out_dir / "lesion_strata.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -392,12 +443,16 @@ def plot_reliability(metrics_path: Path, out_dir: Path) -> None:
         )
         ax.plot(pred_mean, obs_mean, marker="o", label="model (post-scaling)")
         for pm, om in zip(pred_mean, obs_mean):
+            near_right = pm >= 0.9
+            near_top = om >= 0.95
             ax.annotate(
                 f"{pm:.2f}",
                 (pm, om),
                 textcoords="offset points",
-                xytext=(5, 4),
+                xytext=(-5 if near_right else 5, -6 if near_top else 4),
                 fontsize=7,
+                ha="right" if near_right else "left",
+                va="top" if near_top else "bottom",
             )
         ax.set_xlim(0, 1)
         ax.set_ylim(0, 1)
@@ -408,7 +463,7 @@ def plot_reliability(metrics_path: Path, out_dir: Path) -> None:
             f"T={cal['temperature']:.3f}  "
             f"ECE before={cal['ece_before']:.3f}  after={cal['ece_after']:.3f}"
         )
-        ax.legend()
+        _legend_below(ax, columns=2, fontsize=8)
         out_path = out_dir / f"reliability_{r['model']}.png"
         out_path.parent.mkdir(parents=True, exist_ok=True)
         fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -432,7 +487,7 @@ def plot_decision_curves(metrics_path: Path, out_dir: Path) -> None:
     first_dc = runs[0]["decision_curve"]
     thresholds = first_dc["thresholds"]
 
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(7, 6))
     ax.plot(
         thresholds,
         first_dc["treat_all"],
@@ -454,7 +509,7 @@ def plot_decision_curves(metrics_path: Path, out_dir: Path) -> None:
     ax.set_ylabel("Net benefit")
     ax.set_title("Decision curve analysis")
     ax.set_xlim(min(thresholds), max(thresholds))
-    ax.legend()
+    _legend_outside_right(ax)
     out_path = out_dir / "decision_curve.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")
@@ -485,7 +540,7 @@ def plot_gradcam_roi(metrics_path: Path, out_dir: Path) -> None:
     x = np.arange(len(subsets))
     bar_width = 0.8 / max(len(runs), 1)
 
-    fig, axes = plt.subplots(1, len(metrics_spec), figsize=(13, 4))
+    fig, axes = plt.subplots(1, len(metrics_spec), figsize=(13, 6))
     for ax, (key, label) in zip(axes, metrics_spec):
         for i, r in enumerate(runs):
             gr = r["gradcam_roi"]
@@ -496,9 +551,10 @@ def plot_gradcam_roi(metrics_path: Path, out_dir: Path) -> None:
         ax.set_xticklabels(subset_labels)
         ax.set_ylabel(label)
         ax.set_title(label)
-        ax.legend(fontsize=7)
 
-    fig.suptitle("GradCAM vs lesion ROI alignment", y=1.02)
+    fig.suptitle("GradCAM vs lesion ROI alignment", y=0.97)
+    fig.subplots_adjust(left=0.06, right=0.99, top=0.86, bottom=0.34, wspace=0.22)
+    _shared_legend_below(fig, axes)
     out_path = out_dir / "gradcam_roi.png"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_path, dpi=120, bbox_inches="tight")

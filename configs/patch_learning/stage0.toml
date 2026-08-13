@@ -1,0 +1,18 @@
+# Registered Stage 0 patch-data contract. This reads only the official
+# CBIS-DDSM training metadata; test.csv is hashed and used as an exclusion set.
+
+[paths]
+metadata_dir = "data/cbis-ddsm"
+splits_dir = "data/cbis-ddsm/training"
+raw_root = "data/cbis-ddsm/cbis_ddsm"
+out_dir = "results/patch_learning/data"
+
+[extraction]
+seed = 42
+patch_size = 224
+lesion_patches_per_roi = 10
+background_patches_per_roi = 10
+min_roi_overlap = 0.9
+min_background_tissue_fraction = 0.5
+max_sampling_attempts = 5000
+use_clahe = true
