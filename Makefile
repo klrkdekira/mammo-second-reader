@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi cache-highres clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi cache-highres finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -29,6 +29,28 @@ cache-roi:
 cache-highres:
 	$(PY) -m src.data.dicom_to_png --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
 	$(PY) -m src.data.cache_roi_masks --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
+
+# Build and lock the INbreast external-test manifest.
+inbreast-manifest:
+	$(PY) -m src.data.inbreast --root data/inbreast --out-dir data/inbreast/manifest
+
+# Keep INbreast images and OsiriX-derived masks in a separate cache.
+inbreast-cache:
+	$(PY) -m src.data.dicom_to_png --splits-dir data/inbreast/manifest --raw-root data/inbreast/AllDICOMs --out-dir data/inbreast/cache_448 --image-size 448
+	$(PY) -m src.data.inbreast_roi --splits-dir data/inbreast/manifest --raw-root data/inbreast/AllDICOMs --xml-dir data/inbreast/AllXML --out-dir data/inbreast/cache_448 --image-size 448
+
+# Writes results/external/ only; results/metrics.json is left untouched.
+evaluate-inbreast-cold:
+	$(PY) -m src.evaluation.external --config configs/inbreast_external.toml
+
+reproduce-inbreast-cold:
+	$(MAKE) inbreast-manifest
+	$(MAKE) inbreast-cache
+	$(MAKE) evaluate-inbreast-cold
+
+# Build a small upload fixture for the web Fine-tune tab.
+finetune-fixture:
+	$(PY) -m src.data.make_finetune_archive
 
 clean-cache:
 	find ./data/cbis-ddsm/ -type f -name "*.npy" -delete

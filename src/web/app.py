@@ -1,7 +1,12 @@
 def build_app():
     import gradio as gr
 
-    from src.web import evaluation_page, finetune_page, inference_page
+    from src.web import (
+        evaluation_page,
+        external_page,
+        finetune_page,
+        inference_page,
+    )
     from src.web.constants import DISCLAIMER, TITLE
 
     with gr.Blocks() as app:
@@ -13,6 +18,8 @@ def build_app():
             evaluation_page.render()
         with gr.Tab("Fine-tune"):
             finetune_page.render()
+        with gr.Tab("External"):
+            external_page.render()
     return app
 
 
