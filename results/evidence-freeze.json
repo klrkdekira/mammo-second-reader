@@ -1,15 +1,15 @@
 {
   "version": 3,
-  "frozen_at_utc": "2026-08-12T18:22:05.345551+00:00",
+  "frozen_at_utc": "2026-08-13T03:16:47.929620+00:00",
   "metrics": {
     "path": "results/metrics.json",
-    "size_bytes": 1849604,
-    "sha256": "e2a022132ae64cea7bbdf89a28b0abb758bc41a88b01920d351b2491a1ad3d6b"
+    "size_bytes": 2143907,
+    "sha256": "237b886985f9c5f5ef97da9d2fad0bcbe0699440158b1b435ea86072b00be367"
   },
   "statistics": {
     "path": "results/statistics.json",
-    "size_bytes": 87106,
-    "sha256": "ceacfc92135565c1929f91794edfc6f2f32f2892a08b0896d22eed64437c18a0",
+    "size_bytes": 105058,
+    "sha256": "884e25774b3d8092b7aad06ef7bd7bfbc4d02679114e193c09f96318f093df16",
     "method": {
       "unit": "patient",
       "stratified_by": "patient_any_malignant",
@@ -23,10 +23,10 @@
       "seed": 42
     }
   },
-  "git_commit": "6424d2819f836c5c8bcc69bf26d61d9c154268b0",
+  "git_commit": "6e6425d148b0b05b1fffa75014e5f367ae1a1a19",
   "source": "cuda_sync",
   "preprocessing_fingerprint": "6e35b1bc213c649d4ae0c590f4405bce22bbbd23b8fc7064e177e85bde3b2173",
-  "evaluation_fingerprint": "1ddbce224f8426955bc77e3cb4f425c0f01627e6c7d61009719ad39fe071863b",
+  "evaluation_fingerprint": "78ed42b3ec89cd06af657527730b8a53e49b9e84a5ccc15cf5cc46b2ccff9a9c",
   "models": [
     "ensemble",
     "baseline",
@@ -46,15 +46,18 @@
     "vgg16_imagenet_seed2026",
     "vgg16_imagenet_448",
     "vgg16_imagenet_448_seed7",
-    "vgg16_imagenet_448_seed2026"
+    "vgg16_imagenet_448_seed2026",
+    "regularised_base_120",
+    "regularised_label_smooth_120",
+    "regularised_mixup_120"
   ],
-  "n_runs": 19,
+  "n_runs": 22,
   "dirty_override": false,
   "figures": [
     {
       "path": "results/figures/auc_confidence_intervals.png",
-      "size_bytes": 83765,
-      "sha256": "f85e6d612c1c5b30307668dd32f39c86b27ed1a5a631c590e8aebbe1f59ee976"
+      "size_bytes": 96529,
+      "sha256": "531e4cc1acc16185325e21c4596040f2578b988741f1e1e6a601ab0ee4bd52a0"
     },
     {
       "path": "results/figures/baseline_curves.png",
@@ -82,6 +85,11 @@
       "sha256": "19deba49209ef027f2abcd5db260b2fa7b1fa26acfa3add91230ef6d67c13452"
     },
     {
+      "path": "results/figures/confusion_regularised_base_120.png",
+      "size_bytes": 22068,
+      "sha256": "eada147b4b642e9942f67439bfc482bbd1774f0dd413bfe430495054b751cf89"
+    },
+    {
       "path": "results/figures/confusion_regularised_combined.png",
       "size_bytes": 21643,
       "sha256": "8f467e56c6f52e5d3aad4f9d2c4062b4cf19dd10153b3448be140f1266617023"
@@ -97,9 +105,19 @@
       "sha256": "c34d87cd7c3c53a0f74858df57b43c3cc0cb76b3cf04a3de1a51668dee118185"
     },
     {
+      "path": "results/figures/confusion_regularised_label_smooth_120.png",
+      "size_bytes": 21936,
+      "sha256": "c492ef1ac60840992ac1e6800570ab9755f39dc8d24b328dca5736ccfab2fb01"
+    },
+    {
       "path": "results/figures/confusion_regularised_mixup.png",
       "size_bytes": 21446,
       "sha256": "fa36aab0f4bcf2935eee3967d2a73ef7090080afdab2ea89053546b784edafbc"
+    },
+    {
+      "path": "results/figures/confusion_regularised_mixup_120.png",
+      "size_bytes": 22712,
+      "sha256": "8233c62fc9d76ff0f1dd850978e3404f63be4bb0e2f169906bad4e25bcd2b9eb"
     },
     {
       "path": "results/figures/confusion_resnet50_imagenet.png",
@@ -158,33 +176,33 @@
     },
     {
       "path": "results/figures/decision_curve.png",
-      "size_bytes": 137111,
-      "sha256": "99a67e19fa8c3bba99b80783a3c3872a4e8e80ebc5794416afb5dee8e645c567"
+      "size_bytes": 148367,
+      "sha256": "86db5611e4ac86483ba755771a8cc4f6f9ea18ac4c2df542625936fd2660af49"
     },
     {
       "path": "results/figures/density_strata.png",
-      "size_bytes": 199778,
-      "sha256": "b93c68f8c8646c43b96853c964fb718f1ecec212aa3cd6ccc21c3660ca42c9db"
+      "size_bytes": 216843,
+      "sha256": "774134330135d9e9be872387f7b2d4af3315f30fc39644769d9583bd2184f604"
     },
     {
       "path": "results/figures/fixed_specificity.png",
-      "size_bytes": 81382,
-      "sha256": "e19d5ef140740a2d59007527820f54b8db571eebdd356618a8690b6d7eec475f"
+      "size_bytes": 93964,
+      "sha256": "dd32ec741fff4d32e7f5d2cb4a57d0a6e33bef5c895d3092123f99abce88150c"
     },
     {
       "path": "results/figures/gradcam_roi.png",
-      "size_bytes": 182962,
-      "sha256": "29ee261d408528fb855cb4d251a63c3e79766f81eed1d77f65a4afdf91692d0d"
+      "size_bytes": 209616,
+      "sha256": "77894932c7e772d4e51d72c7788dbe86236d13b482c27f8170a004b48e9e0a63"
     },
     {
       "path": "results/figures/lesion_strata.png",
-      "size_bytes": 194286,
-      "sha256": "fd7c71664d41114bc012eb973c673eeff7df119a06b446a15e45c9d8d25bb143"
+      "size_bytes": 209539,
+      "sha256": "34f6bbaa7f015afe64d86d6285846dddb22fa5c960116441a176d319d224421b"
     },
     {
       "path": "results/figures/precision_recall.png",
-      "size_bytes": 179918,
-      "sha256": "3c45ecdfc813d62bffce58186d9149f987fcea4e7309a0d72c1fff765fb0df94"
+      "size_bytes": 187962,
+      "sha256": "4ceded3be0a813ffb5d54b8a4e18dba7bb14b7409a7d2961ecef0681abe8ee03"
     },
     {
       "path": "results/figures/reliability_baseline.png",
@@ -207,6 +225,11 @@
       "sha256": "d6800888d7468d7e9540666777395442de40874b7f1c3dda3fbd834210dbcb09"
     },
     {
+      "path": "results/figures/reliability_regularised_base_120.png",
+      "size_bytes": 55828,
+      "sha256": "c50b51c0c627dc61e9b1d96007123310a41aa0fe18782d0dd057a737ea6eed21"
+    },
+    {
       "path": "results/figures/reliability_regularised_combined.png",
       "size_bytes": 50519,
       "sha256": "3389ebcb1b99dd27dc1a6306edb169372babefeb25feb7fc93549a72ccef9ae2"
@@ -222,9 +245,19 @@
       "sha256": "b8745c90c3f0f05e7d5ba0e686897919fb6b332ff88caa7cfd257c411fa276e1"
     },
     {
+      "path": "results/figures/reliability_regularised_label_smooth_120.png",
+      "size_bytes": 55607,
+      "sha256": "45cd29ac12c732e52bceff7bc2720971c3611b7fdb6ebd9ca2f054939b93e94f"
+    },
+    {
       "path": "results/figures/reliability_regularised_mixup.png",
       "size_bytes": 56452,
       "sha256": "5fbcbd5d79ed77adaa843d567468cd142ad76da694cfe7fc8dac5c47d1d8328a"
+    },
+    {
+      "path": "results/figures/reliability_regularised_mixup_120.png",
+      "size_bytes": 57014,
+      "sha256": "22bf7f19afb332d20f06725ae40380135667fe32fc0c6c17f64f0ba4a38c39cb"
     },
     {
       "path": "results/figures/reliability_resnet50_imagenet.png",
@@ -288,8 +321,8 @@
     },
     {
       "path": "results/figures/roc_comparison.png",
-      "size_bytes": 173538,
-      "sha256": "38c4a8975c492614c00f1c0431c61c83b89183971a3b8d45a6f3ce33815efdcc"
+      "size_bytes": 190288,
+      "sha256": "290dc5c7e3bc6b743de949c8632367401c666fe38c4d8b4e556b5d576930552d"
     },
     {
       "path": "results/figures/roc_highres_comparison.png",
