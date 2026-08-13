@@ -18,6 +18,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import tomllib
 from collections.abc import Iterable, Sequence
 from dataclasses import asdict, dataclass
@@ -399,6 +400,86 @@ def _read_split_assignments(splits_dir: Path) -> tuple[dict[str, str], dict[str,
     return patient_split, image_ids
 
 
+_CASE_RE = re.compile(
+    r"(?:(?P<family>Mass|Calc)-(?:Training|Test)_)?"
+    r"(?P<patient>P_\d+)_(?P<side>LEFT|RIGHT)_(?P<view>CC|MLO)"
+)
+
+
+def _image_case_key(
+    image_id: object, patient_id: object, lesion_type: object
+) -> tuple[str, str, str, str]:
+    """Return storage-independent identity for one mammogram lesion series."""
+    match = _CASE_RE.search(str(image_id))
+    if match is None:
+        raise ValueError(f"Cannot derive mammogram case identity from {image_id!r}")
+    patient = str(patient_id)
+    if match.group("patient") != patient:
+        raise ValueError(
+            f"Image identifier {image_id!r} encodes {match.group('patient')}, "
+            f"not manifest patient {patient}"
+        )
+    family = match.group("family")
+    if family is None:
+        kind = str(lesion_type).lower()
+        family = "Calc" if kind.startswith("calc") else "Mass"
+    return patient, match.group("side"), match.group("view"), family.lower()
+
+
+def _reconcile_locked_image_ids(
+    source: pd.DataFrame, splits_dir: Path
+) -> pd.DataFrame:
+    """Join ROI rows to exact locked paths using stable case identity.
+
+    CBIS-DDSM can contain the same full mammogram under multiple nested UID
+    paths.  The locked image manifest and a fresh resolver run may therefore
+    select different storage paths for the same family/patient/side/view.  The
+    join below preserves the exact locked path while rejecting absent or
+    ambiguous physical cases.
+    """
+    frames = _read_locked_split_frames(splits_dir)
+    exclusions = test_overlap_exclusion_ledger(frames)
+    excluded = set(exclusions["patient_id"].astype(str))
+    locked: dict[tuple[str, str, str, str, str], set[str]] = {}
+    for split in ("train", "val"):
+        frame = frames[split]
+        frame = frame[~frame["patient_id"].astype(str).isin(excluded)]
+        for _, row in frame.iterrows():
+            case = _image_case_key(
+                row["image_id"], row["patient_id"], row.get("lesion_type", "")
+            )
+            locked.setdefault((split, *case), set()).add(str(row["image_id"]))
+
+    reconciled = source.copy()
+    resolved_ids: list[str] = []
+    failures: list[dict[str, object]] = []
+    for _, row in reconciled.iterrows():
+        case = _image_case_key(
+            row["image_id"], row["patient_id"], row["lesion_type"]
+        )
+        candidates = locked.get((str(row["split"]), *case), set())
+        if len(candidates) != 1:
+            failures.append(
+                {
+                    "patient_id": row["patient_id"],
+                    "source_image_id": row["image_id"],
+                    "split": row["split"],
+                    "n_locked_matches": len(candidates),
+                }
+            )
+            resolved_ids.append("")
+        else:
+            resolved_ids.append(next(iter(candidates)))
+    if failures:
+        examples = pd.DataFrame(failures).head()
+        raise ValueError(
+            "Official ROI cases could not be uniquely reconciled to the locked "
+            "image manifests:\n" + examples.to_string(index=False)
+        )
+    reconciled["image_id"] = resolved_ids
+    return reconciled
+
+
 def _write_quarantined_whole_image_splits(
     frames: dict[str, pd.DataFrame], exclusions: pd.DataFrame, out_dir: Path
 ) -> list[Path]:
@@ -446,6 +527,7 @@ def build_lesion_source_manifest(
     source = source[source["split"].isin(("train", "val"))].copy()
     if source.empty:
         raise ValueError("No official ROI rows matched the locked train/val patients")
+    source = _reconcile_locked_image_ids(source, Path(splits_dir))
     wrong_split = source.apply(
         lambda row: str(row["image_id"]) not in split_image_ids[str(row["split"])],
         axis=1,
