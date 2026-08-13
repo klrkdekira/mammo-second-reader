@@ -116,3 +116,43 @@ def test_focused_highres_config_is_controlled():
     assert focused.train.epochs == reference.train.epochs
     assert focused.train.scheduler == reference.train.scheduler
     assert focused.train.early_stop_patience == reference.train.early_stop_patience
+
+
+@pytest.mark.parametrize(
+    ("original_path", "extension_path", "extension_name"),
+    [
+        (
+            "configs/regularised_base.toml",
+            "configs/regularised_extensions/regularised_base_120.toml",
+            "regularised_base_120",
+        ),
+        (
+            "configs/regularised_label_smooth.toml",
+            "configs/regularised_extensions/regularised_label_smooth_120.toml",
+            "regularised_label_smooth_120",
+        ),
+        (
+            "configs/regularised_mixup.toml",
+            "configs/regularised_extensions/regularised_mixup_120.toml",
+            "regularised_mixup_120",
+        ),
+    ],
+)
+def test_regularised_extension_changes_only_budget_and_name(
+    original_path, extension_path, extension_name
+):
+    original = load_config(original_path)
+    extension = load_config(extension_path)
+
+    assert extension.run_name == extension_name
+    assert extension.train.epochs == 120
+    assert extension.seed == original.seed
+    assert extension.output_dir == original.output_dir
+    assert extension.data == original.data
+    assert extension.model == original.model
+
+    original_train = vars(original.train)
+    extension_train = vars(extension.train)
+    assert {
+        key: value for key, value in extension_train.items() if key != "epochs"
+    } == {key: value for key, value in original_train.items() if key != "epochs"}
