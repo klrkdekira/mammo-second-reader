@@ -30,6 +30,9 @@ DEFAULT_COMPARISONS = (
     (FOCUSED_MODEL, "resnet50_imagenet"),
     (FOCUSED_SEED_MODELS[0], "vgg16_imagenet_seed7"),
     (FOCUSED_SEED_MODELS[1], "vgg16_imagenet_seed2026"),
+    ("regularised_base_120", "regularised_base"),
+    ("regularised_label_smooth_120", "regularised_label_smooth"),
+    ("regularised_mixup_120", "regularised_mixup"),
 )
 REQUIRED_COLUMNS = {
     "run_name",

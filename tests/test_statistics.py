@@ -124,3 +124,30 @@ def test_focused_model_is_compared_with_both_references(tmp_path):
 
     assert "vgg16_imagenet_448_minus_vgg16_imagenet" in result["paired_comparisons"]
     assert "vgg16_imagenet_448_minus_resnet50_imagenet" in result["paired_comparisons"]
+
+
+def test_regularised_extensions_are_compared_with_original_runs(tmp_path):
+    predictions = tmp_path / "predictions"
+    predictions.mkdir()
+    pairs = [
+        ("regularised_base_120", "regularised_base"),
+        ("regularised_label_smooth_120", "regularised_label_smooth"),
+        ("regularised_mixup_120", "regularised_mixup"),
+    ]
+    names = [name for pair in pairs for name in pair]
+    for name in names:
+        _frame(name).to_csv(predictions / f"{name}.test.csv", index=False)
+    metrics = tmp_path / "metrics.json"
+    metrics.write_text(json.dumps({"runs": [{"model": name} for name in names]}))
+
+    result = generate_statistics(
+        metrics,
+        predictions,
+        tmp_path / "statistics.json",
+        n_resamples=20,
+        seed=2,
+    )
+
+    assert set(result["paired_comparisons"]) == {
+        f"{extension}_minus_{original}" for extension, original in pairs
+    }

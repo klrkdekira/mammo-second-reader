@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi cache-highres finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi cache-highres finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-regularised-extensions train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-regularised-extensions evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds reproduce-regularised-extensions results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -79,6 +79,12 @@ train-regularised-combined:
 # Regularisation ablations
 train-regularisation: train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined
 
+# Fresh 120-epoch runs use distinct names so the original evidence is preserved.
+train-regularised-extensions:
+	$(PY) -m src.training.train --config configs/regularised_extensions/regularised_base_120.toml
+	$(PY) -m src.training.train --config configs/regularised_extensions/regularised_label_smooth_120.toml
+	$(PY) -m src.training.train --config configs/regularised_extensions/regularised_mixup_120.toml
+
 train-vgg16-scratch:
 	$(PY) -m src.training.train --config configs/vgg16_scratch.toml
 
@@ -123,6 +129,11 @@ evaluate-vgg16-highres: cache-highres
 evaluate-vgg16-highres-seed-study: cache-highres
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_highres_448.toml --seed 7 --run-name vgg16_imagenet_448_seed7
 	$(PY) -m src.evaluation.evaluate --config configs/vgg16_highres_448.toml --seed 2026 --run-name vgg16_imagenet_448_seed2026
+
+evaluate-regularised-extensions:
+	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_base_120.toml
+	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_label_smooth_120.toml
+	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_mixup_120.toml
 
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
@@ -185,6 +196,17 @@ reproduce-focused-highres-seeds:
 	$(MAKE) evaluate-existing
 	$(MAKE) evaluate-vgg16-highres
 	$(MAKE) evaluate-vgg16-highres-seed-study
+	$(MAKE) statistics
+	$(MAKE) figures
+	$(MAKE) freeze-evidence
+
+# Run after the resolution experiment, and only when GPU time remains.
+reproduce-regularised-extensions:
+	$(MAKE) train-regularised-extensions
+	$(MAKE) evaluate-existing
+	$(MAKE) evaluate-vgg16-highres
+	$(MAKE) evaluate-vgg16-highres-seed-study
+	$(MAKE) evaluate-regularised-extensions
 	$(MAKE) statistics
 	$(MAKE) figures
 	$(MAKE) freeze-evidence
