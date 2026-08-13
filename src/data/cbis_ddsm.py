@@ -122,8 +122,11 @@ class DICOMPathResolver:
                 full_dcms
                 + [f for b in self._bare_folders(image_csv) for f in self._dcms(b)]
             ),
-            key=self._area,
-            reverse=True,
+            # Some releases contain duplicate full-image DICOMs with the same
+            # pixel area under different UID paths.  A path tiebreaker keeps
+            # resolution stable across processes instead of inheriting set
+            # iteration order.
+            key=lambda path: (-self._area(path), path.as_posix()),
         )
         return next(
             (p for p in candidates if not self._is_mask(p)),

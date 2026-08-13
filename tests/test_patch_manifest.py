@@ -245,6 +245,9 @@ def test_source_manifest_retains_all_rois_but_excludes_test(tmp_path, monkeypatc
     dicom_root.mkdir()
 
     monkeypatch.setattr(pm, "DICOMPathResolver", lambda root: object())
+    monkeypatch.setattr(
+        pm, "_reconcile_locked_image_ids", lambda source, splits_dir: source
+    )
 
     def fake_build(path, root, resolver):
         lesion = "mass" if path.name.startswith("mass") else "calc"
@@ -284,6 +287,63 @@ def test_source_manifest_retains_all_rois_but_excludes_test(tmp_path, monkeypatc
     assert set(source["patient_id"]) == {"patient_train", "patient_val"}
     assert not source["roi_mask_id"].str.contains("test").any()
     assert source.groupby("image_id")["roi_mask_id"].nunique().eq(2).all()
+
+
+def test_roi_source_path_is_reconciled_to_exact_locked_image_id(tmp_path):
+    splits = tmp_path / "splits"
+    splits.mkdir()
+    locked_image = "Mass-Training_P_00120_LEFT_MLO/locked/uid/full-image"
+    pd.DataFrame(
+        [
+            {
+                "patient_id": "P_00120",
+                "image_id": locked_image,
+                "lesion_type": "mass",
+                "label": 1,
+            }
+        ]
+    ).to_csv(splits / "train.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "patient_id": "P_00200",
+                "image_id": "Calc-Training_P_00200_RIGHT_CC/val/uid/image",
+                "lesion_type": "calcification",
+                "label": 0,
+            }
+        ]
+    ).to_csv(splits / "val.csv", index=False)
+    pd.DataFrame(
+        [
+            {
+                "patient_id": "P_00300",
+                "image_id": "Mass-Test_P_00300_LEFT_CC/test/uid/image",
+                "lesion_type": "mass",
+                "label": 1,
+            }
+        ]
+    ).to_csv(splits / "test.csv", index=False)
+    source = pd.DataFrame(
+        [
+            {
+                "patient_id": "P_00120",
+                "image_id": "Mass-Training_P_00120_LEFT_MLO/different/uid/copy",
+                "lesion_type": "mass",
+                "split": "train",
+            }
+        ]
+    )
+
+    reconciled = pm._reconcile_locked_image_ids(source, splits)
+
+    assert reconciled.loc[0, "image_id"] == locked_image
+
+
+def test_case_identity_rejects_patient_mismatch():
+    with pytest.raises(ValueError, match="not manifest patient"):
+        pm._image_case_key(
+            "Mass-Training_P_00120_LEFT_MLO/uid/image", "P_00999", "mass"
+        )
 
 
 def test_locked_split_patient_overlap_is_rejected(tmp_path):
