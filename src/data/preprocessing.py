@@ -179,6 +179,32 @@ def resize(arr: np.ndarray, size: int = 224) -> np.ndarray:
     return cv2.resize(arr, (size, size), interpolation=cv2.INTER_AREA)
 
 
+def preprocess_aligned_array(
+    arr: np.ndarray, use_clahe: bool = True
+) -> tuple[np.ndarray, np.ndarray, tuple[int, int, int, int]]:
+    """Clean and breast-crop an image without resizing it.
+
+    Returns ``(image, breast_mask, source_bbox)``.  The image and mask have
+    identical geometry, and ``source_bbox`` maps their coordinates back to the
+    original DICOM array.  Patch extraction uses this path so lesion masks are
+    aligned before any whole-image downscaling.
+    """
+    breast = segment_breast(arr)
+    clean = arr.copy()
+    clean[artifact_mask(arr, breast) > 0] = 0.0
+    y0, y1, x0, x1 = breast_bbox(breast)
+    clean = clean[y0:y1, x0:x1]
+    breast = breast[y0:y1, x0:x1]
+    if use_clahe:
+        fill = float(clean[breast > 0].mean()) if breast.any() else 0.5
+        clean = np.where(
+            breast > 0,
+            apply_clahe(np.where(breast > 0, clean, fill)),
+            clean,
+        )
+    return clean.astype(np.float32), breast.astype(np.uint8), (y0, y1, x0, x1)
+
+
 def normalise(arr: np.ndarray, mean: float = 0.485, std: float = 0.229) -> np.ndarray:
     """Normalise `arr` using the ImageNet red-channel mean and std.
 
@@ -201,16 +227,7 @@ def preprocess_array(
     Only artefact pixels are altered; breast and air keep their original
     values (air is near-black already), so no tissue is ever deleted.
     """
-    breast = segment_breast(arr)
-    arr = arr.copy()
-    arr[artifact_mask(arr, breast) > 0] = 0.0
-    y0, y1, x0, x1 = breast_bbox(breast)
-    arr, breast = arr[y0:y1, x0:x1], breast[y0:y1, x0:x1]
-    if use_clahe:
-        # Equalise inside the breast only; fill outside with the tissue mean
-        # so CLAHE tiles at the skin line are not skewed by the black edge.
-        fill = float(arr[breast > 0].mean()) if breast.any() else 0.5
-        arr = np.where(breast > 0, apply_clahe(np.where(breast > 0, arr, fill)), arr)
+    arr, _, _ = preprocess_aligned_array(arr, use_clahe=use_clahe)
     return resize(arr, image_size).astype(np.float32)
 
 
