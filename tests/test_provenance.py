@@ -46,6 +46,34 @@ def test_build_run_provenance_hashes_inputs(tmp_path):
     assert result["code"]["preprocessing_fingerprint"]
 
 
+def test_build_run_provenance_includes_run_specific_code(tmp_path):
+    config = tmp_path / "run.toml"
+    checkpoint = tmp_path / "model.pt"
+    split = tmp_path / "test.csv"
+    preprocessing = tmp_path / "custom_ingest.py"
+    evaluation = tmp_path / "custom_evaluation.py"
+    config.write_text("seed = 42\n")
+    checkpoint.write_bytes(b"weights")
+    split.write_text("image_id,label\na,0\n")
+    preprocessing.write_text("INGEST_VERSION = 1\n")
+    evaluation.write_text("EVALUATION_VERSION = 1\n")
+
+    result = build_run_provenance(
+        config_path=config,
+        checkpoint_paths=[checkpoint],
+        manifest_paths=[split],
+        additional_preprocessing_paths=[preprocessing],
+        additional_evaluation_paths=[evaluation],
+    )
+
+    preprocessing_files = result["code"]["preprocessing_files"]
+    evaluation_files = result["code"]["evaluation_files"]
+    assert any(
+        item["sha256"] == sha256_file(preprocessing) for item in preprocessing_files
+    )
+    assert any(item["sha256"] == sha256_file(evaluation) for item in evaluation_files)
+
+
 def _run(
     model: str,
     evidence,
