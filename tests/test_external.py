@@ -8,6 +8,7 @@ import pytest
 
 from src.evaluation.external import (
     LockedOperatingPoint,
+    _align_subset_logits,
     external_audit,
     load_external_config,
     load_locked_operating_point,
@@ -165,6 +166,25 @@ def test_audit_reports_subset_shape_and_prevalence():
     assert record["n_patients"] == 20
     assert record["n_malignant"] == 20
     assert record["prevalence"] == pytest.approx(0.5)
+
+
+def test_subset_logits_are_selected_from_the_full_inference():
+    full = _frame(40)
+    logits = np.linspace(-2.0, 2.0, len(full))
+    subset = full.iloc[[17, 2, 31, 8]].reset_index(drop=True)
+
+    selected = _align_subset_logits(full, logits, subset)
+
+    assert np.array_equal(selected, logits[[17, 2, 31, 8]])
+
+
+def test_subset_logits_reject_images_absent_from_the_full_manifest():
+    full = _frame(40)
+    subset = full.iloc[:2].copy()
+    subset.loc[subset.index[0], "image_id"] = "not-in-full"
+
+    with pytest.raises(ValueError, match="absent from full"):
+        _align_subset_logits(full, np.zeros(len(full)), subset)
 
 
 def test_external_config_round_trip(tmp_path):

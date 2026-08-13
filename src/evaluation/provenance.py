@@ -85,6 +85,8 @@ def build_run_provenance(
     manifest_paths: Iterable[Path],
     threshold_path: Path | None = None,
     prediction_paths: Iterable[Path] = (),
+    additional_preprocessing_paths: Iterable[Path] = (),
+    additional_evaluation_paths: Iterable[Path] = (),
     extra: dict[str, object] | None = None,
     repo_root: Path | None = None,
 ) -> dict[str, object]:
@@ -120,6 +122,8 @@ def build_run_provenance(
         root / "src/models/transfer.py",
         root / "src/reporting/make_figures.py",
     ]
+    preprocessing_paths.extend(Path(path) for path in additional_preprocessing_paths)
+    evaluation_paths.extend(Path(path) for path in additional_evaluation_paths)
     preprocessing = [describe_file(path, root) for path in preprocessing_paths]
     evaluation = [describe_file(path, root) for path in evaluation_paths]
     commit_file = root / ".cuda-commit"

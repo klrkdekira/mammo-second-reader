@@ -3,5 +3,14 @@
 .mypy_cache
 /models/*
 /results/*
-/data/*
++ /data/inbreast/
++ /data/inbreast/manifest/
++ /data/inbreast/manifest/test.csv
++ /data/inbreast/manifest/test_lesion_present.csv
++ /data/inbreast/manifest/manifest-lock.json
+- /data/inbreast/manifest/*
+- /data/inbreast/*
+- /data/*
 __pycache__
+.pytest_cache
+.ruff_cache

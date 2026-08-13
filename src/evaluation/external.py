@@ -24,6 +24,7 @@ from sklearn.metrics import roc_curve
 from torch.utils.data import DataLoader
 
 from src.config import get_device, load_config, setup_logging
+from src.data import manifest as _manifest
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.evaluation.audit import logits_to_probability
@@ -303,43 +304,52 @@ def _predict_logits(
     return np.concatenate(labels), np.concatenate(logits)
 
 
+def _align_subset_logits(
+    full_frame: pd.DataFrame,
+    full_logits: np.ndarray,
+    subset_frame: pd.DataFrame,
+) -> np.ndarray:
+    """Select full-set logits in the order of a registered subset manifest."""
+    full_ids = full_frame["image_id"].astype(str)
+    subset_ids = subset_frame["image_id"].astype(str)
+    if full_ids.duplicated().any():
+        raise ValueError("The full external manifest contains duplicate image IDs.")
+    if subset_ids.duplicated().any():
+        raise ValueError("An external subset manifest contains duplicate image IDs.")
+    logits = np.asarray(full_logits, dtype=float).ravel()
+    if logits.size != len(full_frame):
+        raise ValueError("Full external predictions do not match the manifest length.")
+    by_image_id = pd.Series(logits, index=full_ids)
+    missing = subset_ids[~subset_ids.isin(by_image_id.index)].tolist()
+    if missing:
+        preview = ", ".join(missing[:3])
+        raise ValueError(
+            f"External subset contains image IDs absent from full: {preview}"
+        )
+    return by_image_id.loc[subset_ids].to_numpy()
+
+
 def evaluate_subset(
     *,
-    model: torch.nn.Module,
+    frame: pd.DataFrame,
+    logits: np.ndarray,
     manifest_path: Path,
     external: ExternalConfig,
     locked: LockedOperatingPoint,
     subset: str,
-    device: torch.device,
     predictions_dir: Path,
     internal_seed: int,
     n_resamples: int,
     seed: int,
 ) -> dict[str, object]:
-    """Run inference on one pre-registered subset and score it."""
-    dataset = MammogramDataset(
-        manifest_path,
-        external.image_root,
-        transform=val_augment(external.image_size),
-    )
-    loader = DataLoader(
-        dataset,
-        batch_size=external.batch_size,
-        shuffle=False,
-        num_workers=external.num_workers,
-    )
-    labels, logits = _predict_logits(model, loader, device)
-    manifest_labels = dataset.df["label"].to_numpy(dtype=int)
-    if not np.array_equal(labels.astype(int), manifest_labels):
-        raise ValueError(f"External predictions for {subset} lost manifest order.")
-
-    audit = external_audit(dataset.df, logits, locked)
+    """Score and save predictions for one pre-registered subset."""
+    audit = external_audit(frame, logits, locked)
     record = audit.record
     run_name = _subset_name(external.run_name, subset)
     path = Path(predictions_dir) / f"{run_name}.test.csv"
     write_predictions_atomic(
         build_prediction_frame(
-            dataset.df,
+            frame,
             run_name=run_name,
             split="test",
             logits=logits,
@@ -409,21 +419,48 @@ def main(
     )
     model = model.to(device)
 
-    subsets: list[tuple[str, Path]] = [("full", external.manifest)]
+    dataset = MammogramDataset(
+        external.manifest,
+        external.image_root,
+        transform=val_augment(external.image_size),
+    )
+    loader = DataLoader(
+        dataset,
+        batch_size=external.batch_size,
+        shuffle=False,
+        num_workers=external.num_workers,
+    )
+    labels, full_logits = _predict_logits(model, loader, device)
+    manifest_labels = dataset.df["label"].to_numpy(dtype=int)
+    if not np.array_equal(labels.astype(int), manifest_labels):
+        raise ValueError("External predictions lost full-manifest order.")
+
+    subsets: list[tuple[str, Path, pd.DataFrame, np.ndarray]] = [
+        ("full", external.manifest, dataset.df, full_logits)
+    ]
     if external.lesion_present_manifest is not None:
-        subsets.append(("lesion_present", external.lesion_present_manifest))
+        subset_frame = _manifest.read(external.lesion_present_manifest)
+        subset_logits = _align_subset_logits(dataset.df, full_logits, subset_frame)
+        subsets.append(
+            (
+                "lesion_present",
+                external.lesion_present_manifest,
+                subset_frame,
+                subset_logits,
+            )
+        )
 
     results: dict[str, dict[str, object]] = {}
     prediction_paths: list[Path] = []
-    for subset, manifest_path in subsets:
-        LOGGER.info("Cold external inference on %s subset: %s", subset, manifest_path)
+    for subset, manifest_path, frame, logits in subsets:
+        LOGGER.info("Cold external scoring on %s subset: %s", subset, manifest_path)
         record = evaluate_subset(
-            model=model,
+            frame=frame,
+            logits=logits,
             manifest_path=manifest_path,
             external=external,
             locked=locked,
             subset=subset,
-            device=device,
             predictions_dir=predictions_dir,
             internal_seed=internal.seed,
             n_resamples=n_resamples,
@@ -440,7 +477,7 @@ def main(
             panel["specificity"],
         )
 
-    manifest_paths = [path for _, path in subsets]
+    manifest_paths = [path for _, path, _, _ in subsets]
     if external.manifest_lock is not None:
         manifest_paths.append(external.manifest_lock)
     payload: dict[str, object] = {
@@ -469,6 +506,11 @@ def main(
             manifest_paths=manifest_paths,
             threshold_path=sidecar,
             prediction_paths=prediction_paths,
+            additional_preprocessing_paths=[
+                Path("src/data/inbreast.py"),
+                Path("src/data/inbreast_roi.py"),
+            ],
+            additional_evaluation_paths=[Path("src/evaluation/external.py")],
             extra={
                 "run_name": external.run_name,
                 "internal_run": external.internal_run,
