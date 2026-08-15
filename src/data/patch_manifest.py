@@ -2,7 +2,7 @@
 
 Stage 0 deliberately reads only the official *training* case-description CSVs.
 The existing whole-image train/validation manifests provide the locked patient
-assignment; their test patients are used only as an exclusion set.  Images are
+assignment. Their test patients are used only as an exclusion set.  Images are
 cleaned and breast-cropped at native resolution before aligned 224-pixel crops
 are extracted.
 
@@ -273,13 +273,12 @@ def sample_lesion_boxes(
             f"{len(selected)}/{config.lesion_patches_per_roi}"
         )
         selected_ids = {box for box, _ in selected}
-        selected.extend(
-            item
-            for item in ranked
-            if item[0] not in selected_ids
-        )
+        selected.extend(item for item in ranked if item[0] not in selected_ids)
         selected = selected[: config.lesion_patches_per_roi]
-    return [(box, overlap, reason if overlap.score < config.min_roi_overlap else "") for box, overlap in selected]
+    return [
+        (box, overlap, reason if overlap.score < config.min_roi_overlap else "")
+        for box, overlap in selected
+    ]
 
 
 def sample_background_boxes(
@@ -343,8 +342,7 @@ def test_overlap_exclusion_ledger(
     patient only in test and recording every removed development image.
     """
     patients = {
-        split: set(frame["patient_id"].astype(str))
-        for split, frame in frames.items()
+        split: set(frame["patient_id"].astype(str)) for split, frame in frames.items()
     }
     train_val = patients["train"] & patients["val"]
     if train_val:
@@ -376,7 +374,9 @@ def test_overlap_exclusion_ledger(
     return pd.DataFrame(rows, columns=EXCLUSION_COLUMNS)
 
 
-def _read_split_assignments(splits_dir: Path) -> tuple[dict[str, str], dict[str, set[str]]]:
+def _read_split_assignments(
+    splits_dir: Path,
+) -> tuple[dict[str, str], dict[str, set[str]]]:
     """Return clean development assignments, quarantining test collisions."""
     frames = _read_locked_split_frames(splits_dir)
     exclusions = test_overlap_exclusion_ledger(frames)
@@ -426,9 +426,7 @@ def _image_case_key(
     return patient, match.group("side"), match.group("view"), family.lower()
 
 
-def _reconcile_locked_image_ids(
-    source: pd.DataFrame, splits_dir: Path
-) -> pd.DataFrame:
+def _reconcile_locked_image_ids(source: pd.DataFrame, splits_dir: Path) -> pd.DataFrame:
     """Join ROI rows to exact locked paths using stable case identity.
 
     CBIS-DDSM can contain the same full mammogram under multiple nested UID
@@ -454,9 +452,7 @@ def _reconcile_locked_image_ids(
     resolved_ids: list[str] = []
     failures: list[dict[str, object]] = []
     for _, row in reconciled.iterrows():
-        case = _image_case_key(
-            row["image_id"], row["patient_id"], row["lesion_type"]
-        )
+        case = _image_case_key(row["image_id"], row["patient_id"], row["lesion_type"])
         candidates = locked.get((str(row["split"]), *case), set())
         if len(candidates) != 1:
             failures.append(
@@ -506,7 +502,9 @@ def _write_quarantined_whole_image_splits(
         clean_patients[left] & clean_patients[right]
         for left, right in (("train", "val"), ("train", "test"), ("val", "test"))
     ):
-        raise ValueError("Quarantined whole-image splits are still not patient-disjoint")
+        raise ValueError(
+            "Quarantined whole-image splits are still not patient-disjoint"
+        )
     return outputs
 
 
@@ -539,10 +537,14 @@ def build_lesion_source_manifest(
             + examples.to_string(index=False)
         )
     if source["roi_mask_id"].isna().any():
-        raise ValueError("One or more train/validation abnormality rows has no ROI mask")
+        raise ValueError(
+            "One or more train/validation abnormality rows has no ROI mask"
+        )
     if source["roi_mask_id"].astype(str).duplicated().any():
         raise ValueError("ROI mask identifiers must be unique in the source manifest")
-    return source.sort_values(["split", "patient_id", "image_id", "roi_mask_id"]).reset_index(drop=True)
+    return source.sort_values(
+        ["split", "patient_id", "image_id", "roi_mask_id"]
+    ).reset_index(drop=True)
 
 
 def _class_name(pathology: object, lesion_type: object) -> str:
@@ -555,7 +557,9 @@ def _class_name(pathology: object, lesion_type: object) -> str:
     return f"{'malignant' if malignant else 'benign'}_{kind}"
 
 
-def _load_roi(path: Path, source_shape: tuple[int, int], crop_box: tuple[int, int, int, int]) -> np.ndarray:
+def _load_roi(
+    path: Path, source_shape: tuple[int, int], crop_box: tuple[int, int, int, int]
+) -> np.ndarray:
     mask = np.asarray(pydicom.dcmread(str(path)).pixel_array)
     if mask.ndim == 3:
         mask = mask.any(axis=0)
@@ -686,7 +690,9 @@ def validate_class_coverage(
         )
 
 
-def _write_qa_grids(manifest: pd.DataFrame, out_dir: Path, n_per_class: int = 25) -> None:
+def _write_qa_grids(
+    manifest: pd.DataFrame, out_dir: Path, n_per_class: int = 25
+) -> None:
     import matplotlib.pyplot as plt
     from matplotlib.patches import Rectangle
 
@@ -742,7 +748,9 @@ def _summary(
         "counts_by_split_and_class": counts_by_split_and_class,
         "patients_by_split": {
             str(split): int(count)
-            for split, count in manifest.groupby("split")["patient_id"].nunique().items()
+            for split, count in manifest.groupby("split")["patient_id"]
+            .nunique()
+            .items()
         },
         "n_fallback_patches": int(manifest["fallback_reason"].fillna("").ne("").sum()),
         "n_issues": len(issues),
@@ -783,13 +791,21 @@ def generate_patch_manifests(
             roi_path = _find_dicom(Path(raw_root), roi_id)
             if roi_path is None:
                 issues.append(
-                    {"image_id": str(image_id), "roi_mask_id": roi_id, "reason": "missing_roi_dicom"}
+                    {
+                        "image_id": str(image_id),
+                        "roi_mask_id": roi_id,
+                        "reason": "missing_roi_dicom",
+                    }
                 )
                 continue
             mask = _load_roi(roi_path, raw.shape, breast_box)
             if not mask.any():
                 issues.append(
-                    {"image_id": str(image_id), "roi_mask_id": roi_id, "reason": "empty_roi_after_breast_crop"}
+                    {
+                        "image_id": str(image_id),
+                        "roi_mask_id": roi_id,
+                        "reason": "empty_roi_after_breast_crop",
+                    }
                 )
                 continue
             roi_masks[roi_id] = mask
@@ -817,13 +833,20 @@ def generate_patch_manifests(
                     }
                 )
             for sample_index, (box, overlap, fallback_reason) in enumerate(sampled):
-                patch_id = _patch_id(config.seed, split, str(image_id), roi_id, "lesion", sample_index)
+                patch_id = _patch_id(
+                    config.seed, split, str(image_id), roi_id, "lesion", sample_index
+                )
                 relative = Path("patches") / split / patch_class / f"{patch_id}.npy"
                 destination = out_dir / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
-                np.save(destination, image[box.y0 : box.y1, box.x0 : box.x1].astype(np.float32))
+                np.save(
+                    destination,
+                    image[box.y0 : box.y1, box.x0 : box.x1].astype(np.float32),
+                )
                 union_overlap = int(union_mask[box.y0 : box.y1, box.x0 : box.x1].sum())
-                tissue_fraction = float((tissue[box.y0 : box.y1, box.x0 : box.x1] > 0).mean())
+                tissue_fraction = float(
+                    (tissue[box.y0 : box.y1, box.x0 : box.x1] > 0).mean()
+                )
                 records.append(
                     _record(
                         patch_id=patch_id,
@@ -862,14 +885,16 @@ def generate_patch_manifests(
         for sample_index, (box, tissue_fraction) in enumerate(backgrounds):
             anchor = valid_rows.iloc[sample_index % len(valid_rows)]
             roi_id = str(anchor["roi_mask_id"])
-            patch_id = _patch_id(config.seed, split, str(image_id), roi_id, "background", sample_index)
+            patch_id = _patch_id(
+                config.seed, split, str(image_id), roi_id, "background", sample_index
+            )
             relative = Path("patches") / split / "background" / f"{patch_id}.npy"
             destination = out_dir / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
-            np.save(destination, image[box.y0 : box.y1, box.x0 : box.x1].astype(np.float32))
-            union_overlap = int(
-                union_mask[box.y0 : box.y1, box.x0 : box.x1].sum()
+            np.save(
+                destination, image[box.y0 : box.y1, box.x0 : box.x1].astype(np.float32)
             )
+            union_overlap = int(union_mask[box.y0 : box.y1, box.x0 : box.x1].sum())
             records.append(
                 _record(
                     patch_id=patch_id,
@@ -926,14 +951,19 @@ def main(
         split_frames[split] = frame
         frame.to_csv(out_dir / f"{split}.csv", index=False, lineterminator="\n")
     source.to_csv(out_dir / "lesion-sources.csv", index=False, lineterminator="\n")
-    (out_dir / "qa-summary.json").write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n")
+    (out_dir / "qa-summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n"
+    )
     _write_qa_grids(combined, out_dir)
 
     inputs = {
         str(path): _sha256_file(path)
         for path in [
             *(splits_dir / f"{split}.csv" for split in ("train", "val", "test")),
-            *(metadata_dir / f"{kind}_case_description_train_set.csv" for kind in ("mass", "calc")),
+            *(
+                metadata_dir / f"{kind}_case_description_train_set.csv"
+                for kind in ("mass", "calc")
+            ),
         ]
     }
     outputs = {
@@ -965,9 +995,7 @@ def main(
         "output_hashes": outputs,
         "patch_tree_sha256": patch_digest.hexdigest(),
         "n_patch_files": len(combined),
-        "n_quarantined_test_overlap_patients": int(
-            exclusions["patient_id"].nunique()
-        ),
+        "n_quarantined_test_overlap_patients": int(exclusions["patient_id"].nunique()),
         "quarantined_test_overlap_patients": sorted(
             exclusions["patient_id"].astype(str).unique()
         ),
@@ -976,7 +1004,9 @@ def main(
         "overlap_definition": "max(intersection/roi_area, intersection/patch_area)",
         "coordinate_system": "native-resolution breast crop; y/x end-exclusive",
     }
-    (out_dir / "manifest-lock.json").write_text(json.dumps(lock, indent=2, sort_keys=True) + "\n")
+    (out_dir / "manifest-lock.json").write_text(
+        json.dumps(lock, indent=2, sort_keys=True) + "\n"
+    )
     LOGGER.info(
         "Stage 0 complete: %d patches from %d patients; outputs in %s",
         len(combined),
@@ -994,8 +1024,8 @@ def main(
     show_default=True,
 )
 def cli(config_path: Path) -> None:
-    metadata_dir, splits_dir, raw_root, out_dir, config = (
-        load_patch_extraction_config(config_path)
+    metadata_dir, splits_dir, raw_root, out_dir, config = load_patch_extraction_config(
+        config_path
     )
     main(metadata_dir, splits_dir, raw_root, out_dir, config)
 

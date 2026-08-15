@@ -359,7 +359,7 @@ def evaluate_subset(
             fixed_specificity_target=locked.fixed_specificity_target,
             fixed_specificity_threshold=locked.fixed_specificity_threshold,
             # The seed identifies the trained model being transferred, so it is
-            # the internal run's seed; external inference is deterministic.
+            # the internal run's seed. External inference is deterministic.
             seed=internal_seed,
             checkpoint_sha256=locked.checkpoint_sha256,
         ),

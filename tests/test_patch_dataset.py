@@ -47,7 +47,9 @@ def test_patch_dataset_applies_albumentations_style_transform(tmp_path):
     path.parent.mkdir(parents=True)
     np.save(path, np.ones((8, 8), dtype=np.float32))
 
-    dataset = PatchDataset(manifest, tmp_path, transform=lambda image: {"image": image * 2})
+    dataset = PatchDataset(
+        manifest, tmp_path, transform=lambda image: {"image": image * 2}
+    )
     image, _ = dataset[0]
     assert torch.all(image == 2)
 

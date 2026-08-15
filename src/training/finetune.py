@@ -1,4 +1,4 @@
-"""Fine-tune a saved checkpoint; trains the classifier head only by default."""
+"""Fine-tune a saved checkpoint. Trains the classifier head only by default."""
 
 import json
 import logging

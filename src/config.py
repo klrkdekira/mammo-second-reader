@@ -120,7 +120,7 @@ def load_config(path: Path) -> Config:
     """Load a single-model TOML config file.
 
     For ensemble configs (top-level `members`, no [model]/[train]) use
-    `load_ensemble_config` instead; this loader requires those sections.
+    `load_ensemble_config` instead. This loader requires those sections.
     """
     path = Path(path)
     with path.open("rb") as f:

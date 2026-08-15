@@ -74,9 +74,7 @@ def test_multi_panel_plot_uses_one_shared_legend(tmp_path, monkeypatch):
         "model_a",
         "model_b",
     ]
-    anchor = fig.legends[0].get_bbox_to_anchor().transformed(
-        fig.transFigure.inverted()
-    )
+    anchor = fig.legends[0].get_bbox_to_anchor().transformed(fig.transFigure.inverted())
     assert anchor.y0 == pytest.approx(0.015)
     assert np.isclose(fig.subplotpars.bottom, 0.34)
     plt.close("all")
