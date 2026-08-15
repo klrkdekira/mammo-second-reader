@@ -20,7 +20,8 @@ def _make_dicom_bytes(tmp_path, name: str, patient_name: str = "Test^Patient"):
     file_meta.MediaStorageSOPInstanceUID = pydicom.uid.generate_uid()
     file_meta.TransferSyntaxUID = pydicom.uid.ExplicitVRLittleEndian
 
-    ds = FileDataset(None, {}, file_meta=file_meta, preamble=b"\0" * 128)
+    # In-memory dataset: pydicom accepts filename=None, the stubs do not.
+    ds = FileDataset(None, {}, file_meta=file_meta, preamble=b"\0" * 128)  # type: ignore[arg-type]
     ds.PatientName = patient_name
     ds.PatientID = "12345"
 
@@ -102,9 +103,9 @@ def test_materialise_workdir_deidentifies_and_flattens(tmp_path):
 
 def test_stream_finetune_epochs_yields_metrics(tmp_path, monkeypatch):
     # Force CPU: this machine's GPU exposes torch.cuda.is_available() but its
-    # MIOpen/HIPRTC toolchain cannot compile a batch-norm kernel (see
-    # training does not run on this machine, only the test suite
-    # does, and that must not depend on GPU availability).
+    # MIOpen/HIPRTC toolchain cannot compile a batch-norm kernel. Training does
+    # not run on this machine; only the test suite does, and it must not depend
+    # on GPU availability.
     monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
 
     workdir = tmp_path / "workdir"
