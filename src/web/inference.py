@@ -112,7 +112,7 @@ def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
 
 
 def _overlay_to_b64(image: np.ndarray, heatmap: np.ndarray) -> str:
-    """Blend a jet heatmap over the grayscale image and PNG-encode to base64."""
+    """Blend a jet heatmap over the greyscale image and PNG-encode to base64."""
     from PIL import Image
     from pytorch_grad_cam.utils.image import show_cam_on_image
 

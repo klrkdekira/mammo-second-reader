@@ -52,5 +52,5 @@ def compute_gradcam(
     layer = _resolve_layer(model, target_layer_name)
     targets = [ClassifierOutputTarget(target_class)]
     with GradCAM(model=model, target_layers=[layer]) as cam:
-        grayscale_cam = cam(input_tensor=image, targets=targets)
-    return grayscale_cam[0].astype(np.float32)
+        greyscale_cam = cam(input_tensor=image, targets=targets)
+    return greyscale_cam[0].astype(np.float32)
