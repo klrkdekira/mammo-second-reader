@@ -29,7 +29,7 @@ def _png_bytes(arr_uint8: np.ndarray) -> bytes:
 
 
 def test_preprocess_bytes_returns_unnormalised_unit_range():
-    # A grayscale gradient decodes and preprocesses into [0, 1]; if normalise
+    # A greyscale gradient decodes and preprocesses into [0, 1]; if normalise
     # were applied inside _preprocess_bytes the range would go negative.
     ramp = np.tile(np.linspace(0, 255, 256, dtype=np.uint8), (256, 1))
     out = inference._preprocess_bytes(_png_bytes(ramp), "scan.png")

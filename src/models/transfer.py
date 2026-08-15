@@ -39,7 +39,7 @@ ARCHS: dict[str, ArchSpec] = {
 
 
 class ThreeChannelWrapper(nn.Module):
-    """Repeats a grayscale channel into three to match ImageNet input format."""
+    """Repeats a greyscale channel into three to match ImageNet input format."""
 
     def __init__(self, backbone: nn.Module) -> None:
         super().__init__()

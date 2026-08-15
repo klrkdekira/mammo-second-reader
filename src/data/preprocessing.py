@@ -209,7 +209,7 @@ def normalise(arr: np.ndarray, mean: float = 0.485, std: float = 0.229) -> np.nd
     """Normalise `arr` using the ImageNet red-channel mean and std.
 
     These are the single-channel ImageNet statistics (0.485 / 0.229), applied
-    to the grayscale mammogram; `ThreeChannelWrapper` then repeats that one
+    to the greyscale mammogram; `ThreeChannelWrapper` then repeats that one
     normalised channel to three, so all three backbone inputs share the
     red-channel stats rather than the true per-channel means/stds. This is a
     deliberate simplification for single-channel medical images and is applied
