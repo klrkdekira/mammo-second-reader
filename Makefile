@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi cache-highres patch-data finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-regularised-extensions train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-regularised-extensions evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds reproduce-regularised-extensions results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi cache-highres patch-data patch-qa finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-regularised-extensions train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-regularised-extensions evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds reproduce-regularised-extensions results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -33,6 +33,10 @@ cache-highres:
 # Stage 0 patch learning is isolated from the existing whole-image evidence.
 patch-data:
 	$(PY) -m src.data.patch_manifest --config configs/patch_learning/stage0.toml
+
+# Run on the CUDA data host after patch-data; reads frozen data without changing it.
+patch-qa:
+	$(PY) -m src.data.patch_qa --config configs/patch_learning/stage0.toml
 
 # Build and lock the INbreast external-test manifest.
 inbreast-manifest:
