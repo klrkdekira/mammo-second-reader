@@ -42,7 +42,7 @@ def _seed_worker(worker_id: int) -> None:
     Spawn workers start with fresh numpy/random state, so Albumentations'
     (numpy-backed) random ops would differ run-to-run despite set_global_seed.
     torch assigns each worker a deterministic seed derived from the loader's
-    generator; mirror it into numpy and random so augmentation is reproducible.
+    generator. Mirror it into numpy and random so augmentation is reproducible.
     """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
@@ -140,7 +140,7 @@ def _mixup(
     n_neg/n_pos pos_weight to these interpolated soft targets, so a mixed
     sample's positive term is up-weighted by the full imbalance factor even
     though its target is only fractionally positive. The effect is small and
-    consistent across runs; configs combining mixup and pos_weight (e.g.
+    consistent across runs. Configs combining mixup and pos_weight (e.g.
     regularised_combined) should note it rather than read the two as
     independent. See WARNINGS / writeup.
     """

@@ -43,7 +43,7 @@ def compute_gradcam(
 ) -> np.ndarray:
     """Return a (H, W) heatmap normalised to [0, 1] for the given image.
 
-    image must be (1, C, H, W). target_class is the logit index; for the
+    image must be (1, C, H, W). target_class is the logit index. For the
     single-output binary head it is always 0.
     """
     from pytorch_grad_cam import GradCAM

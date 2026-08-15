@@ -375,7 +375,7 @@ def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
 
     Three side-by-side bar charts share a mass-vs-calcification axis, with
     each model a separate bar group. A large mass-vs-calc AUC gap is the
-    evidence for training separate per-lesion-type models; a small gap
+    evidence for training separate per-lesion-type models. A small gap
     argues the pooled model is not the bottleneck.
     """
     runs = _load_metrics(metrics_path)["runs"]

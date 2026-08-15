@@ -68,7 +68,9 @@ def test_impossible_overlap_is_explicitly_marked_not_silently_relaxed():
 
     assert len(sampled) == 2
     assert all(overlap.score < 0.99 for _, overlap, _ in sampled)
-    assert all(reason.startswith("insufficient_overlap_0.990") for _, _, reason in sampled)
+    assert all(
+        reason.startswith("insufficient_overlap_0.990") for _, _, reason in sampled
+    )
 
 
 def test_background_sampling_has_zero_union_roi_overlap():
@@ -125,7 +127,9 @@ def test_end_to_end_generation_is_balanced_and_repeatable(tmp_path, monkeypatch)
         "roi_calc": np.pad(np.ones((12, 12), np.uint8), ((28, 8), (28, 8))),
     }
 
-    monkeypatch.setattr(pm, "_find_dicom", lambda root, image_id: root / f"{image_id}.dcm")
+    monkeypatch.setattr(
+        pm, "_find_dicom", lambda root, image_id: root / f"{image_id}.dcm"
+    )
     monkeypatch.setattr(pm, "load_dicom", lambda path: image)
     monkeypatch.setattr(
         pm,
@@ -155,7 +159,9 @@ def test_end_to_end_generation_is_balanced_and_repeatable(tmp_path, monkeypatch)
         "benign_calcification",
         "background",
     }
-    assert (first.loc[first["patch_kind"] == "background", "union_roi_overlap_px"] == 0).all()
+    assert (
+        first.loc[first["patch_kind"] == "background", "union_roi_overlap_px"] == 0
+    ).all()
     assert not first["fallback_reason"].fillna("").astype(bool).any()
 
     for row in first.itertuples():

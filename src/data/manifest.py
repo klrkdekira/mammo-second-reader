@@ -1,19 +1,19 @@
 """Shared manifest schema for all mammography datasets.
 
 Every CSV that drives MammogramDataset must conform to this schema.
-Required columns are `image_id` and `label`; all others are optional
+Required columns are `image_id` and `label`. All others are optional
 and may be absent or NaN for datasets that do not carry them.
 
 Column glossary
 ---------------
-image_id        : str  - path stem relative to image_root; loader appends
+image_id        : str  - path stem relative to image_root. The loader appends
                          `.npy` (cached) or `.dcm` (raw).
 label           : int  - 0 = benign, 1 = malignant.
 patient_id      : str  - for patient-level leakage checks across splits.
 dataset         : str  - source identifier, e.g. "cbis_ddsm", "inbreast".
 birads_density  : int  - BI-RADS breast-density category 1-4.
 birads_assessment: int - BI-RADS assessment category 1-6 (INbreast primary).
-roi_mask_id     : str  - path stem of the binary lesion-mask file; same
+roi_mask_id     : str  - path stem of the binary lesion-mask file. Same
                          root convention as image_id.
 pathology       : str  - raw string label before binary collapse (CBIS-DDSM).
 lesion_type     : str  - "mass" or "calcification" (CBIS-DDSM).

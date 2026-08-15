@@ -38,7 +38,7 @@ def rasterise(
         points = np.asarray(roi.points, dtype=np.float64)
         if points.size == 0:
             continue
-        # Point_px is (x, y); clip into frame and round to integer pixels.
+        # Point_px is (x, y). Clip into frame and round to integer pixels.
         xs = np.clip(np.rint(points[:, 0]), 0, width - 1).astype(np.int32)
         ys = np.clip(np.rint(points[:, 1]), 0, height - 1).astype(np.int32)
         if len(xs) >= MIN_POLYGON_POINTS:

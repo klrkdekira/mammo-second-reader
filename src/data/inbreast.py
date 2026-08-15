@@ -28,7 +28,7 @@ LOGGER = logging.getLogger(__name__)
 INGEST_VERSION = 1
 
 # Fixed before external predictions were generated. BI-RADS 3 is included in
-# the benign class; no images are excluded.
+# the benign class. No images are excluded.
 MALIGNANT_ASSESSMENTS = ("4a", "4b", "4c", "5", "6")
 BENIGN_ASSESSMENTS = ("1", "2", "3")
 LABEL_RULE = "birads_4a4b4c5and6_malignant__birads_123_benign__no_exclusions"
@@ -95,7 +95,7 @@ def read_rois(xml_path: str | Path) -> list[Roi]:
 def lesion_type_for(rois: Sequence[Roi]) -> str | None:
     """Return the lesion family used for subgroup analysis.
 
-    INbreast rows may contain both masses and calcifications; these are marked
+    INbreast rows may contain both masses and calcifications. These are marked
     as ``mixed`` instead of being assigned to either single-lesion stratum.
     """
     families = {roi.family for roi in rois}

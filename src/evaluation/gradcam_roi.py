@@ -40,7 +40,7 @@ def pointing_game(cam: np.ndarray, roi: np.ndarray) -> bool:
 def energy_pointing_game(cam: np.ndarray, roi: np.ndarray) -> float:
     """Fraction of total Grad-CAM energy lying inside the ROI.
 
-    A perfect localiser approaches 1.0; a model that ignores the lesion scores
+    A perfect localiser approaches 1.0. A model that ignores the lesion scores
     roughly the ROI's area fraction. Robust to tiny lesions, where the
     single-pixel pointing game is noisy and IoU is structurally near-zero.
     """

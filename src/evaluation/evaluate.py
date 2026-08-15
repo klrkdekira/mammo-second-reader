@@ -67,9 +67,9 @@ def _gradcam_roi_panel(
 
     For every malignant case, score the best single model's Grad-CAM heatmap
     against the lesion ROI mask three ways (pointing game, IoU, centroid
-    distance; see gradcam_roi), then report them for all malignant cases and
+    distance, see gradcam_roi), then report them for all malignant cases and
     split by predicted-correct (TP) vs predicted-incorrect (FN). The expected
-    pattern is high agreement on TP and low on FN; its absence flags a model
+    pattern is high agreement on TP and low on FN. Its absence flags a model
     that is right for the wrong reasons.
 
     Cases with a zero-energy heatmap (see gradcam_roi.is_degenerate) are

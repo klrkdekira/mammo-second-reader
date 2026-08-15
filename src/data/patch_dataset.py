@@ -53,7 +53,9 @@ class PatchDataset(Dataset):
             raise FileNotFoundError(f"Patch array not found: {path}")
         arr = np.load(path)
         if arr.ndim != 2:
-            raise ValueError(f"Patch array must be two-dimensional, got {arr.shape}: {path}")
+            raise ValueError(
+                f"Patch array must be two-dimensional, got {arr.shape}: {path}"
+            )
         if self.transform is not None:
             transformed = self.transform(image=arr)
             arr = transformed["image"] if isinstance(transformed, dict) else transformed

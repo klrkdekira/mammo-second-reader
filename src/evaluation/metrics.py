@@ -5,7 +5,7 @@ weak headline scalar (the majority-class floor is already about 59 percent),
 so AUC, sensitivity, specificity, and PPV stay the primary reporting set, the
 same one every paper this project benchmarks against uses (Wang 2024 Tables 4
 and 5, Shen 2019). Accuracy is still computed and stored alongside them for
-completeness; just don't read it as the headline.
+completeness. Just don't read it as the headline.
 
 Everything in this project routes through `evaluate()`. No duplicate
 metric definitions are permitted anywhere else.
