@@ -11,6 +11,7 @@ import dataclasses
 import json
 import logging
 import tomllib
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -291,6 +292,18 @@ def _subset_name(run_name: str, subset: str) -> str:
     return run_name if subset == "full" else f"{run_name}_{subset}"
 
 
+def subset_names(subsets: Sequence[tuple[object, ...]]) -> list[str]:
+    """Return the pre-registered subset names in evaluation order.
+
+    Kept separate from the payload literal so that widening the subset tuple
+    cannot silently break the provenance record again. An earlier revision
+    added the frame and logits to each tuple and left this unpacking at two
+    elements, which raised `ValueError` after inference but before the metrics
+    were written.
+    """
+    return [str(entry[0]) for entry in subsets]
+
+
 def _predict_logits(
     model: torch.nn.Module, loader: DataLoader, device: torch.device
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -490,9 +503,7 @@ def main(
             "model_source": external.internal_run,
             "threshold_source": "internal_validation_fold",
             "calibration_source": "internal_validation_fold",
-            "subsets_pre_registered_before_inference": [
-                subset for subset, _ in subsets
-            ],
+            "subsets_pre_registered_before_inference": subset_names(subsets),
             "label_construct": (
                 "INbreast BI-RADS assessment, not biopsy-confirmed pathology as "
                 "in CBIS-DDSM training labels"

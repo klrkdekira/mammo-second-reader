@@ -236,6 +236,18 @@ results/predictions/*
 !results/figures/
 results/figures/*
 !results/figures/*.png
+# Cold external evidence: the report's Chapter 5 external result must be
+# hash-verifiable from the repository. Metrics and predictions only, no images.
+!results/external/
+results/external/*
+!results/external/*.json
+!results/external/predictions/
+results/external/predictions/*
+!results/external/predictions/*.csv
+# Post-hoc leakage sensitivity backing Table 6.
+!results/leakage_sensitivity/
+results/leakage_sensitivity/*
+!results/leakage_sensitivity/*.json
 sync_cuda.sh
 sync_results.sh
 .cuda-commit
