@@ -1,6 +1,7 @@
 """Tests for the external evaluation protocol."""
 
 import json
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -12,6 +13,7 @@ from src.evaluation.external import (
     external_audit,
     load_external_config,
     load_locked_operating_point,
+    subset_names,
 )
 
 _TEMPERATURE = 1.25
@@ -318,3 +320,25 @@ def test_external_predictions_feed_the_internal_bootstrap_unchanged(tmp_path):
         "dense_breast_sensitivity_at_fixed_specificity",
     ):
         assert name in intervals["metrics"]
+
+
+def test_subset_names_survive_a_widened_subset_tuple():
+    """Regression: the payload once unpacked two elements from four-tuples.
+
+    `subsets` carries (name, manifest_path, frame, logits). An earlier revision
+    widened it from two elements and left the provenance comprehension at two,
+    so `run_external_evaluation` raised ValueError after inference but before
+    writing the metrics. Any future widening must keep this passing.
+    """
+    two = [("full", Path("a.csv")), ("lesion_present", Path("b.csv"))]
+    four = [
+        ("full", Path("a.csv"), object(), object()),
+        ("lesion_present", Path("b.csv"), object(), object()),
+    ]
+
+    assert subset_names(two) == ["full", "lesion_present"]
+    assert subset_names(four) == ["full", "lesion_present"]
+
+
+def test_subset_names_preserves_evaluation_order():
+    assert subset_names([("lesion_present",), ("full",)]) == ["lesion_present", "full"]

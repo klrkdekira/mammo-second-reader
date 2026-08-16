@@ -4,7 +4,7 @@ PY ?= uv run python3
 # TkAgg and dies on a headless host with "couldn't connect to display".
 export MPLBACKEND := Agg
 
-.PHONY: all sync webapp splits cache cache-roi cache-highres patch-data patch-qa finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-regularised-extensions train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-regularised-extensions evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds reproduce-regularised-extensions results clean-models clean pipeline
+.PHONY: all sync webapp splits cache cache-roi cache-highres patch-data patch-qa finetune-fixture inbreast-manifest inbreast-cache evaluate-inbreast-cold reproduce-inbreast-cold clean-cache data train train-baseline train-regularised-base train-regularised-heavy-aug train-regularised-label-smooth train-regularised-mixup train-regularised-combined train-regularisation train-regularised-extensions train-vgg16-scratch train-vgg16-transfer train-vgg19-transfer train-resnet50-transfer train-efficientnet_b4-transfer train-transfer train-vgg16-seed-study train-vgg16-highres train-vgg16-highres-seed-study evaluate-regularised-extensions leakage-sensitivity evaluate-vgg16-seed-study evaluate-vgg16-highres evaluate-vgg16-highres-seed-study clean-results evaluate evaluate-existing evaluate-ensemble statistics figures freeze-evidence reproduce-existing reproduce-focused-highres reproduce-focused-highres-seeds reproduce-regularised-extensions results clean-models clean pipeline
 
 # Default target
 all: clean sync pipeline
@@ -142,6 +142,11 @@ evaluate-regularised-extensions:
 	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_base_120.toml
 	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_label_smooth_120.toml
 	$(PY) -m src.evaluation.evaluate --config configs/regularised_extensions/regularised_mixup_120.toml
+
+# Post-hoc only. Reads saved predictions and the Stage 0 exclusion ledger.
+# Writes results/leakage_sensitivity/ and never touches the internal freeze.
+leakage-sensitivity:
+	$(PY) -m src.evaluation.leakage_sensitivity
 
 train: train-baseline train-regularisation train-vgg16-scratch train-transfer
 
