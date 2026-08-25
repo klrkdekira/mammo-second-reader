@@ -19,10 +19,11 @@ def _splits(tmp_path, n_train=12, n_val=8, nested=True):
     def make(split, n):
         rows = []
         for i in range(n):
+            case = i if split == "train" else i + 1000
             # Real CBIS-DDSM ids are nested paths; that nesting is what forces
             # the flattening this builder exists to do.
             image_id = (
-                f"Mass-Training_P_{i:05d}_LEFT_CC/1.3.6.1.{i}/1-1"
+                f"Mass-Training_P_{case:05d}_LEFT_CC/1.3.6.1.{case}/1-1"
                 if nested
                 else f"img_{split}_{i}"
             )
@@ -33,7 +34,7 @@ def _splits(tmp_path, n_train=12, n_val=8, nested=True):
                 {
                     "image_id": image_id,
                     "label": i % 2,
-                    "patient_id": f"P_{i:05d}",
+                    "patient_id": f"P_{case:05d}",
                     "birads_density": (i % 4) + 1,
                     "lesion_type": "mass" if i % 2 else "calcification",
                 }

@@ -1,10 +1,9 @@
 """Build deterministic, patient-disjoint CBIS-DDSM lesion-patch manifests.
 
 Stage 0 deliberately reads only the official *training* case-description CSVs.
-The existing whole-image train/validation manifests provide the locked patient
-assignment. Their test patients are used only as an exclusion set.  Images are
-cleaned and breast-cropped at native resolution before aligned 224-pixel crops
-are extracted.
+The canonical, patient-disjoint whole-image manifests provide the locked patient
+assignment. Images are cleaned and breast-cropped at native resolution before
+aligned 224-pixel crops are extracted.
 
 The overlap rule follows the cited Shen et al. reference implementation:
 ``max(intersection / ROI area, intersection / patch area) >= cutoff``.  Both
@@ -35,8 +34,9 @@ from tqdm import tqdm
 from src.config import setup_logging
 from src.data.cbis_ddsm import DICOMPathResolver
 from src.data.dicom_to_png import _find_dicom
+from src.data.manifest import assert_patient_disjoint, read_split_frames
 from src.data.preprocessing import load_dicom, preprocess_aligned_array
-from src.data.splits import _build_dataframe
+from src.data.splits import EXCLUSION_COLUMNS, _build_dataframe
 
 LOGGER = logging.getLogger(__name__)
 
@@ -74,14 +74,6 @@ MANIFEST_COLUMNS = (
     "union_roi_overlap_px",
     "tissue_fraction",
     "fallback_reason",
-)
-EXCLUSION_COLUMNS = (
-    "patient_id",
-    "development_split",
-    "n_train_images",
-    "n_val_images",
-    "n_test_images",
-    "reason",
 )
 
 
@@ -167,7 +159,6 @@ class Overlap:
     score: float
     roi_coverage: float
     patch_fraction: float
-    intersection_px: int
 
 
 def _sha256_file(path: Path) -> str:
@@ -212,13 +203,13 @@ def overlap_with_roi(mask: np.ndarray, box: PatchBox) -> Overlap:
     binary = np.asarray(mask) > 0
     roi_area = int(binary.sum())
     if roi_area == 0:
-        return Overlap(0.0, 0.0, 0.0, 0)
+        return Overlap(0.0, 0.0, 0.0)
     patch = binary[box.y0 : box.y1, box.x0 : box.x1]
     intersection = int(patch.sum())
     patch_area = int((box.y1 - box.y0) * (box.x1 - box.x0))
     coverage = intersection / roi_area
     fraction = intersection / patch_area
-    return Overlap(max(coverage, fraction), coverage, fraction, intersection)
+    return Overlap(max(coverage, fraction), coverage, fraction)
 
 
 def _candidate_centres(
@@ -316,83 +307,15 @@ def sample_background_boxes(
     return list(boxes.items())
 
 
-def _read_locked_split_frames(splits_dir: Path) -> dict[str, pd.DataFrame]:
-    """Read the three existing manifests without altering them."""
-    frames: dict[str, pd.DataFrame] = {}
-    for split in ("train", "val", "test"):
-        path = splits_dir / f"{split}.csv"
-        if not path.is_file():
-            raise FileNotFoundError(f"Required locked split manifest not found: {path}")
-        frame = pd.read_csv(path)
-        missing = {"patient_id", "image_id"} - set(frame.columns)
-        if missing:
-            raise ValueError(f"{path} is missing columns: {sorted(missing)}")
-        frames[split] = frame
-    return frames
-
-
-def test_overlap_exclusion_ledger(
-    frames: dict[str, pd.DataFrame],
-) -> pd.DataFrame:
-    """List development patients quarantined because they also occur in test.
-
-    Train/validation overlap remains a hard error because there is no valid
-    precedence rule between those two development roles.  A train/test or
-    validation/test collision is resolved conservatively by retaining the
-    patient only in test and recording every removed development image.
-    """
-    patients = {
-        split: set(frame["patient_id"].astype(str)) for split, frame in frames.items()
-    }
-    train_val = patients["train"] & patients["val"]
-    if train_val:
-        examples = ", ".join(sorted(train_val)[:5])
-        raise ValueError(
-            "Patient leakage between locked train and val manifests: " + examples
-        )
-
-    rows: list[dict[str, object]] = []
-    test_patients = patients["test"]
-    for development_split in ("train", "val"):
-        for patient_id in sorted(patients[development_split] & test_patients):
-            rows.append(
-                {
-                    "patient_id": patient_id,
-                    "development_split": development_split,
-                    "n_train_images": int(
-                        (frames["train"]["patient_id"].astype(str) == patient_id).sum()
-                    ),
-                    "n_val_images": int(
-                        (frames["val"]["patient_id"].astype(str) == patient_id).sum()
-                    ),
-                    "n_test_images": int(
-                        (frames["test"]["patient_id"].astype(str) == patient_id).sum()
-                    ),
-                    "reason": "patient_id_also_present_in_locked_test",
-                }
-            )
-    return pd.DataFrame(rows, columns=EXCLUSION_COLUMNS)
-
-
 def _read_split_assignments(
     splits_dir: Path,
 ) -> tuple[dict[str, str], dict[str, set[str]]]:
-    """Return clean development assignments, quarantining test collisions."""
-    frames = _read_locked_split_frames(splits_dir)
-    exclusions = test_overlap_exclusion_ledger(frames)
-    excluded = set(exclusions["patient_id"].astype(str))
-    if excluded:
-        LOGGER.warning(
-            "Quarantining %d development patient(s) also present in locked test: %s",
-            len(excluded),
-            ", ".join(sorted(excluded)[:10]),
-        )
+    """Return development assignments from canonical patient-disjoint splits."""
+    frames = read_split_frames(splits_dir)
+    assert_patient_disjoint(frames)
     patient_split: dict[str, str] = {}
     image_ids: dict[str, set[str]] = {}
-    for split, original in frames.items():
-        frame = original
-        if split in ("train", "val"):
-            frame = frame[~frame["patient_id"].astype(str).isin(excluded)]
+    for split, frame in frames.items():
         image_ids[split] = set(frame["image_id"].astype(str))
         if split in ("train", "val"):
             for patient_id in frame["patient_id"].astype(str).unique():
@@ -435,13 +358,11 @@ def _reconcile_locked_image_ids(source: pd.DataFrame, splits_dir: Path) -> pd.Da
     join below preserves the exact locked path while rejecting absent or
     ambiguous physical cases.
     """
-    frames = _read_locked_split_frames(splits_dir)
-    exclusions = test_overlap_exclusion_ledger(frames)
-    excluded = set(exclusions["patient_id"].astype(str))
+    frames = read_split_frames(splits_dir)
+    assert_patient_disjoint(frames)
     locked: dict[tuple[str, str, str, str, str], set[str]] = {}
     for split in ("train", "val"):
         frame = frames[split]
-        frame = frame[~frame["patient_id"].astype(str).isin(excluded)]
         for _, row in frame.iterrows():
             case = _image_case_key(
                 row["image_id"], row["patient_id"], row.get("lesion_type", "")
@@ -474,38 +395,6 @@ def _reconcile_locked_image_ids(source: pd.DataFrame, splits_dir: Path) -> pd.Da
         )
     reconciled["image_id"] = resolved_ids
     return reconciled
-
-
-def _write_quarantined_whole_image_splits(
-    frames: dict[str, pd.DataFrame], exclusions: pd.DataFrame, out_dir: Path
-) -> list[Path]:
-    """Write non-destructive whole-image splits for the later matched ablation."""
-    excluded = set(exclusions["patient_id"].astype(str))
-    clean_dir = out_dir / "whole_image_splits"
-    clean_dir.mkdir(parents=True, exist_ok=True)
-    outputs = []
-    clean_frames: dict[str, pd.DataFrame] = {}
-    for split, original in frames.items():
-        frame = original.copy()
-        if split in ("train", "val"):
-            frame = frame[~frame["patient_id"].astype(str).isin(excluded)]
-        frame = frame.reset_index(drop=True)
-        clean_frames[split] = frame
-        path = clean_dir / f"{split}.csv"
-        frame.to_csv(path, index=False, lineterminator="\n")
-        outputs.append(path)
-    clean_patients = {
-        split: set(frame["patient_id"].astype(str))
-        for split, frame in clean_frames.items()
-    }
-    if any(
-        clean_patients[left] & clean_patients[right]
-        for left, right in (("train", "val"), ("train", "test"), ("val", "test"))
-    ):
-        raise ValueError(
-            "Quarantined whole-image splits are still not patient-disjoint"
-        )
-    return outputs
 
 
 def build_lesion_source_manifest(
@@ -906,7 +795,7 @@ def generate_patch_manifests(
                     box=box,
                     source_shape=image.shape,
                     breast_box=breast_box,
-                    overlap=Overlap(0.0, 0.0, 0.0, 0),
+                    overlap=Overlap(0.0, 0.0, 0.0),
                     union_overlap_px=union_overlap,
                     tissue_fraction=tissue_fraction,
                     fallback_reason="",
@@ -927,14 +816,20 @@ def main(
 ) -> None:
     """Build, validate, freeze, and visually audit Stage 0 patch data."""
     setup_logging()
-    frames = _read_locked_split_frames(splits_dir)
-    exclusions = test_overlap_exclusion_ledger(frames)
+    frames = read_split_frames(splits_dir)
+    assert_patient_disjoint(frames)
+    exclusion_path = splits_dir / "excluded-test-overlap-patients.csv"
+    if not exclusion_path.is_file():
+        raise FileNotFoundError(
+            f"Canonical split exclusion ledger not found: {exclusion_path}"
+        )
+    exclusions = pd.read_csv(exclusion_path)
+    missing_exclusion_columns = set(EXCLUSION_COLUMNS) - set(exclusions.columns)
+    if missing_exclusion_columns:
+        raise ValueError(
+            f"{exclusion_path} is missing columns: {sorted(missing_exclusion_columns)}"
+        )
     out_dir.mkdir(parents=True, exist_ok=True)
-    exclusion_path = out_dir / "excluded-test-overlap-patients.csv"
-    exclusions.to_csv(exclusion_path, index=False, lineterminator="\n")
-    clean_split_paths = _write_quarantined_whole_image_splits(
-        frames, exclusions, out_dir
-    )
     source = build_lesion_source_manifest(metadata_dir, raw_root, splits_dir)
     combined, summary = generate_patch_manifests(source, raw_root, out_dir, config)
     validate_class_coverage(combined)
@@ -960,6 +855,7 @@ def main(
         str(path): _sha256_file(path)
         for path in [
             *(splits_dir / f"{split}.csv" for split in ("train", "val", "test")),
+            exclusion_path,
             *(
                 metadata_dir / f"{kind}_case_description_train_set.csv"
                 for kind in ("mass", "calc")
@@ -973,15 +869,8 @@ def main(
             "val.csv",
             "lesion-sources.csv",
             "qa-summary.json",
-            "excluded-test-overlap-patients.csv",
         )
     }
-    outputs.update(
-        {
-            path.relative_to(out_dir).as_posix(): _sha256_file(path)
-            for path in clean_split_paths
-        }
-    )
     patch_digest = hashlib.sha256()
     for relative in sorted(combined["patch_path"].astype(str)):
         patch_digest.update(relative.encode("utf-8"))

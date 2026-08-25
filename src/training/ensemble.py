@@ -17,6 +17,7 @@ from torch.utils.data import DataLoader
 from src.config import get_device, load_ensemble_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
+from src.data.manifest import validate_split_paths
 from src.evaluation.audit import build_audit, probability_to_logits
 from src.evaluation.metrics import evaluate, youden_threshold
 from src.evaluation.predictions import (
@@ -52,6 +53,7 @@ def _append_record(record: dict, path: Path = METRICS_PATH) -> None:
 def main(config_path: Path) -> None:
     setup_logging()
     cfg = load_ensemble_config(config_path)
+    validate_split_paths(cfg.train_csv, cfg.val_csv, cfg.test_csv)
 
     device = get_device()
     LOGGER.info("Using device %s", device)
@@ -72,8 +74,6 @@ def main(config_path: Path) -> None:
     y_prob = ensemble_predict(models, test_loader, device)
 
     # Choose the threshold on validation data so test labels stay untouched.
-    if cfg.val_csv is None:
-        raise ValueError("Ensemble evaluation requires val_csv.")
     val_ds = MammogramDataset(
         cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
     )
@@ -155,13 +155,10 @@ def main(config_path: Path) -> None:
         ),
         test_predictions,
     )
-    manifests = [cfg.test_csv]
-    if cfg.val_csv is not None:
-        manifests.insert(0, cfg.val_csv)
     record["provenance"] = build_run_provenance(
         config_path=config_path,
         checkpoint_paths=checkpoint_paths,
-        manifest_paths=manifests,
+        manifest_paths=[cfg.train_csv, cfg.val_csv, cfg.test_csv],
         prediction_paths=[validation_predictions, test_predictions],
         extra={
             "run_name": cfg.run_name,

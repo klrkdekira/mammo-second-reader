@@ -362,48 +362,14 @@ def test_locked_split_patient_overlap_is_rejected(tmp_path):
         pm._read_split_assignments(splits)
 
 
-def test_test_overlap_patient_is_quarantined_and_recorded(tmp_path):
+def test_test_overlap_patient_is_rejected_by_stage0(tmp_path):
     splits = _locked_splits(tmp_path)
     train = pd.read_csv(splits / "train.csv")
     train.loc[0, "patient_id"] = "patient_test"
     train.to_csv(splits / "train.csv", index=False)
 
-    frames = pm._read_locked_split_frames(splits)
-    ledger = pm.test_overlap_exclusion_ledger(frames)
-    assignments, image_ids = pm._read_split_assignments(splits)
-
-    assert ledger.to_dict("records") == [
-        {
-            "patient_id": "patient_test",
-            "development_split": "train",
-            "n_train_images": 1,
-            "n_val_images": 0,
-            "n_test_images": 1,
-            "reason": "patient_id_also_present_in_locked_test",
-        }
-    ]
-    assert "patient_test" not in assignments
-    assert "image_train" not in image_ids["train"]
-    assert "image_test" in image_ids["test"]
-
-
-def test_quarantined_whole_image_splits_are_patient_disjoint(tmp_path):
-    splits = _locked_splits(tmp_path)
-    train = pd.read_csv(splits / "train.csv")
-    train.loc[0, "patient_id"] = "patient_test"
-    train.to_csv(splits / "train.csv", index=False)
-    frames = pm._read_locked_split_frames(splits)
-    ledger = pm.test_overlap_exclusion_ledger(frames)
-
-    outputs = pm._write_quarantined_whole_image_splits(
-        frames, ledger, tmp_path / "stage0"
-    )
-
-    assert {path.name for path in outputs} == {"train.csv", "val.csv", "test.csv"}
-    clean_train = pd.read_csv(tmp_path / "stage0/whole_image_splits/train.csv")
-    clean_test = pd.read_csv(tmp_path / "stage0/whole_image_splits/test.csv")
-    assert clean_train.empty
-    assert set(clean_test["patient_id"]) == {"patient_test"}
+    with pytest.raises(ValueError, match="Patient leakage"):
+        pm._read_split_assignments(splits)
 
 
 def test_stage0_config_rejects_unknown_sampling_knob(tmp_path):

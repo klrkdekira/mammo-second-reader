@@ -78,6 +78,46 @@ def _package_versions() -> dict[str, str]:
     return versions
 
 
+def _command_output(args: list[str]) -> str | None:
+    try:
+        result = subprocess.run(args, check=True, capture_output=True, text=True)
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return result.stdout.strip() or None
+
+
+def runtime_environment() -> dict[str, object]:
+    """Describe the software and accelerator used for an evidence run."""
+    runtime: dict[str, object] = {
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "packages": _package_versions(),
+    }
+    try:
+        import torch
+
+        runtime["cuda_runtime"] = torch.version.cuda
+        runtime["cudnn"] = torch.backends.cudnn.version()
+        runtime["cuda_available"] = torch.cuda.is_available()
+        runtime["gpus"] = [
+            torch.cuda.get_device_name(index)
+            for index in range(torch.cuda.device_count())
+        ]
+    except ImportError:
+        runtime.update(
+            {
+                "cuda_runtime": None,
+                "cudnn": None,
+                "cuda_available": False,
+                "gpus": [],
+            }
+        )
+    runtime["nvidia_driver"] = _command_output(
+        ["nvidia-smi", "--query-gpu=driver_version", "--format=csv,noheader"]
+    )
+    return runtime
+
+
 def build_run_provenance(
     *,
     config_path: Path,
@@ -94,6 +134,8 @@ def build_run_provenance(
     root = Path(repo_root) if repo_root else Path(__file__).resolve().parents[2]
     preprocessing_paths = [
         root / "src/data/preprocessing.py",
+        root / "src/data/manifest.py",
+        root / "src/data/splits.py",
         root / "src/data/dataset.py",
         root / "src/data/augment.py",
         root / "src/data/dicom_to_png.py",
@@ -146,7 +188,11 @@ def build_run_provenance(
             "src",
             "configs",
             "tests",
+            "manifests",
             "Makefile",
+            "README.md",
+            "CORRECTED_RERUN_PROTOCOL.md",
+            "SUPERSEDED_EVIDENCE.md",
             "pyproject.toml",
             "uv.lock",
         )
@@ -177,11 +223,7 @@ def build_run_provenance(
             "preprocessing_files": preprocessing,
             "evaluation_files": evaluation,
         },
-        "runtime": {
-            "python": platform.python_version(),
-            "platform": platform.platform(),
-            "packages": _package_versions(),
-        },
+        "runtime": runtime_environment(),
     }
     if extra:
         record["experiment"] = extra

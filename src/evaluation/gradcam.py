@@ -5,8 +5,6 @@ in Selvaraju et al. 2020, with the layer-mapping for each architecture
 listed below.
 """
 
-from typing import cast
-
 import numpy as np
 import torch
 
@@ -15,24 +13,26 @@ TARGET_LAYERS = {
     "deeper": "features.4.0",
     "vgg16": "backbone.features.28",
     "vgg19": "backbone.features.34",
-    "resnet18": "backbone.layer4.1.conv2",
     "resnet50": "backbone.layer4.2.conv3",
-    "densenet121": "backbone.features.norm5",
-    "efficientnet_b0": "backbone.features.8",
     "efficientnet_b4": "backbone.features.8",
-    "mobilenet_v3_large": "backbone.features.16",
-    "convnext_tiny": "backbone.features.7",
 }
 
 
 def _resolve_layer(model: torch.nn.Module, dotted: str) -> torch.nn.Module:
-    curr: object = model
+    current: torch.nn.Module = model
     for part in dotted.split("."):
         if part.isdigit():
-            curr = curr.__getitem__(int(part))
+            if not isinstance(current, (torch.nn.Sequential, torch.nn.ModuleList)):
+                raise TypeError(
+                    f"Cannot index {type(current).__name__} while resolving {dotted!r}"
+                )
+            current = current[int(part)]
         else:
-            curr = getattr(curr, part)
-    return cast(torch.nn.Module, curr)
+            child = getattr(current, part)
+            if not isinstance(child, torch.nn.Module):
+                raise TypeError(f"{part!r} is not a module while resolving {dotted!r}")
+            current = child
+    return current
 
 
 def compute_gradcam(

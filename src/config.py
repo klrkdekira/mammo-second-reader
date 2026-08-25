@@ -79,9 +79,10 @@ class EnsembleConfig:
     seed: int
     run_name: str
     members: list[str]
+    train_csv: Path
+    val_csv: Path
     test_csv: Path
     image_root: Path
-    val_csv: Path | None = None
     image_size: int = 224
     batch_size: int = 32
     num_workers: int = 2
@@ -91,6 +92,7 @@ class EnsembleConfig:
 _TOP_LEVEL_KEYS = {"seed", "run_name", "output_dir", "data", "model", "train"}
 _ENSEMBLE_TOP_KEYS = {"seed", "run_name", "output_dir", "members", "data"}
 _ENSEMBLE_DATA_KEYS = {
+    "train_csv",
     "val_csv",
     "test_csv",
     "image_root",
@@ -170,14 +172,14 @@ def load_ensemble_config(path: Path) -> EnsembleConfig:
     data = raw.get("data", {})
     _reject_unknown_keys("[data]", data, _ENSEMBLE_DATA_KEYS)
 
-    val_csv = data.get("val_csv")
     return EnsembleConfig(
         seed=int(raw["seed"]),
         run_name=str(raw["run_name"]),
         members=list(raw["members"]),
+        train_csv=Path(data["train_csv"]),
+        val_csv=Path(data["val_csv"]),
         test_csv=Path(data["test_csv"]),
         image_root=Path(data["image_root"]),
-        val_csv=Path(val_csv) if val_csv else None,
         image_size=int(data.get("image_size", 224)),
         batch_size=int(data.get("batch_size", 32)),
         num_workers=int(

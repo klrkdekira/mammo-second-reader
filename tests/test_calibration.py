@@ -8,7 +8,6 @@ from torch import nn
 from src.evaluation.calibration import (
     TemperatureScaler,
     expected_calibration_error,
-    fit_temperature,
     fit_temperature_with_diagnostics,
     reliability_bins,
 )
@@ -27,7 +26,7 @@ def test_fit_temperature_lowers_validation_nll_on_overconfident_logits():
     criterion = nn.BCEWithLogitsLoss()
     nll_unscaled = float(criterion(logits, labels))
 
-    T = fit_temperature(logits, labels)
+    T = fit_temperature_with_diagnostics(logits, labels).temperature
     nll_scaled = float(criterion(logits / T, labels))
 
     assert T > 1.0

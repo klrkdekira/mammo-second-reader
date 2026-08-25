@@ -1,6 +1,7 @@
 """Build train, val, and test CSVs from the official CBIS-DDSM partition."""
 
 import logging
+import os
 from pathlib import Path
 
 import click
@@ -9,6 +10,7 @@ from sklearn.model_selection import StratifiedGroupKFold
 
 from src.config import setup_logging
 from src.data.cbis_ddsm import DICOMPathResolver
+from src.data.manifest import assert_patient_disjoint
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,6 +19,15 @@ LABEL_MAP = {
     "BENIGN_WITHOUT_CALLBACK": 0,
     "MALIGNANT": 1,
 }
+SPLIT_NAMES = ("train", "val", "test")
+EXCLUSION_COLUMNS = (
+    "patient_id",
+    "development_split",
+    "n_train_images",
+    "n_val_images",
+    "n_test_images",
+    "reason",
+)
 
 
 def _collapse_labels(df: pd.DataFrame) -> pd.DataFrame:
@@ -135,6 +146,103 @@ def carve_validation(
     )
 
 
+def test_overlap_exclusion_ledger(
+    frames: dict[str, pd.DataFrame],
+) -> pd.DataFrame:
+    """Record development patients removed under locked-test precedence.
+
+    The official test role takes precedence over train/validation when a patient
+    occurs in metadata from more than one lesion family. Train/validation
+    overlap is still a hard error because neither development role has priority.
+    """
+    patients = {
+        split: set(frame["patient_id"].astype(str)) for split, frame in frames.items()
+    }
+    train_val = patients["train"] & patients["val"]
+    if train_val:
+        examples = ", ".join(sorted(train_val)[:5])
+        raise ValueError("Patient leakage between train and val manifests: " + examples)
+
+    rows: list[dict[str, object]] = []
+    test_patients = patients["test"]
+    for development_split in ("train", "val"):
+        for patient_id in sorted(patients[development_split] & test_patients):
+            rows.append(
+                {
+                    "patient_id": patient_id,
+                    "development_split": development_split,
+                    "n_train_images": int(
+                        (frames["train"]["patient_id"].astype(str) == patient_id).sum()
+                    ),
+                    "n_val_images": int(
+                        (frames["val"]["patient_id"].astype(str) == patient_id).sum()
+                    ),
+                    "n_test_images": int(
+                        (frames["test"]["patient_id"].astype(str) == patient_id).sum()
+                    ),
+                    "reason": "patient_id_also_present_in_locked_test",
+                }
+            )
+    return pd.DataFrame(rows, columns=EXCLUSION_COLUMNS)
+
+
+def quarantine_test_overlaps(
+    frames: dict[str, pd.DataFrame],
+) -> tuple[dict[str, pd.DataFrame], pd.DataFrame]:
+    """Remove test-overlap patients from development and validate the result."""
+    ledger = test_overlap_exclusion_ledger(frames)
+    excluded = set(ledger["patient_id"].astype(str))
+    clean: dict[str, pd.DataFrame] = {}
+    for split in SPLIT_NAMES:
+        frame = frames[split]
+        if split in ("train", "val") and excluded:
+            frame = frame[~frame["patient_id"].astype(str).isin(excluded)]
+        clean[split] = frame.reset_index(drop=True)
+    assert_patient_disjoint(clean)
+    return clean, ledger
+
+
+def write_split_bundle(
+    frames: dict[str, pd.DataFrame],
+    ledger: pd.DataFrame,
+    splits_dir: Path,
+) -> dict[str, Path]:
+    """Atomically write one validated canonical split bundle and its ledger."""
+    assert_patient_disjoint(frames)
+    splits_dir.mkdir(parents=True, exist_ok=True)
+    outputs: dict[str, Path] = {}
+    payloads: list[tuple[str, pd.DataFrame]] = [
+        *((split, frames[split]) for split in SPLIT_NAMES),
+        ("excluded-test-overlap-patients", ledger),
+    ]
+    for name, frame in payloads:
+        path = splits_dir / f"{name}.csv"
+        temporary = path.with_suffix(".csv.tmp")
+        frame.to_csv(temporary, index=False, lineterminator="\n")
+        os.replace(temporary, path)
+        outputs[name] = path
+        if name in SPLIT_NAMES:
+            labels = frame["label"].value_counts().to_dict()
+            LOGGER.info(
+                "Wrote %s: rows=%d patients=%d benign=%d malignant=%d path=%s",
+                name,
+                len(frame),
+                frame["patient_id"].nunique(),
+                labels.get(0, 0),
+                labels.get(1, 0),
+                path,
+            )
+        else:
+            LOGGER.info(
+                "Wrote %s: rows=%d patients=%d path=%s",
+                name,
+                len(frame),
+                frame["patient_id"].nunique(),
+                path,
+            )
+    return outputs
+
+
 def main(
     raw_dir: Path,
     dicom_dir: Path,
@@ -146,8 +254,6 @@ def main(
     raw_dir = Path(raw_dir)
     dicom_dir = Path(dicom_dir)
     splits_dir = Path(splits_dir)
-    splits_dir.mkdir(parents=True, exist_ok=True)
-
     LOGGER.info("Building DICOM path index from %s ...", dicom_dir)
     resolver = DICOMPathResolver(dicom_dir)
 
@@ -172,15 +278,14 @@ def main(
     train_full = collapse_to_image_level(pd.concat(train_parts, ignore_index=True))
     test_df = collapse_to_image_level(pd.concat(test_parts, ignore_index=True))
     train_df, val_df = carve_validation(train_full, val_frac, seed)
-
-    for name, df in (
-        ("train.csv", train_df),
-        ("val.csv", val_df),
-        ("test.csv", test_df),
-    ):
-        out = splits_dir / name
-        df.to_csv(out, index=False)
-        LOGGER.info("Wrote %d rows to %s", len(df), out)
+    clean, ledger = quarantine_test_overlaps(
+        {"train": train_df, "val": val_df, "test": test_df}
+    )
+    LOGGER.warning(
+        "Locked-test precedence quarantined %d patient(s) from development",
+        ledger["patient_id"].nunique(),
+    )
+    write_split_bundle(clean, ledger, splits_dir)
 
 
 @click.command()
@@ -201,7 +306,7 @@ def main(
 @click.option(
     "--splits-dir",
     type=click.Path(path_type=Path),
-    default=Path("data/cbis-ddsm/training"),
+    default=Path("manifests/cbis-ddsm"),
     show_default=True,
     help="Output directory for train/val/test CSVs.",
 )

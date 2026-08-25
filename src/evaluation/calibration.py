@@ -109,18 +109,6 @@ def fit_temperature_with_diagnostics(
     )
 
 
-def fit_temperature(
-    val_logits: torch.Tensor,
-    val_labels: torch.Tensor,
-    lr: float = 0.01,
-    max_iter: int = 200,
-) -> float:
-    """Fit and return the temperature."""
-    return fit_temperature_with_diagnostics(
-        val_logits, val_labels, lr=lr, max_iter=max_iter
-    ).temperature
-
-
 def _validate_probability_inputs(
     probs: np.ndarray, labels: np.ndarray, n_bins: int
 ) -> tuple[np.ndarray, np.ndarray]:

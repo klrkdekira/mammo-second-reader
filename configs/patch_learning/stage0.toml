@@ -3,7 +3,7 @@
 
 [paths]
 metadata_dir = "data/cbis-ddsm"
-splits_dir = "data/cbis-ddsm/training"
+splits_dir = "manifests/cbis-ddsm"
 raw_root = "data/cbis-ddsm/cbis_ddsm"
 out_dir = "results/patch_learning/data"
 

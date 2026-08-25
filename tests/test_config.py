@@ -33,6 +33,7 @@ output_dir = "models"
 members = ["vgg16_imagenet", "resnet50_imagenet"]
 
 [data]
+train_csv = "train.csv"
 val_csv = "val.csv"
 test_csv = "test.csv"
 image_root = "images"
@@ -80,15 +81,16 @@ def test_load_ensemble_config_parses(tmp_path):
     cfg = load_ensemble_config(_write(tmp_path, VALID_ENSEMBLE))
     assert isinstance(cfg, EnsembleConfig)
     assert cfg.members == ["vgg16_imagenet", "resnet50_imagenet"]
+    assert str(cfg.train_csv) == "train.csv"
     assert str(cfg.test_csv) == "test.csv"
     assert str(cfg.val_csv) == "val.csv"
     assert cfg.batch_size == 32
 
 
-def test_ensemble_missing_val_csv_is_none(tmp_path):
+def test_ensemble_requires_val_csv(tmp_path):
     no_val = VALID_ENSEMBLE.replace('val_csv = "val.csv"\n', "")
-    cfg = load_ensemble_config(_write(tmp_path, no_val))
-    assert cfg.val_csv is None
+    with pytest.raises(KeyError, match="val_csv"):
+        load_ensemble_config(_write(tmp_path, no_val))
 
 
 def test_ensemble_unknown_key_fails_loudly(tmp_path):

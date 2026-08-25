@@ -72,12 +72,12 @@ def render() -> None:
             overlay = Image.open(io.BytesIO(overlay_bytes))
         return prob, confidences, overlay
 
-    model_select.change(
+    model_select.change(  # type: ignore[attr-defined]
         sync_threshold,
         inputs=[model_select],
         outputs=[threshold],
     )
-    run_btn.click(
+    run_btn.click(  # type: ignore[attr-defined]
         run_inference,
         inputs=[file_input, model_select, threshold],
         outputs=[prob_out, label_out, heatmap_out],

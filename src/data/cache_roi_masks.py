@@ -18,6 +18,7 @@ from tqdm import tqdm
 
 from src.config import setup_logging
 from src.data.dicom_to_png import _cache_has_shape, _find_dicom
+from src.data.manifest import assert_patient_disjoint, read_split_frames
 from src.data.preprocessing import breast_bbox, breast_mask, load_dicom
 
 LOGGER = logging.getLogger(__name__)
@@ -28,11 +29,9 @@ _MISSING = ("", "nan", "<NA>", "None")
 def _collect_pairs(splits_dir: Path) -> dict[str, set[str]]:
     """Map each image_id to the set of roi_mask_ids referencing it."""
     pairs: dict[str, set[str]] = {}
-    for name in ("train.csv", "val.csv", "test.csv"):
-        path = splits_dir / name
-        if not path.exists():
-            continue
-        df = pd.read_csv(path)
+    frames = read_split_frames(splits_dir)
+    assert_patient_disjoint(frames)
+    for df in frames.values():
         if "roi_mask_id" not in df.columns:
             continue
         for image_id, rid in zip(df["image_id"].astype(str), df["roi_mask_id"]):
@@ -100,7 +99,7 @@ def main(splits_dir: Path, raw_root: Path, out_dir: Path, image_size: int) -> No
 @click.option(
     "--splits-dir",
     type=click.Path(path_type=Path),
-    default=Path("data/cbis-ddsm/training"),
+    default=Path("manifests/cbis-ddsm"),
     show_default=True,
 )
 @click.option(

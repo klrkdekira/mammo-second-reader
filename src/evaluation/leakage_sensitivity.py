@@ -29,7 +29,7 @@ import pandas as pd
 
 from src.evaluation.statistics import model_intervals, paired_comparison
 
-DEFAULT_LEDGER = Path("results/patch_learning/data/excluded-test-overlap-patients.csv")
+DEFAULT_LEDGER = Path("manifests/cbis-ddsm/excluded-test-overlap-patients.csv")
 DEFAULT_PREDICTIONS = Path("results/predictions")
 DEFAULT_OUT = Path("results/leakage_sensitivity/metrics-clean-subset.json")
 
