@@ -44,6 +44,8 @@ def test_build_run_provenance_hashes_inputs(tmp_path):
     assert result["prediction_files"][0]["sha256"] == sha256_file(predictions)
     assert result["experiment"]["seed"] == 42
     assert result["code"]["preprocessing_fingerprint"]
+    assert "cuda_runtime" in result["runtime"]
+    assert "nvidia_driver" in result["runtime"]
 
 
 def test_build_run_provenance_includes_run_specific_code(tmp_path):

@@ -21,6 +21,7 @@ from src.config import (
 )
 from src.data.augment import train_augment, val_augment
 from src.data.dataset import MammogramDataset
+from src.data.manifest import validate_split_paths
 from src.evaluation.metrics import evaluate, youden_threshold
 from src.models import build_model
 from src.models.transfer import (
@@ -36,7 +37,7 @@ from src.training.sampler import balanced_sampler
 LOGGER = logging.getLogger(__name__)
 
 
-def _seed_worker(worker_id: int) -> None:
+def _seed_worker(_worker_id: int) -> None:
     """Seed numpy/random in each DataLoader worker from its torch seed.
 
     Spawn workers start with fresh numpy/random state, so Albumentations'
@@ -285,6 +286,7 @@ def main(
         seed=cfg.seed if seed is None else seed,
         run_name=cfg.run_name if run_name is None else run_name,
     )
+    validate_split_paths(cfg.data.train_csv, cfg.data.val_csv, cfg.data.test_csv)
     set_global_seed(cfg.seed)
 
     device = get_device()

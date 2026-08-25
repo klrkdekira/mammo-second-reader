@@ -19,6 +19,7 @@ import pandas as pd
 
 from src.config import setup_logging
 from src.data.dicom_to_png import _find_dicom
+from src.data.manifest import assert_patient_disjoint, read_split_frames
 from src.web.archive import MAX_ARCHIVE_BYTES, MAX_EXTRACTED_BYTES
 
 LOGGER = logging.getLogger(__name__)
@@ -121,8 +122,10 @@ def write_archive(
     """Assemble the fine-tuning fixture archive and report what went into it."""
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
-    train_source = pd.read_csv(Path(splits_dir) / "train.csv")
-    val_source = pd.read_csv(Path(splits_dir) / "val.csv")
+    frames = read_split_frames(splits_dir, names=("train", "val"))
+    assert_patient_disjoint(frames)
+    train_source = frames["train"]
+    val_source = frames["val"]
 
     with tempfile.TemporaryDirectory(prefix="mammo-finetune-fixture-") as tmp:
         staging = Path(tmp)
@@ -262,7 +265,7 @@ def main(
 @click.option(
     "--splits-dir",
     type=click.Path(exists=True, file_okay=False, path_type=Path),
-    default=Path("data/cbis-ddsm/training"),
+    default=Path("manifests/cbis-ddsm"),
     show_default=True,
 )
 @click.option(

@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from src.config import get_device, setup_logging
 from src.data.augment import train_augment, val_augment
 from src.data.dataset import MammogramDataset
+from src.data.manifest import assert_patient_disjoint, read
 from src.evaluation.metrics import evaluate
 from src.models import build_model
 from src.training.callbacks import BestAUCCheckpoint
@@ -33,6 +34,7 @@ def main(
     train_csv = workdir / "train.csv"
     val_csv = workdir / "val.csv"
     image_root = workdir / "processed"
+    assert_patient_disjoint({"train": read(train_csv), "val": read(val_csv)})
 
     device = get_device()
     clean_name = (
@@ -51,7 +53,11 @@ def main(
             p.requires_grad = False
         backbone = getattr(model, "backbone", model)
         classifier = getattr(backbone, "classifier", None)
-        head = classifier[-1] if classifier is not None else backbone.fc
+        head = (
+            classifier[-1] if classifier is not None else getattr(backbone, "fc", None)
+        )
+        if not isinstance(head, torch.nn.Module):
+            raise ValueError(f"Model {clean_name!r} has no trainable classifier head")
         for p in head.parameters():
             p.requires_grad = True
 

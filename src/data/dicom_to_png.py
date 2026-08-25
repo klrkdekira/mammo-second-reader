@@ -5,10 +5,10 @@ from pathlib import Path
 
 import click
 import numpy as np
-import pandas as pd
 from tqdm import tqdm
 
 from src.config import setup_logging
+from src.data.manifest import assert_patient_disjoint, read_split_frames
 from src.data.preprocessing import preprocess
 
 LOGGER = logging.getLogger(__name__)
@@ -46,12 +46,13 @@ def main(
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    seen: set[str] = set()
-    for name in ("train.csv", "val.csv", "test.csv"):
-        path = splits_dir / name
-        if not path.exists():
-            continue
-        seen.update(pd.read_csv(path)["image_id"].astype(str).tolist())
+    frames = read_split_frames(splits_dir)
+    assert_patient_disjoint(frames)
+    seen = {
+        image_id
+        for frame in frames.values()
+        for image_id in frame["image_id"].astype(str)
+    }
 
     LOGGER.info("Caching %d images to %s", len(seen), out_dir)
     skipped = 0
@@ -76,7 +77,7 @@ def main(
 @click.option(
     "--splits-dir",
     type=click.Path(path_type=Path),
-    default=Path("data/cbis-ddsm/training"),
+    default=Path("manifests/cbis-ddsm"),
     show_default=True,
 )
 @click.option(

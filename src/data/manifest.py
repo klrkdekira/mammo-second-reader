@@ -20,6 +20,7 @@ lesion_type     : str  - "mass" or "calcification" (CBIS-DDSM).
 subtlety        : int  - radiologist subtlety rating 1-5 (CBIS-DDSM).
 """
 
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 
 import pandas as pd
@@ -85,3 +86,58 @@ def read(path: str | Path) -> pd.DataFrame:
     df = pd.read_csv(path)
     validate(df, source=str(path))
     return _coerce(df)
+
+
+def assert_patient_disjoint(frames: Mapping[str, pd.DataFrame]) -> None:
+    """Reject patient leakage between any pair of named manifest frames."""
+    patient_sets: dict[str, set[str]] = {}
+    for split, frame in frames.items():
+        if "patient_id" not in frame.columns:
+            raise ValueError(f"{split} manifest is missing required patient_id column")
+        if frame["patient_id"].isna().any():
+            raise ValueError(f"{split} manifest contains missing patient_id values")
+        patient_sets[split] = set(frame["patient_id"].astype(str))
+
+    names = list(patient_sets)
+    for index, left in enumerate(names):
+        for right in names[index + 1 :]:
+            overlap = patient_sets[left] & patient_sets[right]
+            if overlap:
+                examples = ", ".join(sorted(overlap)[:5])
+                raise ValueError(
+                    f"Patient leakage between {left} and {right} manifests: "
+                    f"{len(overlap)} overlapping patient(s); examples: {examples}"
+                )
+
+
+def read_split_frames(
+    splits_dir: str | Path,
+    names: Sequence[str] = ("train", "val", "test"),
+) -> dict[str, pd.DataFrame]:
+    """Read named split manifests from one directory using the shared schema."""
+    splits_dir = Path(splits_dir)
+    frames: dict[str, pd.DataFrame] = {}
+    for split in names:
+        path = splits_dir / f"{split}.csv"
+        if not path.is_file():
+            raise FileNotFoundError(f"Required split manifest not found: {path}")
+        frame = read(path)
+        if "patient_id" not in frame.columns:
+            raise ValueError(f"{path} is missing required patient_id column")
+        frames[split] = frame
+    return frames
+
+
+def validate_split_paths(
+    train_csv: str | Path,
+    val_csv: str | Path,
+    test_csv: str | Path,
+) -> None:
+    """Preflight three configured manifests and reject patient overlap."""
+    paths = {
+        "train": Path(train_csv),
+        "val": Path(val_csv),
+        "test": Path(test_csv),
+    }
+    frames = {name: read(path) for name, path in paths.items()}
+    assert_patient_disjoint(frames)

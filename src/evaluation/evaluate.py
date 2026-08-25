@@ -16,6 +16,7 @@ from torch.utils.data import DataLoader
 from src.config import Config, get_device, load_config, setup_logging
 from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
+from src.data.manifest import validate_split_paths
 from src.evaluation.audit import build_audit, logits_to_probability
 from src.evaluation.metrics import evaluate
 from src.evaluation.predictions import (
@@ -141,6 +142,7 @@ def main(
         seed=cfg.seed if seed is None else seed,
         run_name=cfg.run_name if run_name is None else run_name,
     )
+    validate_split_paths(cfg.data.train_csv, cfg.data.val_csv, cfg.data.test_csv)
     device = get_device()
 
     weights_path = cfg.output_dir / f"{cfg.run_name}.pt"

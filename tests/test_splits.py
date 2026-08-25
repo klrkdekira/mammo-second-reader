@@ -1,8 +1,17 @@
-"""Tests for image-level collapse of CBIS-DDSM per-abnormality rows."""
+"""Tests for CBIS-DDSM image collapse and canonical patient-disjoint splits."""
+
+import hashlib
+from pathlib import Path
 
 import pandas as pd
+import pytest
 
-from src.data.splits import collapse_to_image_level
+from src.data.manifest import assert_patient_disjoint, read_split_frames
+from src.data.splits import (
+    collapse_to_image_level,
+    quarantine_test_overlaps,
+    write_split_bundle,
+)
 
 COLUMNS = [
     "image_id",
@@ -73,3 +82,111 @@ def test_empty_frame_is_returned_unchanged():
     df = _df([])
     out = collapse_to_image_level(df)
     assert out.empty
+
+
+def _split_frame(rows):
+    return pd.DataFrame(rows, columns=COLUMNS)
+
+
+def test_mass_train_calc_test_collision_uses_locked_test_precedence():
+    collision = "P_cross_family"
+    frames = {
+        "train": _split_frame(
+            [_row("Mass-Training/case", 0, "mass", "roi_1", collision)]
+        ),
+        "val": _split_frame([_row("Mass-Training/val", 1, "mass", "roi_2", "P_val")]),
+        "test": _split_frame(
+            [_row("Calc-Test/case", 1, "calcification", "roi_3", collision)]
+        ),
+    }
+
+    clean, ledger = quarantine_test_overlaps(frames)
+
+    assert clean["train"].empty
+    assert set(clean["test"]["patient_id"]) == {collision}
+    assert ledger.to_dict("records") == [
+        {
+            "patient_id": collision,
+            "development_split": "train",
+            "n_train_images": 1,
+            "n_val_images": 0,
+            "n_test_images": 1,
+            "reason": "patient_id_also_present_in_locked_test",
+        }
+    ]
+    assert_patient_disjoint(clean)
+
+
+def test_train_validation_collision_has_no_precedence():
+    frames = {
+        "train": _split_frame([_row("train", 0, "mass", "r1", "P_shared")]),
+        "val": _split_frame([_row("val", 1, "mass", "r2", "P_shared")]),
+        "test": _split_frame([_row("test", 0, "mass", "r3", "P_test")]),
+    }
+
+    with pytest.raises(ValueError, match="train and val"):
+        quarantine_test_overlaps(frames)
+
+
+@pytest.mark.parametrize(
+    ("left", "right"),
+    [("train", "val"), ("train", "test"), ("val", "test")],
+)
+def test_preflight_rejects_every_pairwise_patient_collision(left, right):
+    frames = {
+        "train": _split_frame([_row("train", 0, "mass", "r1", "P_train")]),
+        "val": _split_frame([_row("val", 1, "mass", "r2", "P_val")]),
+        "test": _split_frame([_row("test", 0, "mass", "r3", "P_test")]),
+    }
+    frames[right].loc[0, "patient_id"] = frames[left].loc[0, "patient_id"]
+
+    with pytest.raises(ValueError, match=f"{left} and {right}"):
+        assert_patient_disjoint(frames)
+
+
+def test_split_bundle_is_deterministic_and_preflighted(tmp_path):
+    frames = {
+        "train": _split_frame([_row("train", 0, "mass", "r1", "P_train")]),
+        "val": _split_frame([_row("val", 1, "mass", "r2", "P_val")]),
+        "test": _split_frame([_row("test", 0, "mass", "r3", "P_test")]),
+    }
+    clean, ledger = quarantine_test_overlaps(frames)
+    outputs = write_split_bundle(clean, ledger, tmp_path)
+    first = {name: path.read_bytes() for name, path in outputs.items()}
+    write_split_bundle(clean, ledger, tmp_path)
+
+    assert first == {name: path.read_bytes() for name, path in outputs.items()}
+    assert_patient_disjoint(read_split_frames(tmp_path))
+
+
+def test_frozen_canonical_manifests_match_protocol():
+    expected = {
+        "train": (
+            "5d43333929275b63ddd321ff32437e14630c8d52400b3ddad47edd9e4375eabb",
+            2147,
+            1091,
+            {0: 1180, 1: 967},
+        ),
+        "val": (
+            "2351bea5fc9eb56035cc035c02a852b6bdfbbb149998161d925525be1e7613b5",
+            247,
+            126,
+            {0: 135, 1: 112},
+        ),
+        "test": (
+            "68937ee0b00a691d7a70be341889b4a5909184a0a80d2adc4c85b491f900b4cf",
+            645,
+            349,
+            {0: 381, 1: 264},
+        ),
+    }
+    root = Path("manifests/cbis-ddsm")
+    frames = read_split_frames(root)
+
+    for split, (digest, rows, patients, labels) in expected.items():
+        path = root / f"{split}.csv"
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == digest
+        assert len(frames[split]) == rows
+        assert frames[split]["patient_id"].nunique() == patients
+        assert frames[split]["label"].value_counts().sort_index().to_dict() == labels
+    assert_patient_disjoint(frames)

@@ -63,7 +63,3 @@ def metrics_by_density(
             }
         )
     return pd.DataFrame(rows)
-
-
-PAYNE_2025_SENSITIVITY = {1: 0.750, 2: 0.735, 3: 0.598, 4: 0.513}
-PAYNE_2025_INTERVAL_PER_1000 = {1: 1.8, 2: 2.6, 3: 4.8, 4: 7.9}
