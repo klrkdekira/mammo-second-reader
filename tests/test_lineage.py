@@ -5,7 +5,7 @@ import json
 import pytest
 
 from src.evaluation.freeze import freeze_evidence
-from src.evaluation.provenance import build_run_provenance, sha256_file
+from src.evaluation.lineage import build_run_lineage, sha256_file
 
 
 def test_sha256_file_is_stable(tmp_path):
@@ -17,7 +17,7 @@ def test_sha256_file_is_stable(tmp_path):
     assert sha256_file(path) != before
 
 
-def test_build_run_provenance_hashes_inputs(tmp_path):
+def test_build_run_lineage_hashes_inputs(tmp_path):
     config = tmp_path / "run.toml"
     checkpoint = tmp_path / "model.pt"
     split = tmp_path / "test.csv"
@@ -29,7 +29,7 @@ def test_build_run_provenance_hashes_inputs(tmp_path):
     threshold.write_text('{"youden_j": 0.5}\n')
     predictions.write_text("image_id,probability\na,0.2\n")
 
-    result = build_run_provenance(
+    result = build_run_lineage(
         config_path=config,
         checkpoint_paths=[checkpoint],
         manifest_paths=[split],
@@ -48,7 +48,7 @@ def test_build_run_provenance_hashes_inputs(tmp_path):
     assert "nvidia_driver" in result["runtime"]
 
 
-def test_build_run_provenance_includes_run_specific_code(tmp_path):
+def test_build_run_lineage_includes_run_specific_code(tmp_path):
     config = tmp_path / "run.toml"
     checkpoint = tmp_path / "model.pt"
     split = tmp_path / "test.csv"
@@ -60,7 +60,7 @@ def test_build_run_provenance_includes_run_specific_code(tmp_path):
     preprocessing.write_text("INGEST_VERSION = 1\n")
     evaluation.write_text("EVALUATION_VERSION = 1\n")
 
-    result = build_run_provenance(
+    result = build_run_lineage(
         config_path=config,
         checkpoint_paths=[checkpoint],
         manifest_paths=[split],
@@ -84,6 +84,8 @@ def _run(
     dirty=False,
     preprocessing="p",
     evaluation="e",
+    snapshot=None,
+    source="git",
 ):
     descriptor = {
         "path": str(evidence.resolve()),
@@ -99,9 +101,14 @@ def _run(
         "lesion_strata": [],
         "precision_recall": {},
         "probability_metrics": {},
-        "provenance": {
-            "version": 3,
-            "git": {"commit": commit, "dirty_evidence_files": dirty},
+        "lineage": {
+            "version": 4,
+            "git": {
+                "commit": commit,
+                "snapshot": snapshot,
+                "source": source,
+                "dirty_evidence_files": dirty,
+            },
             "config": descriptor,
             "checkpoints": [descriptor],
             "manifests": [descriptor],
@@ -144,7 +151,7 @@ def _statistics(path, models, evidence=None):
     )
 
 
-def test_freeze_evidence_requires_homogeneous_clean_provenance(tmp_path):
+def test_freeze_evidence_requires_homogeneous_clean_lineage(tmp_path):
     metrics = tmp_path / "metrics.json"
     output = tmp_path / "freeze.json"
     evidence = tmp_path / "evidence.bin"
@@ -169,7 +176,7 @@ def test_freeze_evidence_rejects_legacy_or_dirty_runs(tmp_path):
     metrics.write_text(json.dumps({"runs": [{"model": "legacy"}]}) + "\n")
     statistics = tmp_path / "statistics.json"
     _statistics(statistics, ["legacy"])
-    with pytest.raises(ValueError, match="missing provenance"):
+    with pytest.raises(ValueError, match="missing lineage"):
         freeze_evidence(metrics, output, statistics_path=statistics)
 
     evidence = tmp_path / "evidence.bin"
@@ -182,6 +189,23 @@ def test_freeze_evidence_rejects_legacy_or_dirty_runs(tmp_path):
         freeze_evidence(metrics, output, statistics_path=statistics)
 
 
+def test_freeze_evidence_requires_one_cuda_source_snapshot(tmp_path):
+    metrics = tmp_path / "metrics.json"
+    output = tmp_path / "freeze.json"
+    statistics = tmp_path / "statistics.json"
+    evidence = tmp_path / "evidence.bin"
+    evidence.write_bytes(b"frozen")
+    runs = [
+        _run("a", evidence, snapshot="a" * 64, source="cuda_sync_snapshot"),
+        _run("b", evidence, snapshot="b" * 64, source="cuda_sync_snapshot"),
+    ]
+    metrics.write_text(json.dumps({"runs": runs}) + "\n")
+    _statistics(statistics, ["a", "b"], evidence)
+
+    with pytest.raises(ValueError, match="different source worktree snapshots"):
+        freeze_evidence(metrics, output, statistics_path=statistics)
+
+
 def test_freeze_evidence_requires_case_level_predictions(tmp_path):
     metrics = tmp_path / "metrics.json"
     output = tmp_path / "freeze.json"
@@ -189,7 +213,7 @@ def test_freeze_evidence_requires_case_level_predictions(tmp_path):
     evidence = tmp_path / "evidence.bin"
     evidence.write_bytes(b"frozen")
     run = _run("model", evidence)
-    run["provenance"]["prediction_files"] = []
+    run["lineage"]["prediction_files"] = []
     metrics.write_text(json.dumps({"runs": [run]}) + "\n")
     _statistics(statistics, ["model"], evidence)
 
@@ -215,4 +239,23 @@ def test_focused_model_requires_both_pre_registered_comparisons(tmp_path):
     _statistics(statistics, [model], evidence)
 
     with pytest.raises(ValueError, match="vgg16_imagenet_448_minus"):
+        freeze_evidence(metrics, output, statistics_path=statistics)
+
+
+def test_transfer_seed_repeat_requires_matched_scratch_comparison(tmp_path):
+    metrics = tmp_path / "metrics.json"
+    output = tmp_path / "freeze.json"
+    statistics = tmp_path / "statistics.json"
+    evidence = tmp_path / "evidence.bin"
+    evidence.write_bytes(b"frozen")
+    models = ["vgg16_imagenet_seed7", "vgg16_scratch_seed7"]
+    metrics.write_text(
+        json.dumps({"runs": [_run(model, evidence) for model in models]}) + "\n"
+    )
+    _statistics(statistics, models, evidence)
+
+    with pytest.raises(
+        ValueError,
+        match="vgg16_imagenet_seed7_minus_vgg16_scratch_seed7",
+    ):
         freeze_evidence(metrics, output, statistics_path=statistics)

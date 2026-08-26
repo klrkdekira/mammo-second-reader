@@ -1,6 +1,6 @@
 TITLE = "Mammo Second Reader"
 
 DISCLAIMER = (
-    "Research Use Only. Not a diagnostic product. Not for clinical use. "
-    "Output should not be used for clinical decision-making."
+    "Research Use Only. This product has no diagnostic or clinical approval. "
+    "Do not use its output for clinical decisions."
 )

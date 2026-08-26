@@ -1,6 +1,6 @@
 """Build the locked INbreast external-test manifest.
 
-INbreast uses radiological BI-RADS assessments rather than biopsy outcomes.
+INbreast uses radiological BI-RADS assessments; biopsy outcomes are unavailable.
 Patient IDs are recovered from DICOM filenames because the CSV patient column
 has been removed. The manifest also retains the raw assessment, view, and
 laterality for subgroup analyses.

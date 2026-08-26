@@ -4,7 +4,7 @@
 # Secondary safeguards: calcification and BI-RADS 4 sensitivity at the
 # validation-derived 80% specificity threshold. ResNet-50 is retained as the
 # reference for the more balanced operating point.
-# Promotion gate: the paired AUC difference must be positive with a 95% CI
+# Promotion rule: the paired AUC difference must be positive with a 95% CI
 # above zero, and neither secondary sensitivity point estimate may fall by
 # more than 0.05. Passing this first run triggers repeats at seeds 7 and 2026
 # before the model can replace the current headline model.

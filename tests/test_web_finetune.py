@@ -36,7 +36,7 @@ def test_materialise_workdir_requires_train_and_val_csv(tmp_path):
     pd.DataFrame({"image_id": ["a"], "label": [0]}).to_csv(
         src_dir / "train.csv", index=False
     )
-    # val.csv deliberately missing.
+    # val.csv is absent to exercise manifest validation.
 
     zip_path = tmp_path / "batch.zip"
     with zipfile.ZipFile(zip_path, "w") as zf:

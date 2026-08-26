@@ -8,14 +8,14 @@ WARNING = (
     "CBIS-DDSM run; nothing is fitted on INbreast. Re-running after reading a "
     "result and keeping the better one would turn a generalisation test into "
     "selection on the test set. Load the existing result unless you intend to "
-    "spend the pre-registration."
+    "use the one-shot test."
 )
 
 NOTES = (
-    "INbreast labels are **radiological BI-RADS assessments**, not the "
-    "biopsy-confirmed pathology used for training, so the external target is a "
+    "INbreast labels are **radiological BI-RADS assessments**; training uses "
+    "biopsy-confirmed pathology. The external target is therefore a "
     "related but different construct. The dense-breast (D4) and mass strata are "
-    "small externally; read their intervals, not their point estimates."
+    "small externally; interpret their point estimates with their intervals."
 )
 
 
@@ -99,9 +99,7 @@ def render() -> None:
 
     gr.Markdown(NOTES)
 
-    with gr.Accordion(
-        "Run the cold evaluation (spends the pre-registration)", open=False
-    ):
+    with gr.Accordion("Run the cold evaluation (uses the one-shot test)", open=False):
         gr.Markdown(WARNING)
         acknowledge = gr.Checkbox(
             value=False,

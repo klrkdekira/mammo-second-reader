@@ -268,7 +268,7 @@ def test_shipped_config_points_at_the_promoted_candidate():
     assert config.image_size == 448
     assert str(config.image_root) == "data/inbreast/cache_448"
     assert config.manifest_lock is not None, (
-        "the manifest lock must be provenance-linked"
+        "the manifest lock must be linked to the evidence record"
     )
 
 
@@ -326,7 +326,7 @@ def test_subset_names_survive_a_widened_subset_tuple():
     """Regression: the payload once unpacked two elements from four-tuples.
 
     `subsets` carries (name, manifest_path, frame, logits). An earlier revision
-    widened it from two elements and left the provenance comprehension at two,
+    widened it from two elements and left the lineage comprehension at two,
     so `run_external_evaluation` raised ValueError after inference but before
     writing the metrics. Any future widening must keep this passing.
     """

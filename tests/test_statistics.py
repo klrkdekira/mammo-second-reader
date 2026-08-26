@@ -126,6 +126,35 @@ def test_focused_model_is_compared_with_both_references(tmp_path):
     assert "vgg16_imagenet_448_minus_resnet50_imagenet" in result["paired_comparisons"]
 
 
+def test_transfer_seed_repeats_are_compared_with_matched_scratch_runs(tmp_path):
+    predictions = tmp_path / "predictions"
+    predictions.mkdir()
+    names = [
+        "vgg16_imagenet_seed7",
+        "vgg16_scratch_seed7",
+        "vgg16_imagenet_seed2026",
+        "vgg16_scratch_seed2026",
+    ]
+    for name in names:
+        seed = 7 if name.endswith("seed7") else 2026
+        _frame(name, seed).to_csv(predictions / f"{name}.test.csv", index=False)
+    metrics = tmp_path / "metrics.json"
+    metrics.write_text(json.dumps({"runs": [{"model": name} for name in names]}))
+
+    result = generate_statistics(
+        metrics,
+        predictions,
+        tmp_path / "statistics.json",
+        n_resamples=20,
+        seed=2,
+    )
+
+    assert set(result["paired_comparisons"]) == {
+        "vgg16_imagenet_seed7_minus_vgg16_scratch_seed7",
+        "vgg16_imagenet_seed2026_minus_vgg16_scratch_seed2026",
+    }
+
+
 def test_regularised_extensions_are_compared_with_original_runs(tmp_path):
     predictions = tmp_path / "predictions"
     predictions.mkdir()
