@@ -246,6 +246,7 @@ results/leakage_sensitivity/*
 !results/leakage_sensitivity/*.json
 sync_results.sh
 sync_cuda.sh
+sync_patch_data.sh
 .cuda-commit
 .cuda-snapshot
 .cuda-status
@@ -258,3 +259,4 @@ scratches
 *.dcm
 .DS_Store
 References
+models

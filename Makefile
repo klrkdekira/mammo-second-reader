@@ -9,6 +9,19 @@ SHELL := /bin/bash
 PY ?= uv run python
 UV_CACHE_DIR ?= /tmp/mammo-second-reader-uv-cache
 ENSEMBLE_CONFIG ?= configs/ensemble.toml
+PATCH_CONFIG ?= configs/patch_learning/vgg16_patch.toml
+PATCH_DATA ?= results/patch_learning/data
+PATCH_CHECKPOINT ?= models/patch_learning/vgg16_patch.pt
+# Patch-transfer runs write their own evidence files. The frozen milestone
+# metrics and predictions must not gain in-progress patch runs (§3 and §9).
+PATCH_METRICS ?= results/patch_learning/metrics.json
+PATCH_PREDICTIONS ?= results/patch_learning/predictions
+
+# The reference arm runs first, so a failure there stops the comparison
+# before the candidate consumes GPU hours.
+TRANSFER_RUNS := \
+	configs/patch_learning/vgg16_imagenet_448_quarantined.toml:42:vgg16_imagenet_448_quarantined \
+	configs/patch_learning/vgg16_patch_imagenet_448.toml:42:vgg16_patch_imagenet_448
 REPORT_TEMPLATE ?=
 REPORT_SOURCE ?=
 REPORT_UPDATE ?=
@@ -51,7 +64,7 @@ export UV_CACHE_DIR
 MODEL_ARGS = $(if $(strip $(SEED)),--seed "$(SEED)") $(if $(strip $(RUN_NAME)),--run-name "$(RUN_NAME)")
 
 .PHONY: all help setup test lint format format-check typecheck check web splits \
-	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa fixture \
+	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa patch-verify patch-train patch-transfer fixture \
 	train evaluate experiments evaluate-experiments ensemble statistics figures freeze evidence \
 	verify-evidence report-draft report-pack report-check submission-check leakage-audit \
 	archive-evidence clean-cache clean-dev clean pipeline
@@ -111,6 +124,41 @@ patch-data: ## Build Stage 0 patch data.
 
 patch-qa: ## Build Stage 0 review files.
 	$(PY) -m src.data.patch_qa --config configs/patch_learning/stage0.toml
+
+patch-verify: ## Verify the frozen Stage 0 patch tree.
+	$(PY) -m src.data.patch_verify --data-root "$(PATCH_DATA)"
+
+patch-train: ## Train the Stage 0 five-class patch classifier.
+	@test -f "$(PATCH_DATA)/train.csv" || { \
+		echo "Stage 0 patch data not found at $(PATCH_DATA)."; \
+		echo "The 55,619-patch tree is ~11 GB and is not in version control."; \
+		echo "Copy it to this host, then run 'make patch-verify'."; \
+		exit 2; }
+	@mkdir -p results/logs
+	$(PY) -m src.training.train_patch --config "$(PATCH_CONFIG)" $(MODEL_ARGS) \
+		2>&1 | tee "results/logs/$(if $(strip $(RUN_NAME)),$(RUN_NAME),vgg16_patch).patch-train.log"
+
+patch-transfer: ## Train and evaluate both arms of the patch-transfer comparison.
+	@test -f "$(PATCH_CHECKPOINT)" || { \
+		echo "Patch checkpoint not found at $(PATCH_CHECKPOINT)."; \
+		echo "Run 'make patch-train' first: the candidate arm initialises from it."; \
+		echo "Checked up front so the reference arm does not train for nothing."; \
+		exit 2; }
+	@mkdir -p results/logs "$(PATCH_PREDICTIONS)"
+	@for spec in $(TRANSFER_RUNS); do \
+		config="$${spec%%:*}"; \
+		remainder="$${spec#*:}"; \
+		seed="$${remainder%%:*}"; \
+		run_name="$${remainder#*:}"; \
+		$(PY) -m src.training.train --config "$$config" \
+			--seed "$$seed" --run-name "$$run_name" \
+			2>&1 | tee "results/logs/$$run_name.train.log"; \
+		$(PY) -m src.evaluation.evaluate --config "$$config" \
+			--seed "$$seed" --run-name "$$run_name" \
+			--metrics-path "$(PATCH_METRICS)" \
+			--predictions-dir "$(PATCH_PREDICTIONS)" \
+			2>&1 | tee "results/logs/$$run_name.evaluate.log"; \
+	done
 
 fixture: ## Build the fine-tuning fixture.
 	$(PY) -m src.data.make_finetune_archive

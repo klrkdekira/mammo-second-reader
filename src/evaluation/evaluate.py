@@ -21,6 +21,7 @@ from src.evaluation.audit import build_audit, logits_to_probability
 from src.evaluation.lineage import build_run_lineage, sha256_file
 from src.evaluation.metrics import evaluate
 from src.evaluation.predictions import (
+    PREDICTIONS_DIR,
     build_prediction_frame,
     prediction_path,
     write_predictions_atomic,
@@ -133,8 +134,20 @@ def _append_record(record: dict[str, object], path: Path = METRICS_PATH) -> None
 
 
 def main(
-    config_path: Path, *, seed: int | None = None, run_name: str | None = None
+    config_path: Path,
+    *,
+    seed: int | None = None,
+    run_name: str | None = None,
+    metrics_path: Path | None = None,
+    predictions_dir: Path | None = None,
 ) -> None:
+    """Evaluate one run.
+
+    `metrics_path` and `predictions_dir` default to the shared evidence files.
+    Patch-transfer runs pass patch-learning paths instead, so an in-progress
+    experiment
+    never mutates the frozen milestone evidence (protocol §3 and §9).
+    """
     setup_logging()
     cfg = load_config(config_path)
     cfg = dataclasses.replace(
@@ -222,8 +235,11 @@ def main(
         LOGGER.warning("Grad-CAM-ROI (novelty A) skipped: %s", gradcam_skip_reason)
 
     checkpoint_hash = sha256_file(weights_path)
-    validation_predictions = prediction_path(cfg.run_name, "validation")
-    test_predictions = prediction_path(cfg.run_name, "test")
+    predictions_root = predictions_dir or PREDICTIONS_DIR
+    validation_predictions = prediction_path(
+        cfg.run_name, "validation", root=predictions_root
+    )
+    test_predictions = prediction_path(cfg.run_name, "test", root=predictions_root)
     write_predictions_atomic(
         build_prediction_frame(
             val_ds.df,
@@ -272,7 +288,7 @@ def main(
         },
     )
 
-    _append_record(record)
+    _append_record(record, metrics_path or METRICS_PATH)
 
 
 @click.command()
@@ -285,8 +301,32 @@ def main(
 )
 @click.option("--seed", type=int, help="Override the config seed.")
 @click.option("--run-name", help="Read and save this run under a different name.")
-def cli(config_path: Path, seed: int | None, run_name: str | None) -> None:
-    main(config_path, seed=seed, run_name=run_name)
+@click.option(
+    "--metrics-path",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Write the run record here instead of results/metrics.json.",
+)
+@click.option(
+    "--predictions-dir",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Write prediction CSVs here instead of results/predictions.",
+)
+def cli(
+    config_path: Path,
+    seed: int | None,
+    run_name: str | None,
+    metrics_path: Path | None,
+    predictions_dir: Path | None,
+) -> None:
+    main(
+        config_path,
+        seed=seed,
+        run_name=run_name,
+        metrics_path=metrics_path,
+        predictions_dir=predictions_dir,
+    )
 
 
 if __name__ == "__main__":
