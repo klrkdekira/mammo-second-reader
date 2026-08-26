@@ -188,10 +188,6 @@ cython_debug/
 #   option (not recommended) you can uncomment the following to ignore the entire idea folder.
 # .idea/
 
-# Abstra
-#   Abstra is an AI-powered process automation framework.
-#   Ignore directories containing user credentials, local state, and settings.
-#   Learn more at https://abstra.io/docs
 .abstra/
 
 # Visual Studio Code
@@ -248,9 +244,11 @@ results/external/predictions/*
 !results/leakage_sensitivity/
 results/leakage_sensitivity/*
 !results/leakage_sensitivity/*.json
-sync_cuda.sh
 sync_results.sh
+sync_cuda.sh
 .cuda-commit
+.cuda-snapshot
+.cuda-status
 
 # Scratch file for temporary notes
 SCRATCH.md

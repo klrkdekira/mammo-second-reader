@@ -48,7 +48,7 @@ class Check:
 
 @dataclass(frozen=True)
 class Readiness:
-    """What is and is not present for a cold run, and whether one already ran."""
+    """Inputs and prior-result state for a cold run."""
 
     checks: list[Check]
     can_run: bool
@@ -78,9 +78,8 @@ def readiness(
 ) -> Readiness:
     """Check every input the cold run needs, without running anything.
 
-    Never raises: an unreadable input becomes a failed check with its reason, so
-    the page can explain why the button is disabled instead of showing a stack
-    trace.
+    An unreadable input becomes a failed check with its reason. The page can
+    then explain why the button is disabled without showing a stack trace.
     """
     from src.evaluation.external import (
         load_external_config,
@@ -281,7 +280,7 @@ def summary_markdown(result: dict, subset: str) -> str:
     if isinstance(achieved, int | float) and isinstance(target, int | float):
         drift = (
             f" The threshold was chosen for {target:.0%} specificity internally and "
-            f"achieves **{achieved:.1%}** here; that gap is the result, not an error."
+            f"achieves **{achieved:.1%}** here. The gap is the observed external result."
         )
     return (
         f"**{SUBSET_LABELS.get(subset, subset)}:** "
@@ -323,9 +322,8 @@ def run_cold_evaluation(
 ) -> dict:
     """Run the cold external evaluation, refusing without an explicit acknowledgement.
 
-    The acknowledgement is not decoration. Overwriting an existing result after
-    reading it is the one action that would invalidate the pre-registration, so
-    it has to be a deliberate choice recorded in the caller.
+    The caller records an explicit acknowledgement because overwriting a result
+    after reading it would invalidate the pre-registration.
     """
     if not acknowledged:
         raise ValueError(
@@ -339,7 +337,5 @@ def run_cold_evaluation(
 
     from src.evaluation.external import main as run_external
 
-    LOGGER.warning(
-        "Running the cold external evaluation; this spends the pre-registration."
-    )
+    LOGGER.warning("Running the cold external evaluation; this uses the one-shot test.")
     return run_external(Path(config_path), output_path=Path(result_path))

@@ -19,6 +19,7 @@ from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.data.manifest import validate_split_paths
 from src.evaluation.audit import build_audit, probability_to_logits
+from src.evaluation.lineage import build_run_lineage
 from src.evaluation.metrics import evaluate, youden_threshold
 from src.evaluation.predictions import (
     build_prediction_frame,
@@ -26,7 +27,6 @@ from src.evaluation.predictions import (
     prediction_path,
     write_predictions_atomic,
 )
-from src.evaluation.provenance import build_run_provenance
 from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
 from src.models.ensemble import ensemble_predict
@@ -155,7 +155,7 @@ def main(config_path: Path) -> None:
         ),
         test_predictions,
     )
-    record["provenance"] = build_run_provenance(
+    record["lineage"] = build_run_lineage(
         config_path=config_path,
         checkpoint_paths=checkpoint_paths,
         manifest_paths=[cfg.train_csv, cfg.val_csv, cfg.test_csv],

@@ -1,100 +1,238 @@
 .DEFAULT_GOAL := help
 .DELETE_ON_ERROR:
 
+-include .reporting.mk
+
+SHELL := /bin/bash
+.SHELLFLAGS := -eu -o pipefail -c
+
 PY ?= uv run python
 UV_CACHE_DIR ?= /tmp/mammo-second-reader-uv-cache
 ENSEMBLE_CONFIG ?= configs/ensemble.toml
+REPORT_TEMPLATE ?=
+REPORT_SOURCE ?=
+REPORT_UPDATE ?=
+REPORT_FORCE ?=
+PYTHON_PATHS := src tests
+ARCHIVE_ROOT ?= ../mammo-second-reader-superseded/pipeline-$(shell date -u +%Y%m%dT%H%M%SZ)
+
+CENTRAL_RUNS := \
+	configs/vgg16_scratch.toml:42:vgg16_scratch \
+	configs/vgg16_scratch.toml:7:vgg16_scratch_seed7 \
+	configs/vgg16_scratch.toml:2026:vgg16_scratch_seed2026 \
+	configs/vgg16_transfer.toml:42:vgg16_imagenet \
+	configs/vgg16_transfer.toml:7:vgg16_imagenet_seed7 \
+	configs/vgg16_transfer.toml:2026:vgg16_imagenet_seed2026 \
+	configs/vgg16_highres_448.toml:42:vgg16_imagenet_448 \
+	configs/vgg16_highres_448.toml:7:vgg16_imagenet_448_seed7 \
+	configs/vgg16_highres_448.toml:2026:vgg16_imagenet_448_seed2026
+
+EXPANDED_RUNS := \
+	configs/vgg19_transfer.toml:42:vgg19_imagenet \
+	configs/resnet50_transfer.toml:42:resnet50_imagenet \
+	configs/efficientnet_b4.toml:42:efficientnet_b4_imagenet
+
+HISTORICAL_RUNS := \
+	configs/baseline.toml:42:baseline \
+	configs/regularised_base.toml:42:regularised_base \
+	configs/regularised_heavy_aug.toml:42:regularised_heavy_aug \
+	configs/regularised_label_smooth.toml:42:regularised_label_smooth \
+	configs/regularised_mixup.toml:42:regularised_mixup \
+	configs/regularised_combined.toml:42:regularised_combined \
+	configs/regularised_extensions/regularised_base_120.toml:42:regularised_base_120 \
+	configs/regularised_extensions/regularised_label_smooth_120.toml:42:regularised_label_smooth_120 \
+	configs/regularised_extensions/regularised_mixup_120.toml:42:regularised_mixup_120
+
+REPORT_RUNS := $(CENTRAL_RUNS) $(EXPANDED_RUNS) $(HISTORICAL_RUNS)
 
 export MPLBACKEND := Agg
 export UV_CACHE_DIR
 
 MODEL_ARGS = $(if $(strip $(SEED)),--seed "$(SEED)") $(if $(strip $(RUN_NAME)),--run-name "$(RUN_NAME)")
 
-.PHONY: help setup test lint format format-check typecheck check web splits \
+.PHONY: all help setup test lint format format-check typecheck check web splits \
 	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa fixture \
-	train evaluate ensemble statistics figures freeze evidence leakage-audit
+	train evaluate experiments evaluate-experiments ensemble statistics figures freeze evidence \
+	verify-evidence report-draft report-pack report-check submission-check leakage-audit \
+	archive-evidence clean-cache clean-dev clean pipeline
 
-help: ## Show the supported workflow.
-	@awk 'BEGIN {FS = ":.*## "; print "Usage: make <target> [VARIABLE=value]\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-18s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+all: pipeline ## Run the full pipeline.
 
-setup: ## Install the locked project environment.
+help: ## List targets.
+	@awk 'BEGIN {FS = ":.*## "; print "Usage: make <target> [VARIABLE=value]\n"} /^[a-zA-Z0-9_-]+:.*## / {printf "  %-22s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+
+setup: ## Install dependencies.
 	uv sync --locked
 
-test: ## Run the test suite.
+test: ## Run tests.
 	uv run pytest -q
 
-lint: ## Run Ruff diagnostics.
-	uv run ruff check .
+lint: ## Run Ruff.
+	uv run ruff check $(PYTHON_PATHS)
 
-format: ## Format Python files with Ruff.
-	uv run ruff format .
+format: ## Format Python files.
+	uv run ruff format $(PYTHON_PATHS)
 
-format-check: ## Check formatting without changing files.
-	uv run ruff format --check .
+format-check: ## Check Python formatting.
+	uv run ruff format --check $(PYTHON_PATHS)
 
-typecheck: ## Type-check the source tree.
+typecheck: ## Run mypy.
 	uv run mypy src
 
-check: ## Run tests, lint, formatting checks and type checks.
+check: ## Run code checks.
 	$(MAKE) test
 	$(MAKE) lint
 	$(MAKE) format-check
 	$(MAKE) typecheck
 
-web: ## Launch the research web application.
+web: ## Start the web app.
 	$(PY) -m src.web.app
 
-splits: ## Build the canonical CBIS-DDSM train/validation/test manifests.
+splits: ## Build data splits.
 	$(PY) -m src.data.splits
 
-cache-224: ## Build aligned 224-pixel image and ROI caches.
+cache-224: ## Build 224-pixel caches.
 	$(PY) -m src.data.dicom_to_png
 	$(PY) -m src.data.cache_roi_masks
 
-cache-448: ## Build aligned 448-pixel image and ROI caches.
+cache-448: ## Build 448-pixel caches.
 	$(PY) -m src.data.dicom_to_png --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
 	$(PY) -m src.data.cache_roi_masks --raw-root data/cbis-ddsm/cbis_ddsm --out-dir data/cbis-ddsm/cache_448 --image-size 448
 
-preprocess: ## Build both cache resolutions from the frozen canonical manifests.
+preprocess: ## Build image caches.
 	$(MAKE) cache-224
 	$(MAKE) cache-448
 
-qa-preprocessing: ## Audit segmentation, artefacts and ROI crop coverage.
+qa-preprocessing: ## Check preprocessing outputs.
 	$(PY) -m src.data.qa_preprocessing
 
-patch-data: ## Build deterministic Stage 0 patch data.
+patch-data: ## Build Stage 0 patch data.
 	$(PY) -m src.data.patch_manifest --config configs/patch_learning/stage0.toml
 
-patch-qa: ## Build the locked Stage 0 manual-review package.
+patch-qa: ## Build Stage 0 review files.
 	$(PY) -m src.data.patch_qa --config configs/patch_learning/stage0.toml
 
-fixture: ## Build the bounded web fine-tuning fixture.
+fixture: ## Build the fine-tuning fixture.
 	$(PY) -m src.data.make_finetune_archive
 
-train: ## Train one model: make train CONFIG=path.toml [SEED=n RUN_NAME=name].
+train: ## Train one model.
 	@if [ -z "$(strip $(CONFIG))" ]; then echo "CONFIG is required (for example, CONFIG=configs/vgg16_transfer.toml)"; exit 2; fi
 	$(PY) -m src.training.train --config "$(CONFIG)" $(MODEL_ARGS)
 
-evaluate: ## Evaluate one model: make evaluate CONFIG=path.toml [SEED=n RUN_NAME=name].
+evaluate: ## Evaluate one model.
 	@if [ -z "$(strip $(CONFIG))" ]; then echo "CONFIG is required (for example, CONFIG=configs/vgg16_transfer.toml)"; exit 2; fi
 	$(PY) -m src.evaluation.evaluate --config "$(CONFIG)" $(MODEL_ARGS)
 
-ensemble: ## Evaluate the configured probability ensemble.
+experiments: ## Run all model experiments.
+	@mkdir -p results/logs
+	@for spec in $(REPORT_RUNS); do \
+		config="$${spec%%:*}"; \
+		remainder="$${spec#*:}"; \
+		seed="$${remainder%%:*}"; \
+		run_name="$${remainder#*:}"; \
+		$(PY) -m src.training.train --config "$$config" \
+			--seed "$$seed" --run-name "$$run_name" \
+			2>&1 | tee "results/logs/$$run_name.train.log"; \
+		$(PY) -m src.evaluation.evaluate --config "$$config" \
+			--seed "$$seed" --run-name "$$run_name" \
+			2>&1 | tee "results/logs/$$run_name.evaluate.log"; \
+	done
+	$(PY) -m src.training.ensemble --config "$(ENSEMBLE_CONFIG)" \
+		2>&1 | tee results/logs/ensemble.evaluate.log
+
+evaluate-experiments: ## Evaluate existing checkpoints.
+	@mkdir -p results/logs
+	@for spec in $(REPORT_RUNS); do \
+		config="$${spec%%:*}"; \
+		remainder="$${spec#*:}"; \
+		seed="$${remainder%%:*}"; \
+		run_name="$${remainder#*:}"; \
+		$(PY) -m src.evaluation.evaluate --config "$$config" \
+			--seed "$$seed" --run-name "$$run_name" \
+			2>&1 | tee "results/logs/$$run_name.evaluate.log"; \
+	done
+	$(PY) -m src.training.ensemble --config "$(ENSEMBLE_CONFIG)" \
+		2>&1 | tee results/logs/ensemble.evaluate.log
+
+ensemble: ## Evaluate the ensemble.
 	$(PY) -m src.training.ensemble --config "$(ENSEMBLE_CONFIG)"
 
-statistics: ## Generate patient-level intervals and paired comparisons.
+statistics: ## Write statistics.
 	$(PY) -m src.evaluation.statistics
 
-figures: ## Regenerate report figures from canonical evidence.
+figures: ## Write figures.
 	$(PY) -m src.reporting.make_figures
 
-freeze: ## Validate and freeze the canonical evidence bundle.
+freeze: ## Freeze results.
 	$(PY) -m src.evaluation.freeze
 
-evidence: ## Generate statistics and figures, then freeze the evidence.
+evidence: ## Build and freeze results.
 	$(MAKE) statistics
 	$(MAKE) figures
 	$(MAKE) freeze
 
-leakage-audit: ## Recompute the disclosed post-hoc leakage sensitivity analysis.
+verify-evidence: ## Verify saved results.
+	$(PY) -m src.evaluation.verify_bundle
+
+report-draft: ## Create the report if absent.
+	@test -n "$(strip $(REPORT_TEMPLATE))" || { echo "REPORT_TEMPLATE is required"; exit 2; }
+	@test -n "$(strip $(REPORT_SOURCE))" || { echo "REPORT_SOURCE is required"; exit 2; }
+	$(PY) -m src.reporting.report_draft --template "$(REPORT_TEMPLATE)" --output "$(REPORT_SOURCE)" $(if $(strip $(REPORT_FORCE)),--force)
+
+report-pack: report-draft ## Build report update notes.
+	@test -n "$(strip $(REPORT_UPDATE))" || { echo "REPORT_UPDATE is required"; exit 2; }
+	$(PY) -m src.reporting.report_pack --report-source "$(REPORT_SOURCE)" --output "$(REPORT_UPDATE)"
+
+report-check: report-draft ## Check the report.
+	@test -n "$(strip $(REPORT_UPDATE))" || { echo "REPORT_UPDATE is required"; exit 2; }
+	$(PY) -m src.reporting.report_pack --report-source "$(REPORT_SOURCE)" --output "$(REPORT_UPDATE)" --fail-on-stale
+
+submission-check: ## Run submission checks.
+	$(MAKE) check
+	$(MAKE) verify-evidence
+	@if [ -n "$(strip $(REPORT_SOURCE))" ]; then $(MAKE) report-check; fi
+
+leakage-audit: ## Run the split audit.
 	$(PY) -m src.evaluation.leakage_sensitivity
+
+archive-evidence: ## Archive current results.
+	@test ! -e "$(ARCHIVE_ROOT)" || { echo "Archive already exists: $(ARCHIVE_ROOT)"; exit 2; }
+	@mkdir -p "$(ARCHIVE_ROOT)/results"
+	@if [ -d models ]; then mv models "$(ARCHIVE_ROOT)/models"; fi
+	@mkdir -p models
+	@for name in metrics.json statistics.json evidence-freeze.json; do \
+		if [ -f "results/$$name" ]; then mv "results/$$name" "$(ARCHIVE_ROOT)/results/"; fi; \
+	done
+	@for directory in predictions figures logs; do \
+		if [ -d "results/$$directory" ]; then \
+			mv "results/$$directory" "$(ARCHIVE_ROOT)/results/$$directory"; \
+		fi; \
+		mkdir -p "results/$$directory"; \
+	done
+	@echo "Archived active internal evidence to $(ARCHIVE_ROOT)"
+
+clean-cache: ## Remove image caches.
+	@if [ -d data/cbis-ddsm/cbis_ddsm ]; then \
+		find data/cbis-ddsm/cbis_ddsm -type f -name '*.npy' -delete; \
+	fi
+	rm -rf data/cbis-ddsm/cache_448
+
+clean-dev: ## Remove development caches.
+	find src tests -type d -name __pycache__ -prune -exec rm -rf {} +
+	rm -rf .pytest_cache .mypy_cache .ruff_cache
+
+clean: ## Archive results and remove caches.
+	$(MAKE) archive-evidence
+	$(MAKE) clean-cache
+	$(MAKE) clean-dev
+
+pipeline: ## Run the pipeline from a clean state.
+	$(MAKE) setup
+	$(MAKE) check
+	$(MAKE) clean
+	$(MAKE) preprocess
+	$(MAKE) qa-preprocessing
+	$(MAKE) experiments
+	$(MAKE) evidence
+	$(MAKE) verify-evidence
+	@if [ -n "$(strip $(REPORT_SOURCE))" ]; then $(MAKE) report-pack; fi

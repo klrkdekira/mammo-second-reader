@@ -10,7 +10,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.evaluation.provenance import sha256_file
+from src.evaluation.lineage import sha256_file
 
 PREDICTIONS_DIR = Path("results/predictions")
 METADATA_COLUMNS = (

@@ -1,6 +1,6 @@
 """Build deterministic, patient-disjoint CBIS-DDSM lesion-patch manifests.
 
-Stage 0 deliberately reads only the official *training* case-description CSVs.
+Stage 0 reads only the official *training* case-description CSVs.
 The canonical, patient-disjoint whole-image manifests provide the locked patient
 assignment. Images are cleaned and breast-cropped at native resolution before
 aligned 224-pixel crops are extracted.

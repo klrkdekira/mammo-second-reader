@@ -127,13 +127,13 @@ def test_headline_table_pairs_estimates_with_intervals(result_file):
     assert missing["Estimate"] == "N/A"
 
 
-def test_summary_names_the_specificity_gap_as_a_result(result_file):
+def test_summary_describes_the_specificity_gap_as_an_external_result(result_file):
     text = summary_markdown(load_result(result_file), "full")
 
     assert "410 images" in text
     assert "108" in text
     assert "71.0%" in text
-    assert "not an error" in text
+    assert "observed external result" in text
 
 
 def test_strata_table_keeps_skip_reasons_when_any_row_was_skipped(result_file):

@@ -13,8 +13,8 @@ import click
 import numpy as np
 import pandas as pd
 
+from src.evaluation.lineage import describe_file
 from src.evaluation.metrics import evaluate, probability_metrics
-from src.evaluation.provenance import describe_file
 from src.evaluation.results_io import write_json_atomic
 
 STATISTICS_VERSION = 1
@@ -25,6 +25,8 @@ FOCUSED_SEED_MODELS = (
 )
 DEFAULT_COMPARISONS = (
     ("vgg16_imagenet", "vgg16_scratch"),
+    ("vgg16_imagenet_seed7", "vgg16_scratch_seed7"),
+    ("vgg16_imagenet_seed2026", "vgg16_scratch_seed2026"),
     ("ensemble", "vgg16_imagenet"),
     (FOCUSED_MODEL, "vgg16_imagenet"),
     (FOCUSED_MODEL, "resnet50_imagenet"),

@@ -18,13 +18,13 @@ from src.data.augment import val_augment
 from src.data.dataset import MammogramDataset
 from src.data.manifest import validate_split_paths
 from src.evaluation.audit import build_audit, logits_to_probability
+from src.evaluation.lineage import build_run_lineage, sha256_file
 from src.evaluation.metrics import evaluate
 from src.evaluation.predictions import (
     build_prediction_frame,
     prediction_path,
     write_predictions_atomic,
 )
-from src.evaluation.provenance import build_run_provenance, sha256_file
 from src.evaluation.results_io import upsert_run_record
 from src.models import build_model
 
@@ -257,7 +257,7 @@ def main(
         test_predictions,
     )
 
-    record["provenance"] = build_run_provenance(
+    record["lineage"] = build_run_lineage(
         config_path=config_path,
         checkpoint_paths=[weights_path],
         manifest_paths=[cfg.data.train_csv, cfg.data.val_csv, cfg.data.test_csv],

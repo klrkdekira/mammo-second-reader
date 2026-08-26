@@ -14,8 +14,8 @@ in training or validation, reusing the same bootstrap functions that produced
 
 This analysis is POST-HOC. No selection rule was registered before the leakage
 was discovered, and the affected test images were part of every result the
-project has already reported. It bounds an error; it does not replace the
-frozen evidence, which is left untouched.
+project has already reported. It bounds an error while leaving the frozen
+evidence authoritative and untouched.
 """
 
 from __future__ import annotations

@@ -11,7 +11,7 @@ from collections.abc import Iterable
 from datetime import UTC, datetime
 from pathlib import Path
 
-PROVENANCE_VERSION = 3
+LINEAGE_VERSION = 4
 
 
 def sha256_file(path: Path) -> str:
@@ -118,7 +118,7 @@ def runtime_environment() -> dict[str, object]:
     return runtime
 
 
-def build_run_provenance(
+def build_run_lineage(
     *,
     config_path: Path,
     checkpoint_paths: Iterable[Path],
@@ -133,6 +133,7 @@ def build_run_provenance(
     """Record what was used for one evaluation run."""
     root = Path(repo_root) if repo_root else Path(__file__).resolve().parents[2]
     preprocessing_paths = [
+        root / "src/config.py",
         root / "src/data/preprocessing.py",
         root / "src/data/manifest.py",
         root / "src/data/splits.py",
@@ -140,6 +141,10 @@ def build_run_provenance(
         root / "src/data/augment.py",
         root / "src/data/dicom_to_png.py",
         root / "src/data/cache_roi_masks.py",
+        root / "src/training/train.py",
+        root / "src/training/callbacks.py",
+        root / "src/training/loss.py",
+        root / "src/training/sampler.py",
     ]
     evaluation_paths = [
         root / "src/evaluation/calibration.py",
@@ -153,7 +158,7 @@ def build_run_provenance(
         root / "src/evaluation/predictions.py",
         root / "src/evaluation/statistics.py",
         root / "src/evaluation/evaluate.py",
-        root / "src/evaluation/provenance.py",
+        root / "src/evaluation/lineage.py",
         root / "src/evaluation/results_io.py",
         root / "src/evaluation/freeze.py",
         root / "src/training/ensemble.py",
@@ -169,14 +174,25 @@ def build_run_provenance(
     preprocessing = [describe_file(path, root) for path in preprocessing_paths]
     evaluation = [describe_file(path, root) for path in evaluation_paths]
     commit_file = root / ".cuda-commit"
+    snapshot_file = root / ".cuda-snapshot"
+    status_file = root / ".cuda-status"
     synced_commit = commit_file.read_text().strip() if commit_file.is_file() else ""
+    synced_snapshot = (
+        snapshot_file.read_text().strip() if snapshot_file.is_file() else ""
+    )
+    synced_status = status_file.read_text().strip() if status_file.is_file() else ""
     valid_synced_commit = len(synced_commit) == 40 and all(
         character in string.hexdigits for character in synced_commit
     )
-    if valid_synced_commit:
+    valid_synced_snapshot = len(synced_snapshot) == 64 and all(
+        character in string.hexdigits for character in synced_snapshot
+    )
+    if valid_synced_commit and valid_synced_snapshot:
         commit: str | None = synced_commit
-        status: str | None = ""
-        source = "cuda_sync"
+        status: str | None = synced_status
+        source = "cuda_sync_snapshot"
+        snapshot: str | None = synced_snapshot
+        dirty_evidence_files = False
     else:
         commit = _git_value(root, "rev-parse", "HEAD")
         status = _git_value(
@@ -197,12 +213,16 @@ def build_run_provenance(
             "uv.lock",
         )
         source = "git"
+        snapshot = None
+        dirty_evidence_files = bool(status)
     record: dict[str, object] = {
-        "version": PROVENANCE_VERSION,
+        "version": LINEAGE_VERSION,
         "generated_at_utc": datetime.now(UTC).isoformat(),
         "git": {
             "commit": commit,
-            "dirty_evidence_files": bool(status),
+            "snapshot": snapshot,
+            "dirty_evidence_files": dirty_evidence_files,
+            "source_worktree_dirty": bool(status),
             "evidence_status": status or "",
             "source": source,
         },

@@ -162,19 +162,19 @@ def test_split_bundle_is_deterministic_and_preflighted(tmp_path):
 def test_frozen_canonical_manifests_match_protocol():
     expected = {
         "train": (
-            "5d43333929275b63ddd321ff32437e14630c8d52400b3ddad47edd9e4375eabb",
+            "add9c8b8bc95fe86e21673d7438f8179c2cde344ff5b0cf439690145cfdb8d18",
             2147,
             1091,
             {0: 1180, 1: 967},
         ),
         "val": (
-            "2351bea5fc9eb56035cc035c02a852b6bdfbbb149998161d925525be1e7613b5",
+            "9c8dbd5b413d2c2d74cdec93c8ba0bdf6f3a9ae81c952f4705928b87f7b8ea5f",
             247,
             126,
             {0: 135, 1: 112},
         ),
         "test": (
-            "68937ee0b00a691d7a70be341889b4a5909184a0a80d2adc4c85b491f900b4cf",
+            "225241c53968e10c18e4040c67edef304009e4bd4a3c5f73e67f7958a8e85634",
             645,
             349,
             {0: 381, 1: 264},

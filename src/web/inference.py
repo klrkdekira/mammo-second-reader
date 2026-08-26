@@ -69,9 +69,8 @@ def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
     """Decode DICOM or PNG/JPG bytes and run the shared preprocessing pipeline.
 
     Returns the segmented, CLAHE-equalised image in the unit range [0, 1].
-    ImageNet normalisation is deliberately NOT applied here: it happens once,
-    in `run_single_inference`, so this array can double as the (unnormalised)
-    Grad-CAM overlay base. Do not normalise twice.
+    ImageNet normalisation happens once in `run_single_inference`. Keeping this
+    array unnormalised also lets it serve as the Grad-CAM overlay base.
 
     Raises `ValueError` for oversized or undecodable uploads so the caller can
     surface a user-facing message instead of a raw stack trace.

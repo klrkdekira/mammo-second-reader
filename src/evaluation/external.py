@@ -37,6 +37,7 @@ from src.evaluation.calibration import (
 from src.evaluation.decision_curve import decision_curve
 from src.evaluation.density_strata import metrics_by_density
 from src.evaluation.lesion_strata import metrics_by_lesion_type
+from src.evaluation.lineage import build_run_lineage, sha256_file
 from src.evaluation.metrics import (
     evaluate,
     precision_recall_points,
@@ -46,7 +47,6 @@ from src.evaluation.predictions import (
     build_prediction_frame,
     write_predictions_atomic,
 )
-from src.evaluation.provenance import build_run_provenance, sha256_file
 from src.evaluation.results_io import write_json_atomic
 from src.evaluation.statistics import model_intervals, read_predictions
 from src.models import build_model
@@ -296,7 +296,7 @@ def subset_names(subsets: Sequence[tuple[object, ...]]) -> list[str]:
     """Return the pre-registered subset names in evaluation order.
 
     Kept separate from the payload literal so that widening the subset tuple
-    cannot silently break the provenance record again. An earlier revision
+    cannot silently break the lineage record again. An earlier revision
     added the frame and logits to each tuple and left this unpacking at two
     elements, which raised `ValueError` after inference but before the metrics
     were written.
@@ -511,7 +511,7 @@ def main(
         },
         "locked_operating_point": locked.to_dict(),
         "subsets": results,
-        "provenance": build_run_provenance(
+        "lineage": build_run_lineage(
             config_path=external_config,
             checkpoint_paths=[checkpoint],
             manifest_paths=manifest_paths,

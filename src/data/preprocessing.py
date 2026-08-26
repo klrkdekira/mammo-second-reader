@@ -212,7 +212,7 @@ def normalise(arr: np.ndarray, mean: float = 0.485, std: float = 0.229) -> np.nd
     to the greyscale mammogram. `ThreeChannelWrapper` then repeats that one
     normalised channel to three, so all three backbone inputs share the
     red-channel stats rather than the true per-channel means/stds. This is a
-    deliberate simplification for single-channel medical images and is applied
+    documented simplification for single-channel medical images and is applied
     identically in training (`augment.A.Normalize`) and inference, so it is a
     consistent convention, not a train/serve skew.
     """
