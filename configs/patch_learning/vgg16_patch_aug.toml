@@ -1,0 +1,61 @@
+# Stage 0 patch classifier, amendment 1: stronger augmentation.
+#
+# Registered before running, on validation evidence only.
+#
+# Why: vgg16_patch overfits. Its training loss fell from 1.1477 to 0.1837
+# across 12 epochs while validation macro F1 peaked at 0.6009 on epoch 5 and
+# then declined to 0.5786; early stopping fired correctly at epoch 11. The
+# original config registered augment = "light" (horizontal flip only) on the
+# argument that geometric jitter would resample detail the patch task depends
+# on. That argument is contradicted by the train/validation gap over 49,599
+# training patches with a five-class head.
+#
+# Single changed factor: augment "light" -> "default", which adds rotation up
+# to 10 degrees and mild brightness/contrast jitter. "heavy" is deliberately
+# not used yet: its CoarseDropout erases 11-34 pixel squares, which can remove
+# a small calcification cluster outright, and malignant calcification is
+# already the weakest class (0.3895 validation sensitivity). If the gap
+# persists, raising weight decay or head dropout is the next step, one factor
+# at a time.
+#
+# This does not overwrite vgg16_patch: that checkpoint is the input to the
+# recorded patch-transfer comparison and must stay reproducible.
+#
+# Judged on validation macro F1 and per-class sensitivity only. No test data
+# is involved in this decision.
+
+seed = 42
+run_name = "vgg16_patch_aug"
+output_dir = "models/patch_learning"
+
+[data]
+train_csv = "results/patch_learning/data/train.csv"
+val_csv = "results/patch_learning/data/val.csv"
+patch_root = "results/patch_learning/data"
+patch_size = 224
+augment = "default"
+num_workers = 8
+exclusion_test_csv = "manifests/cbis-ddsm/test.csv"
+
+[model]
+name = "vgg16"
+pretrained = true
+head_hidden = 256
+dropout_head = 0.5
+dropout_conv = 0.3
+
+[train]
+epochs = 30
+batch_size = 64
+lr = 1e-3
+weight_decay = 1e-4
+optimiser = "adam"
+scheduler = "cosine"
+early_stop_patience = 6
+stage1_epochs = 3
+stage2_lr = 1e-5
+grad_clip = 1.0
+label_smoothing = 0.0
+sampler = "shuffle"
+class_weighted_loss = true
+selection_metric = "macro_f1"

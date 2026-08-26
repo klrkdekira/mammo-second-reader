@@ -1,0 +1,30 @@
+# Reference arm for the patch-transfer comparison: ImageNet-only 448-pixel
+# VGG-16 retrained on the
+# canonical patient-disjoint manifests.
+#
+# This exists because the locked vgg16_imagenet_448 was trained before the
+# test-overlap quarantine removed 31 shared patients. Comparing a cleaned patch
+# candidate against that contaminated reference would compare two different
+# training sets, not two initialisations. Identical to
+# configs/vgg16_highres_448.toml except for run_name and output_dir; it does
+# not overwrite the locked run.
+
+seed = 42
+run_name = "vgg16_imagenet_448_quarantined"
+output_dir = "models/patch_learning"
+
+[data]
+train_csv = "manifests/cbis-ddsm/train.csv"
+val_csv = "manifests/cbis-ddsm/val.csv"
+test_csv = "manifests/cbis-ddsm/test.csv"
+image_root = "data/cbis-ddsm/cache_448"
+image_size = 448
+
+[model]
+name = "vgg16"
+
+[train]
+epochs = 25
+batch_size = 8
+scheduler = "cosine"
+early_stop_patience = 10

@@ -1,0 +1,59 @@
+# Stage 0 five-class patch classifier. Registered before training: this is the
+# intermediate diagnostic whose convolutional weights are transferred into
+# the 448-pixel whole-image model.
+#
+# This schedule is the patch task's own registered choice, not a copy of
+# vgg16_imagenet_448. The matched-protocol requirement applies to the
+# whole-image run, which must reuse the 448-pixel reference's split, seed,
+# batch size, optimiser, augmentation and schedule. Here the inputs are 49,599
+# 224-pixel patches rather than 2,147 whole mammograms, so batch size and
+# epoch budget are sized for that: batch 8 would make an epoch ~6,200 steps
+# for no benefit.
+#
+# Departures from the TrainConfig defaults, each deliberate:
+#   batch_size      64      patches are small; the 5090 has the headroom
+#   weight_decay    1e-4    50k-sample task with a 5-way head
+#   grad_clip       1.0     guards the first unfrozen-block epochs
+#   stage1_epochs   3       a 5-way head converges faster than one logit
+
+seed = 42
+run_name = "vgg16_patch"
+output_dir = "models/patch_learning"
+
+[data]
+train_csv = "results/patch_learning/data/train.csv"
+val_csv = "results/patch_learning/data/val.csv"
+patch_root = "results/patch_learning/data"
+patch_size = 224
+# Patches are already 224 px at native resolution and carry deliberate lesion
+# surroundings, so geometric jitter would resample detail the task depends on.
+augment = "light"
+num_workers = 8
+# Read only as a set of forbidden patient ids.
+exclusion_test_csv = "manifests/cbis-ddsm/test.csv"
+
+[model]
+name = "vgg16"
+pretrained = true
+head_hidden = 256
+dropout_head = 0.5
+dropout_conv = 0.3
+
+[train]
+epochs = 30
+batch_size = 64
+lr = 1e-3
+weight_decay = 1e-4
+optimiser = "adam"
+scheduler = "cosine"
+early_stop_patience = 6
+stage1_epochs = 3
+stage2_lr = 1e-5
+grad_clip = 1.0
+label_smoothing = 0.0
+# Stage 0 is balanced by construction (background is exactly 50%), so the
+# residual per-class imbalance is handled by the loss and the sampler stays a
+# plain shuffle. Recorded here so the choice is registered, not incidental.
+sampler = "shuffle"
+class_weighted_loss = true
+selection_metric = "macro_f1"

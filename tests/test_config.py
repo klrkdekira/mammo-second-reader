@@ -1,6 +1,7 @@
 """Tests for config loading, schema validation, and the ensemble loader."""
 
 import textwrap
+from pathlib import Path
 
 import pytest
 
@@ -158,3 +159,68 @@ def test_regularised_extension_changes_only_budget_and_name(
     assert {
         key: value for key, value in extension_train.items() if key != "epochs"
     } == {key: value for key, value in original_train.items() if key != "epochs"}
+
+
+def test_transfer_configs_are_matched_to_the_448_reference():
+    """Patch pretraining must be the only factor that differs between the arms.
+
+    A drifted batch size or schedule here would make the paired AUC difference
+    uninterpretable, so the match is asserted rather than trusted to review.
+    """
+    reference = load_config("configs/vgg16_highres_448.toml")
+    control = load_config("configs/patch_learning/vgg16_imagenet_448_quarantined.toml")
+    candidate = load_config("configs/patch_learning/vgg16_patch_imagenet_448.toml")
+
+    for arm in (control, candidate):
+        assert arm.seed == reference.seed
+        assert arm.data == reference.data
+        assert vars(arm.train) == vars(reference.train)
+        # Patch-learning runs must not overwrite the locked milestone evidence.
+        assert arm.output_dir == Path("models/patch_learning")
+
+    assert control.run_name == "vgg16_imagenet_448_quarantined"
+    assert candidate.run_name == "vgg16_patch_imagenet_448"
+    # The two arms differ in initialisation and nothing else.
+    assert control.model.init_from_patch_checkpoint is None
+    assert candidate.model.init_from_patch_checkpoint == Path(
+        "models/patch_learning/vgg16_patch.pt"
+    )
+    assert vars(control.model) == {
+        **vars(candidate.model),
+        "init_from_patch_checkpoint": None,
+    }
+
+
+def test_shipped_patch_config_loads():
+    from src.config import load_patch_config
+
+    cfg = load_patch_config("configs/patch_learning/vgg16_patch.toml")
+    assert cfg.run_name == "vgg16_patch"
+    assert cfg.seed == 42
+    assert cfg.output_dir == Path("models/patch_learning")
+    assert cfg.data.exclusion_test_csv == Path("manifests/cbis-ddsm/test.csv")
+    assert cfg.train.selection_metric == "macro_f1"
+
+
+def test_patch_amendment_changes_only_augmentation():
+    """Amendment 1 must isolate the augmentation level.
+
+    A drifted learning rate or epoch budget here would make the validation
+    comparison against vgg16_patch uninterpretable.
+    """
+    from src.config import load_patch_config
+
+    original = load_patch_config("configs/patch_learning/vgg16_patch.toml")
+    amended = load_patch_config("configs/patch_learning/vgg16_patch_aug.toml")
+
+    assert original.data.augment == "light"
+    assert amended.data.augment == "default"
+    assert amended.run_name == "vgg16_patch_aug"
+    assert amended.seed == original.seed
+    assert amended.output_dir == original.output_dir
+    assert vars(amended.train) == vars(original.train)
+    assert vars(amended.model) == vars(original.model)
+
+    original_data = {k: v for k, v in vars(original.data).items() if k != "augment"}
+    amended_data = {k: v for k, v in vars(amended.data).items() if k != "augment"}
+    assert amended_data == original_data

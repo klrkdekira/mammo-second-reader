@@ -1,0 +1,45 @@
+# Patch-transfer candidate: the 448-pixel whole-image classifier initialised from
+# Stage 0 patch classifier's convolutional weights.
+#
+# Controlled comparison:
+#   vgg16_patch_imagenet_448  minus  vgg16_imagenet_448_quarantined
+#
+# Every field below except run_name and model.init_from_patch_checkpoint is
+# identical to configs/vgg16_highres_448.toml, so patch pretraining is the only
+# changed factor. Do not tune anything here: a difference in batch size,
+# schedule or augmentation would make the paired AUC difference uninterpretable.
+#
+# The reference arm must be retrained on these same canonical manifests under
+# the run name vgg16_imagenet_448_quarantined. The locked vgg16_imagenet_448
+# was trained before the test-overlap quarantine, so it is not a matched
+# control (split-integrity addendum, 13 August 2026).
+#
+# Promotion rule (registered, must not move after test evaluation):
+#   1. paired patient-level AUC difference positive with a 95% CI above zero
+#   2. calcification sensitivity at the validation-derived 80% specificity
+#      point falls by no more than 0.05
+#   3. BI-RADS 4 sensitivity at the same point falls by no more than 0.05
+#   4. malignant-case Grad-CAM Energy Pointing Game does not fall below the
+#      448-pixel reference
+# Passing at seed 42 triggers repeats at seeds 7 and 2026; nothing else does.
+
+seed = 42
+run_name = "vgg16_patch_imagenet_448"
+output_dir = "models/patch_learning"
+
+[data]
+train_csv = "manifests/cbis-ddsm/train.csv"
+val_csv = "manifests/cbis-ddsm/val.csv"
+test_csv = "manifests/cbis-ddsm/test.csv"
+image_root = "data/cbis-ddsm/cache_448"
+image_size = 448
+
+[model]
+name = "vgg16"
+init_from_patch_checkpoint = "models/patch_learning/vgg16_patch.pt"
+
+[train]
+epochs = 25
+batch_size = 8
+scheduler = "cosine"
+early_stop_patience = 10

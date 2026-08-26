@@ -38,6 +38,10 @@ class ModelConfig:
     dropout_conv: float = 0.3
     dropout_head: float = 0.5
     head_hidden: int = 256
+    init_from_patch_checkpoint: Path | None = None
+    """Patch-transfer runs only: a patch checkpoint whose convolutional weights
+    initialise this whole-image model. The head is always built fresh. Left
+    unset by every locked run, so their initialisation is unchanged."""
 
 
 @dataclass(frozen=True)
@@ -89,6 +93,57 @@ class EnsembleConfig:
     output_dir: Path = field(default_factory=lambda: Path("models"))
 
 
+@dataclass(frozen=True)
+class PatchDataConfig:
+    """Stage 0 patch inputs.
+
+    There is deliberately no `test_csv`. The registered patch contract forbids
+    extracting patches from test patients at all, so a patch fold for the test
+    split does not exist and must not be invented.
+    """
+
+    train_csv: Path
+    val_csv: Path
+    patch_root: Path
+    patch_size: int = 224
+    augment: str = "light"
+    num_workers: int = 2
+    exclusion_test_csv: Path | None = None
+    """Locked whole-image test manifest, read only as a set of forbidden
+    patient ids. The patch trainer refuses to start if any patch patient
+    appears in it. Its images and labels are never loaded."""
+
+
+@dataclass(frozen=True)
+class PatchTrainConfig(TrainConfig):
+    """Training knobs for the five-class patch head.
+
+    Inherits the whole-image schedule fields so the patch run and the locked
+    448-pixel runs stay directly comparable, and adds the two choices that only
+    exist for a multi-class head.
+    """
+
+    class_weighted_loss: bool = True
+    selection_metric: str = "macro_f1"  # or "balanced_accuracy"
+
+
+@dataclass(frozen=True)
+class PatchConfig:
+    """Schema for a Stage 0 patch-classifier config.
+
+    Kept separate from `Config` for the same reason as `EnsembleConfig`: the
+    [data] section has no `test_csv` and points at a patch root rather than an
+    image root, so `load_config` cannot represent it. Use `load_patch_config`.
+    """
+
+    seed: int
+    run_name: str
+    data: PatchDataConfig
+    model: ModelConfig
+    train: PatchTrainConfig
+    output_dir: Path = field(default_factory=lambda: Path("models/patch_learning"))
+
+
 _TOP_LEVEL_KEYS = {"seed", "run_name", "output_dir", "data", "model", "train"}
 _ENSEMBLE_TOP_KEYS = {"seed", "run_name", "output_dir", "members", "data"}
 _ENSEMBLE_DATA_KEYS = {
@@ -116,6 +171,16 @@ def _reject_unknown_keys(
             f"Unknown key(s) in {section}: {sorted(unknown)}. "
             f"Allowed keys: {sorted(allowed)}."
         )
+
+
+def _model_config(raw: dict[str, object]) -> ModelConfig:
+    """Build a ModelConfig, coercing the optional patch-checkpoint path."""
+    values = dict(raw)
+    checkpoint = values.pop("init_from_patch_checkpoint", None)
+    return ModelConfig(
+        init_from_patch_checkpoint=Path(str(checkpoint)) if checkpoint else None,
+        **values,  # type: ignore[arg-type]
+    )
 
 
 def load_config(path: Path) -> Config:
@@ -156,9 +221,64 @@ def load_config(path: Path) -> Config:
                 raw["data"].get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", "2"))
             ),
         ),
-        model=ModelConfig(**raw["model"]),
+        model=_model_config(raw["model"]),
         train=TrainConfig(**raw["train"]),
         output_dir=Path(raw.get("output_dir", "models")),
+    )
+
+
+def load_patch_config(path: Path) -> PatchConfig:
+    """Load a Stage 0 patch-classifier TOML config.
+
+    Rejects a `test_csv` key outright rather than ignoring it, so an attempt to
+    point the patch task at test patients fails at config load.
+    """
+    path = Path(path)
+    with path.open("rb") as f:
+        raw = tomllib.load(f)
+
+    _reject_unknown_keys("top level", raw, _TOP_LEVEL_KEYS)
+    for section, cls in (
+        ("data", PatchDataConfig),
+        ("model", ModelConfig),
+        ("train", PatchTrainConfig),
+    ):
+        if section in raw:
+            _reject_unknown_keys(
+                f"[{section}]", raw[section], {f.name for f in fields(cls)}
+            )
+
+    train = PatchTrainConfig(**raw["train"])
+    if train.mixup_alpha > 0.0:
+        raise ValueError(
+            "mixup_alpha is not supported for the five-class patch head: the "
+            "whole-image implementation mixes binary soft targets for BCE."
+        )
+    if train.selection_metric not in ("macro_f1", "balanced_accuracy"):
+        raise ValueError(
+            f"Unknown train.selection_metric {train.selection_metric!r}; "
+            "expected 'macro_f1' or 'balanced_accuracy'."
+        )
+
+    return PatchConfig(
+        seed=int(raw["seed"]),
+        run_name=str(raw["run_name"]),
+        data=PatchDataConfig(
+            train_csv=Path(raw["data"]["train_csv"]),
+            val_csv=Path(raw["data"]["val_csv"]),
+            patch_root=Path(raw["data"]["patch_root"]),
+            patch_size=int(raw["data"].get("patch_size", 224)),
+            augment=str(raw["data"].get("augment", "light")),
+            num_workers=int(
+                raw["data"].get("num_workers", os.environ.get("MAMMO_NUM_WORKERS", "2"))
+            ),
+            exclusion_test_csv=Path(raw["data"]["exclusion_test_csv"])
+            if raw["data"].get("exclusion_test_csv")
+            else None,
+        ),
+        model=_model_config(raw["model"]),
+        train=train,
+        output_dir=Path(raw.get("output_dir", "models/patch_learning")),
     )
 
 

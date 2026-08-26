@@ -5,6 +5,13 @@ No vertical flip. Mammograms are not vertically symmetric.
 `train_augment` takes a `level` so augmentation strength is a config knob
 (DataConfig.augment): "light" for flips only, "default" for the original
 pipeline, "heavy" for stronger geometric/intensity jitter plus cutout.
+
+Seeding: Albumentations 2.x gives every Compose its own random generator, so
+`random.seed`/`np.random.seed` (and therefore `set_global_seed`) do NOT reach
+these transforms. Pass `seed` to make the augmentation stream reproducible;
+without it Albumentations picks its own nondeterministic seed and two runs of
+the same config see different augmentations. The locked 22-run evidence
+predates this argument and was trained with an unseeded stream.
 """
 
 from typing import TYPE_CHECKING
@@ -13,7 +20,9 @@ if TYPE_CHECKING:
     import albumentations as A
 
 
-def train_augment(image_size: int = 224, level: str = "default") -> "A.Compose":
+def train_augment(
+    image_size: int = 224, level: str = "default", seed: int | None = None
+) -> "A.Compose":
     import albumentations as A
 
     tail = [
@@ -50,15 +59,17 @@ def train_augment(image_size: int = 224, level: str = "default") -> "A.Compose":
         ]
     else:
         raise ValueError(f"Unknown augment level {level!r}")
-    return A.Compose(ops + tail)
+    return A.Compose(ops + tail, seed=seed)
 
 
-def val_augment(image_size: int = 224) -> "A.Compose":
+def val_augment(image_size: int = 224, seed: int | None = None) -> "A.Compose":
+    """Deterministic by construction; `seed` is accepted for symmetry only."""
     import albumentations as A
 
     return A.Compose(
         [
             A.Resize(image_size, image_size),
             A.Normalize(mean=[0.485], std=[0.229], max_pixel_value=1.0),
-        ]
+        ],
+        seed=seed,
     )

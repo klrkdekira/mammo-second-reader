@@ -1,7 +1,9 @@
-"""Class-imbalance handling via pos_weight in BCEWithLogitsLoss.
+"""Class-imbalance handling for the binary and five-class heads.
 
 pos_weight is computed from the training fold only to prevent label-leakage from val/test.
 Optional label smoothing pulls hard 0/1 targets towards 0.5 before the BCE.
+`make_patch_criterion` applies the same training-fold-only rule to the Stage 0
+five-class patch task, using weighted CrossEntropyLoss instead.
 """
 
 from pathlib import Path
@@ -9,6 +11,8 @@ from pathlib import Path
 import pandas as pd
 import torch
 from torch import nn
+
+from src.data.patch_manifest import PATCH_CLASSES
 
 
 class SmoothedBCEWithLogitsLoss(nn.Module):
@@ -43,3 +47,38 @@ def make_criterion(
     if label_smoothing > 0.0:
         return SmoothedBCEWithLogitsLoss(pos_weight, label_smoothing)
     return nn.BCEWithLogitsLoss(pos_weight=pos_weight)
+
+
+def make_patch_criterion(
+    train_csv: str | Path,
+    device: torch.device | None = None,
+    label_smoothing: float = 0.0,
+    n_classes: int = len(PATCH_CLASSES),
+) -> nn.Module:
+    """Return CrossEntropyLoss with inverse-frequency Stage 0 class weights.
+
+    The weights come from the patch training fold only, mirroring how
+    `make_criterion` derives pos_weight, so no validation patch influences the
+    loss. Weights are normalised to mean 1.0 so the loss scale stays comparable
+    with an unweighted run and the configured learning rate keeps its meaning.
+
+    `train.sampler = "balanced"` and these weights both correct the same
+    imbalance. Stage 0 is close to balanced by construction (background is
+    exactly half the dataset), so prefer one or the other and record which.
+    """
+    frame = pd.read_csv(train_csv)
+    counts = frame["class_id"].astype(int).value_counts()
+    missing = set(range(n_classes)) - set(counts.index)
+    if missing:
+        raise ValueError(
+            f"{train_csv} has no examples of class id(s) {sorted(missing)}; "
+            "a patient-disjoint patch fold must cover every class."
+        )
+    frequency = torch.tensor(
+        [float(counts[index]) for index in range(n_classes)], dtype=torch.float32
+    )
+    weight = frequency.sum() / frequency
+    weight = weight / weight.mean()
+    if device is not None:
+        weight = weight.to(device)
+    return nn.CrossEntropyLoss(weight=weight, label_smoothing=label_smoothing)

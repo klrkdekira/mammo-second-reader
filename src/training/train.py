@@ -27,6 +27,7 @@ from src.models import build_model
 from src.models.transfer import (
     ARCHS,
     freeze_backbone,
+    load_patch_backbone,
     unfreeze_head,
     unfreeze_top_blocks,
 )
@@ -38,23 +39,35 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _seed_worker(_worker_id: int) -> None:
-    """Seed numpy/random in each DataLoader worker from its torch seed.
+    """Seed each DataLoader worker's RNGs from its torch-derived seed.
 
-    Spawn workers start with fresh numpy/random state, so Albumentations'
-    (numpy-backed) random ops would differ run-to-run despite set_global_seed.
-    torch assigns each worker a deterministic seed derived from the loader's
-    generator. Mirror it into numpy and random so augmentation is reproducible.
+    Spawn workers start with fresh numpy/random state, so any numpy-backed
+    random op would differ run-to-run despite set_global_seed. torch assigns
+    each worker a deterministic seed derived from the loader's generator;
+    mirror it into numpy and random.
+
+    Albumentations 2.x additionally gives every Compose its own generator,
+    which neither seed() call above reaches, so re-seed this worker's copy of
+    the pipeline from the same torch-derived seed. That keeps augmentation
+    reproducible across runs of one config while still differing between
+    workers.
     """
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+    info = torch.utils.data.get_worker_info()
+    transform = getattr(info.dataset, "transform", None) if info is not None else None
+    if transform is not None and hasattr(transform, "set_random_seed"):
+        transform.set_random_seed(int(worker_seed))
 
 
 def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
     train_ds = MammogramDataset(
         cfg.data.train_csv,
         cfg.data.image_root,
-        transform=train_augment(cfg.data.image_size, level=cfg.data.augment),
+        transform=train_augment(
+            cfg.data.image_size, level=cfg.data.augment, seed=cfg.seed
+        ),
     )
     val_ds = MammogramDataset(
         cfg.data.val_csv,
@@ -299,6 +312,19 @@ def main(
         "head_hidden": cfg.model.head_hidden,
     }
     model = build_model(cfg.model.name, pretrained=cfg.model.pretrained, **model_kwargs)
+    if cfg.model.init_from_patch_checkpoint is not None:
+        summary = load_patch_backbone(
+            model, cfg.model.init_from_patch_checkpoint, cfg.model.name
+        )
+        LOGGER.info(
+            "Initialised %s features from patch checkpoint %s: "
+            "%d tensors / %d parameters copied, %d tensors left as built.",
+            cfg.model.name,
+            cfg.model.init_from_patch_checkpoint,
+            summary["n_tensors_copied"],
+            summary["n_parameters_copied"],
+            summary["n_tensors_left_as_built"],
+        )
     model = model.to(device)
     criterion = make_criterion(
         cfg.data.train_csv, device, label_smoothing=cfg.train.label_smoothing
