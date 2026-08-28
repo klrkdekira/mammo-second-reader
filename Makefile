@@ -67,7 +67,7 @@ MODEL_ARGS = $(if $(strip $(SEED)),--seed "$(SEED)") $(if $(strip $(RUN_NAME)),-
 	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa patch-verify patch-train patch-transfer fixture \
 	train evaluate experiments evaluate-experiments ensemble statistics figures freeze evidence \
 	verify-evidence report-draft report-pack report-check submission-check leakage-audit \
-	archive-evidence clean-cache clean-dev clean pipeline
+	archive-evidence clean-evidence clean-cache clean-dev clean pipeline
 
 all: pipeline ## Run the full pipeline.
 
@@ -251,13 +251,20 @@ archive-evidence: ## Archive current results.
 	@for name in metrics.json statistics.json evidence-freeze.json; do \
 		if [ -f "results/$$name" ]; then mv "results/$$name" "$(ARCHIVE_ROOT)/results/"; fi; \
 	done
-	@for directory in predictions figures logs; do \
+	@for directory in predictions figures logs qa_preprocessing; do \
 		if [ -d "results/$$directory" ]; then \
 			mv "results/$$directory" "$(ARCHIVE_ROOT)/results/$$directory"; \
 		fi; \
-		mkdir -p "results/$$directory"; \
+		if [ "$$directory" != qa_preprocessing ]; then mkdir -p "results/$$directory"; fi; \
 	done
 	@echo "Archived active internal evidence to $(ARCHIVE_ROOT)"
+
+clean-evidence: ## Delete generated evidence and models without making a backup.
+	rm -rf models
+	mkdir -p models
+	rm -f results/metrics.json results/statistics.json results/evidence-freeze.json
+	rm -rf results/predictions results/figures results/logs results/qa_preprocessing
+	mkdir -p results/predictions results/figures results/logs
 
 clean-cache: ## Remove image caches.
 	@if [ -d data/cbis-ddsm/cbis_ddsm ]; then \
@@ -269,8 +276,8 @@ clean-dev: ## Remove development caches.
 	find src tests -type d -name __pycache__ -prune -exec rm -rf {} +
 	rm -rf .pytest_cache .mypy_cache .ruff_cache
 
-clean: ## Archive results and remove caches.
-	$(MAKE) archive-evidence
+clean: ## Delete generated evidence, models, and caches without making a backup.
+	$(MAKE) clean-evidence
 	$(MAKE) clean-cache
 	$(MAKE) clean-dev
 

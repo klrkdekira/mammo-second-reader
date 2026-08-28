@@ -1,6 +1,7 @@
 .git
 .venv
 .mypy_cache
+/References/
 /models/*
 /results/*
 + /data/inbreast/
