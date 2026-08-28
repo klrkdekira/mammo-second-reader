@@ -101,7 +101,6 @@ def deidentify_dicom_in_place(path: Path) -> bool:
         strip_identifying_tags(ds)
         ds.save_as(str(path), enforce_file_format=True)
         return True
-    # Invalid DICOM files can fail in several ways.
     except Exception:  # noqa: BLE001
         LOGGER.warning("Could not de-identify DICOM %s; leaving it unchanged", path)
         return False

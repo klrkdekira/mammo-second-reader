@@ -1,13 +1,4 @@
-"""Verify a Stage 0 patch tree against its frozen lock.
-
-The 55,619-patch tree is the output of a 17-hour extraction that the patch
-contract forbids repeating, and it is too large to keep in version control, so
-it moves between machines by file copy. This command proves a copy is intact:
-it recomputes every locked output hash and the whole-tree digest and compares
-them with `manifest-lock.json`.
-
-Run it after moving the patch data to a new host, before training on it.
-"""
+"""Verify patch files and manifests against ``manifest-lock.json``."""
 
 from __future__ import annotations
 
@@ -29,11 +20,7 @@ LOCKED_OUTPUTS = ("train.csv", "val.csv", "lesion-sources.csv", "qa-summary.json
 
 
 def patch_tree_digest(data_root: Path, patch_paths: list[str]) -> str:
-    """Recompute the frozen whole-tree digest.
-
-    Mirrors the construction in `patch_manifest.generate_patch_manifests`:
-    sorted relative path, NUL, the file's hex digest, newline.
-    """
+    """Hash sorted path and file-digest pairs."""
     digest = hashlib.sha256()
     for relative in tqdm(sorted(patch_paths), desc="hashing patches", unit="patch"):
         digest.update(relative.encode("utf-8"))
@@ -44,7 +31,7 @@ def patch_tree_digest(data_root: Path, patch_paths: list[str]) -> str:
 
 
 def verify_patch_data(data_root: Path) -> dict[str, object]:
-    """Compare a patch tree with its lock. Raises on any mismatch."""
+    """Compare a patch tree with its lock."""
     data_root = Path(data_root)
     lock_path = data_root / "manifest-lock.json"
     if not lock_path.is_file():

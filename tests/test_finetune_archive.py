@@ -10,7 +10,6 @@ from src.data.make_finetune_archive import verify_archive, write_archive
 
 
 def _splits(tmp_path, n_train=12, n_val=8, nested=True):
-    """A miniature CBIS-DDSM-shaped splits directory with a matching cache."""
     splits_dir = tmp_path / "training"
     cache_dir = tmp_path / "cache"
     splits_dir.mkdir()
@@ -20,8 +19,6 @@ def _splits(tmp_path, n_train=12, n_val=8, nested=True):
         rows = []
         for i in range(n):
             case = i if split == "train" else i + 1000
-            # Real CBIS-DDSM ids are nested paths; that nesting is what forces
-            # the flattening this builder exists to do.
             image_id = (
                 f"Mass-Training_P_{case:05d}_LEFT_CC/1.3.6.1.{case}/1-1"
                 if nested
@@ -84,7 +81,6 @@ def test_nested_source_ids_are_rewritten_but_traceable(tmp_path):
     assert train["image_id"].str.startswith("train_").all()
     assert not train["image_id"].str.contains("/").any()
     assert train["image_id"].is_unique
-    # The original identifier survives so a result can be traced back.
     assert train["source_image_id"].str.contains("Mass-Training").all()
 
 
@@ -106,7 +102,6 @@ def test_carried_metadata_columns_survive(tmp_path):
 
 
 def test_archive_round_trips_through_the_web_unpacker(tmp_path):
-    """The fixture must load through the same path the Fine-tune tab uses."""
     output, summary = _build(tmp_path)
 
     checked = verify_archive(output)

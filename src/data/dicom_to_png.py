@@ -25,11 +25,9 @@ def _cache_has_shape(path: Path, image_size: int) -> bool:
 
 
 def _find_dicom(raw_root: Path, image_id: str) -> Path | None:
-    # image_id is already a relative path from raw_root (no extension)
     direct = raw_root / f"{image_id}.dcm"
     if direct.exists():
         return direct
-    # Fallback: search by stem in case the directory nesting changed
     stem = Path(image_id).name
     hits = list(raw_root.rglob(f"{stem}.dcm"))
     return hits[0] if hits else None

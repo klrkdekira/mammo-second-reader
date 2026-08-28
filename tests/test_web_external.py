@@ -122,7 +122,6 @@ def test_headline_table_pairs_estimates_with_intervals(result_file):
     row = table[table["Metric"] == "AUC"].iloc[0]
     assert row["Estimate"] == "0.6100"
     assert row["95% CI"] == "0.5500 to 0.6700"
-    # Metrics absent from the record render as placeholders, not crashes.
     missing = table[table["Metric"] == "Brier score"].iloc[0]
     assert missing["Estimate"] == "N/A"
 

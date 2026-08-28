@@ -1,15 +1,4 @@
-"""Canonical metrics. See WARNINGS §4.
-
-On this roughly 1.4:1 (benign:malignant) imbalanced dataset, accuracy is a
-weak headline scalar (the majority-class floor is already about 59 percent),
-so AUC, sensitivity, specificity, and PPV stay the primary reporting set, the
-same one every paper this project benchmarks against uses (Wang 2024 Tables 4
-and 5, Shen 2019). Accuracy is still computed and stored alongside them for
-completeness. Just don't read it as the headline.
-
-Everything in this project routes through `evaluate()`. No duplicate
-metric definitions are permitted anywhere else.
-"""
+"""Classification and probability metrics."""
 
 from dataclasses import dataclass
 
@@ -147,18 +136,7 @@ def evaluate(
 
 @dataclass(frozen=True)
 class PatchMetricPanel:
-    """Stage 0 five-class patch panel.
-
-    This is the single five-class definition in the project, kept here so the
-    module rule above still holds. It redefines none of the binary metrics: the
-    patch task has no single positive class and no operating threshold, so
-    `evaluate()` cannot express it.
-
-    `lesion_pair_confusion` answers the question the plan asks of the patch
-    diagnostic: within true mass patches (and separately true calcification
-    patches), how often does the model keep the lesion type but flip
-    malignancy, versus leave the pair altogether.
-    """
+    """Metrics for the five-class patch task."""
 
     accuracy: float
     balanced_accuracy: float

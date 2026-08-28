@@ -144,8 +144,6 @@ def test_audit_uses_the_transferred_thresholds_unchanged():
 
 def test_audit_reports_achieved_specificity_rather_than_the_target():
     frame = _frame()
-    # Push every probability below the fixed threshold so the achieved
-    # specificity is 1.0 and cannot coincide with the 0.8 target by luck.
     record = external_audit(frame, np.full(len(frame), -8.0), _locked()).record
 
     fixed = record["fixed_specificity"]
@@ -251,7 +249,6 @@ image_root = "r"
 
 
 def test_shipped_config_never_writes_the_internal_evidence_file():
-    """The internal version 3 freeze must survive a cold external run."""
     from src.evaluation.external import DEFAULT_OUTPUT, DEFAULT_PREDICTIONS_DIR
 
     assert DEFAULT_OUTPUT != __import__("pathlib").Path("results/metrics.json")
@@ -273,12 +270,6 @@ def test_shipped_config_points_at_the_promoted_candidate():
 
 
 def test_external_predictions_feed_the_internal_bootstrap_unchanged(tmp_path):
-    """The written prediction file must satisfy the internal statistics reader.
-
-    External intervals are only comparable with internal ones if they come from
-    the same estimator, so the prediction schema has to survive `read_predictions`
-    without any external-specific relaxation.
-    """
     from src.evaluation.predictions import (
         build_prediction_frame,
         write_predictions_atomic,
@@ -314,7 +305,6 @@ def test_external_predictions_feed_the_internal_bootstrap_unchanged(tmp_path):
     assert intervals["threshold"] == pytest.approx(locked.youden_threshold)
     auc = intervals["metrics"]["auc"]
     assert auc["ci_lower"] <= auc["estimate"] <= auc["ci_upper"]
-    # The subgroup safeguards used internally must also be computable externally.
     for name in (
         "calcification_sensitivity_at_fixed_specificity",
         "dense_breast_sensitivity_at_fixed_specificity",
@@ -323,13 +313,6 @@ def test_external_predictions_feed_the_internal_bootstrap_unchanged(tmp_path):
 
 
 def test_subset_names_survive_a_widened_subset_tuple():
-    """Regression: the payload once unpacked two elements from four-tuples.
-
-    `subsets` carries (name, manifest_path, frame, logits). An earlier revision
-    widened it from two elements and left the lineage comprehension at two,
-    so `run_external_evaluation` raised ValueError after inference but before
-    writing the metrics. Any future widening must keep this passing.
-    """
     two = [("full", Path("a.csv")), ("lesion_present", Path("b.csv"))]
     four = [
         ("full", Path("a.csv"), object(), object()),

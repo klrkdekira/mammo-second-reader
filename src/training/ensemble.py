@@ -73,7 +73,6 @@ def main(config_path: Path) -> None:
     y_true = np.asarray(test_ds.df["label"].values, dtype=np.int64)
     y_prob = ensemble_predict(models, test_loader, device)
 
-    # Choose the threshold on validation data so test labels stay untouched.
     val_ds = MammogramDataset(
         cfg.val_csv, cfg.image_root, transform=val_augment(cfg.image_size)
     )

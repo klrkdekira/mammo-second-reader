@@ -1,22 +1,4 @@
-"""Post-hoc leakage sensitivity analysis.
-
-The official CBIS-DDSM mass and calcification partitions were combined without
-first reconciling their participant assignments, so a small number of patients
-appear in both the development and test manifests used by the frozen 22-run
-evidence base. Stage 0 of the patch-learning programme discovered this and
-froze an exclusion ledger.
-
-This module quantifies the effect on the milestone evidence without retraining
-anything. It recomputes the headline discrimination metrics and the two central
-paired comparisons on the subset of test images whose patients never appeared
-in training or validation, reusing the same bootstrap functions that produced
-`results/statistics.json`.
-
-This analysis is POST-HOC. No selection rule was registered before the leakage
-was discovered, and the affected test images were part of every result the
-project has already reported. It bounds an error while leaving the frozen
-evidence authoritative and untouched.
-"""
+"""Recalculate selected metrics after removing overlapping patients."""
 
 from __future__ import annotations
 
@@ -33,8 +15,6 @@ DEFAULT_LEDGER = Path("manifests/cbis-ddsm/excluded-test-overlap-patients.csv")
 DEFAULT_PREDICTIONS = Path("results/predictions")
 DEFAULT_OUT = Path("results/leakage_sensitivity/metrics-clean-subset.json")
 
-# Runs carrying a claim in the report: the headline resolution model and its
-# seed repeats, the matched transfer pair, and the ensemble.
 REPORTED_RUNS = (
     "vgg16_imagenet_448",
     "vgg16_imagenet_448_seed7",
@@ -44,7 +24,6 @@ REPORTED_RUNS = (
     "ensemble",
 )
 
-# The two comparisons the report treats as statistically supported.
 CENTRAL_PAIRS = (
     ("vgg16_imagenet", "vgg16_scratch", "ImageNet transfer minus scratch"),
     (

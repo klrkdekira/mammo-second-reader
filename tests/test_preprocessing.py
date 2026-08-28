@@ -14,20 +14,15 @@ from src.data.preprocessing import (
 
 
 class _FakeDicom:
-    """Minimal stand-in exposing the two attributes dicom_to_array reads."""
-
     def __init__(self, pixel_array, photometric):
         self.pixel_array = pixel_array
         self.PhotometricInterpretation = photometric
 
 
 def test_monochrome1_is_inverted():
-    # A ramp: low stored values on the left, high on the right.
     ramp = np.tile(np.arange(256, dtype=np.uint16), (4, 1))
     mono2 = dicom_to_array(_FakeDicom(ramp, "MONOCHROME2"))
     mono1 = dicom_to_array(_FakeDicom(ramp, "MONOCHROME1"))
-    # MONOCHROME2: high stored value stays bright. MONOCHROME1: high is dark,
-    # so the normalised output is the point-wise inverse.
     assert mono2[0, 0] == 0.0 and mono2[0, -1] == pytest.approx(1.0)
     assert mono1[0, 0] == pytest.approx(1.0) and mono1[0, -1] == 0.0
     np.testing.assert_allclose(mono1, 1.0 - mono2, atol=1e-6)
@@ -44,28 +39,23 @@ BAND = 24  # matches segment_breast's 1% edge margin on this size
 
 
 def _synthetic_scan() -> tuple[np.ndarray, np.ndarray]:
-    """Return (image, true breast mask), composed with np.maximum."""
+    """Return a synthetic scan and its breast mask."""
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 
-    # breast: half-ellipse on the chest-wall (left) edge with a faint skin line
     r = np.sqrt(((yy - 1200) / 900) ** 2 + (xx / 650) ** 2)
     tissue = r < 1.0
     img = np.where(tissue, 0.64 * np.clip(1 - r, 0, 1) ** 0.7 + 0.06, 0.01)
 
-    # film frame: saturated line inset from every edge, with a blurred glow
     frame = np.zeros((H, W), np.float32)
     frame[6:18, 6:-6] = frame[-18:-6, 6:-6] = 1.0
     frame[6:-6, 6:18] = frame[6:-6, -18:-6] = 1.0
     glow = cv2.GaussianBlur(frame, (31, 31), 0) * 0.15
     img = np.maximum(img, np.maximum(frame, glow))
 
-    # thick frame corner chunk (top-left), confined to the edge
     cv2.circle(img, (0, 0), 40, 1.0, -1)
 
-    # burned-in view marker in the air, top right
     img[300:390, 1050:1250] = 0.95
 
-    # calcification-like speck inside the breast
     cv2.circle(img, (400, 1200), 4, 0.95, -1)
 
     return img.astype(np.float32), tissue
@@ -87,7 +77,6 @@ def test_marker_removed(scan):
 
 
 def test_frame_removed_on_air_edges(scan):
-    # right/top/bottom edges border air: nothing bright may survive there
     _, _, _, _, clean = scan
     zone = 40
     assert clean[:, -zone:].max() < 0.1
@@ -96,13 +85,11 @@ def test_frame_removed_on_air_edges(scan):
 
 
 def test_frame_removed_where_it_crosses_tissue(scan):
-    # left edge is chest wall: the saturated line must go even inside tissue
     _, _, _, _, clean = scan
     assert (clean[:, :40] > 0.85).sum() == 0
 
 
 def test_faint_skin_line_kept(scan):
-    # true tissue outside the sacrificial edge band must be almost fully masked-in
     _, tissue, breast, _, _ = scan
     inner = np.zeros_like(tissue)
     pad = 2 * BAND
@@ -112,7 +99,6 @@ def test_faint_skin_line_kept(scan):
 
 
 def test_no_tissue_deleted(scan):
-    # artefact removal may only touch the edge band and frame, never the breast
     img, tissue, _, _, clean = scan
     inner = np.zeros_like(tissue)
     pad = 2 * BAND

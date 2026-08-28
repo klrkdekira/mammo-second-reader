@@ -182,7 +182,7 @@ def write_archive(
 
 
 def verify_archive(output: Path) -> dict[str, int]:
-    """Unpack the fixture exactly as the web app does, to prove it is loadable."""
+    """Validate an archive through the web loader."""
     from src.web.finetune import materialise_workdir
 
     with tempfile.TemporaryDirectory(prefix="mammo-finetune-verify-") as tmp:

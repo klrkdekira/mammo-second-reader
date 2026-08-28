@@ -48,20 +48,7 @@ def _path_to_id(path: Path | None, dicom_dir: Path) -> str | None:
 def _build_dataframe(
     raw_csv: Path, dicom_dir: Path, resolver: DICOMPathResolver
 ) -> pd.DataFrame:
-    """Read an official CBIS-DDSM CSV and return the project schema.
-
-    Output columns:
-    - image_id
-    - patient_id
-    - pathology
-    - label
-    - birads_density
-    - lesion_type
-    - subtlety
-    - roi_mask_id
-
-    image_id and roi_mask_id are dicom_dir-relative paths without extension.
-    """
+    """Map an official CBIS-DDSM CSV to the project schema."""
     df = pd.read_csv(raw_csv)
     df = df.rename(
         columns={
@@ -104,10 +91,7 @@ def _build_dataframe(
 
 
 def collapse_to_image_level(df: pd.DataFrame) -> pd.DataFrame:
-    """Collapse per-abnormality rows to one row per image.
-
-    Groups by image_id, setting label to 1 if any abnormality is malignant.
-    """
+    """Collapse abnormality rows to one row per image."""
     if df.empty:
         return df
     n_before = len(df)
@@ -149,12 +133,7 @@ def carve_validation(
 def test_overlap_exclusion_ledger(
     frames: dict[str, pd.DataFrame],
 ) -> pd.DataFrame:
-    """Record development patients removed under locked-test precedence.
-
-    The official test role takes precedence over train/validation when a patient
-    occurs in metadata from more than one lesion family. Train/validation
-    overlap is still a hard error because neither development role has priority.
-    """
+    """Record development patients removed by test-set precedence."""
     patients = {
         split: set(frame["patient_id"].astype(str)) for split, frame in frames.items()
     }

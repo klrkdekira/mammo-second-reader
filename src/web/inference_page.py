@@ -61,8 +61,6 @@ def render() -> None:
                 contents, Path(file_path).name, model_name, threshold
             )
         except (ValueError, FileNotFoundError) as exc:
-            # Show upload and checkpoint errors in the UI. A raw stack trace
-            # would expose internal details without helping the user recover.
             raise gr.Error(str(exc)) from exc
         prob = result["probability"]
         confidences = {"Malignant": prob, "Benign": 1.0 - prob}

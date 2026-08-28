@@ -22,7 +22,6 @@ LOGGER = logging.getLogger(__name__)
 
 MODEL_DIR = Path("models")
 
-# Max upload size (100 MB).
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 
 MODEL_REGISTRY: dict[str, str] = {
@@ -66,15 +65,7 @@ def model_threshold(model_name: str) -> float:
 
 
 def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
-    """Decode DICOM or PNG/JPG bytes and run the shared preprocessing pipeline.
-
-    Returns the segmented, CLAHE-equalised image in the unit range [0, 1].
-    ImageNet normalisation happens once in `run_single_inference`. Keeping this
-    array unnormalised also lets it serve as the Grad-CAM overlay base.
-
-    Raises `ValueError` for oversized or undecodable uploads so the caller can
-    surface a user-facing message instead of a raw stack trace.
-    """
+    """Decode and preprocess an uploaded DICOM, PNG, or JPEG image."""
     from src.data.preprocessing import preprocess_array
 
     if len(contents) > MAX_UPLOAD_BYTES:
@@ -142,7 +133,6 @@ def run_single_inference(
         try:
             overlay_b64 = _overlay_to_b64(image, compute_gradcam(model, tensor, target))
         except Exception:
-            # Return prediction without overlay if Grad-CAM fails.
             LOGGER.warning(
                 "Grad-CAM failed for model %s; returning prediction without overlay",
                 model_name,

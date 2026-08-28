@@ -42,11 +42,7 @@ def _load_threshold(cfg: Config) -> float:
 def _predict_logits(
     model: torch.nn.Module, loader: DataLoader, device: torch.device
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Collect labels and raw logits over a loader.
-
-    The base panel only needs probabilities, but temperature scaling fits on
-    logits, so evaluation collects logits and derives probabilities from them.
-    """
+    """Collect labels and logits from a loader."""
     model.eval()
     ys, ls = [], []
     with torch.no_grad():
@@ -65,21 +61,7 @@ def _gradcam_roi_panel(
     threshold: float,
     device: torch.device,
 ) -> tuple[dict | None, str | None]:
-    """Quantitative Grad-CAM-vs-ROI stats over the malignant test cases.
-
-    For every malignant case, score the best single model's Grad-CAM heatmap
-    against the lesion ROI mask three ways (pointing game, IoU, centroid
-    distance, see gradcam_roi), then report them for all malignant cases and
-    split by predicted-correct (TP) vs predicted-incorrect (FN). The expected
-    pattern is high agreement on TP and low on FN. Its absence flags a model
-    that is right for the wrong reasons.
-
-    Cases with a zero-energy heatmap (see gradcam_roi.is_degenerate) are
-    excluded rather than scored, since every metric here reads a degenerate
-    all-zero cam as a plausible-looking bad localiser rather than absent data.
-    Returns (None, reason) when no malignant case yields a usable, non-degenerate
-    ROI/cam pair, so evaluation degrades gracefully with an explicit cause.
-    """
+    """Compute Grad-CAM localisation metrics for malignant cases."""
     from src.evaluation.gradcam import TARGET_LAYERS, compute_gradcam
     from src.evaluation.gradcam_roi import grad_cam_subset_stats, is_degenerate
 
@@ -104,7 +86,6 @@ def _gradcam_roi_panel(
             continue
         cams.append(cam)
         rois.append(roi)
-        # malignant case predicted positive => true positive (correct)
         correct.append(bool(y_prob[i] >= threshold))
     if not cams:
         if n_degenerate:
@@ -141,13 +122,7 @@ def main(
     metrics_path: Path | None = None,
     predictions_dir: Path | None = None,
 ) -> None:
-    """Evaluate one run.
-
-    `metrics_path` and `predictions_dir` default to the shared evidence files.
-    Patch-transfer runs pass patch-learning paths instead, so an in-progress
-    experiment
-    never mutates the frozen milestone evidence (protocol §3 and §9).
-    """
+    """Evaluate one run and write its metrics and predictions."""
     setup_logging()
     cfg = load_config(config_path)
     cfg = dataclasses.replace(
@@ -196,8 +171,6 @@ def main(
         "test": {**dataclasses.asdict(panel), "confusion": panel.confusion.tolist()},
     }
 
-    # ROC points for the model-comparison figure (only AUC was stored before,
-    # so plot_roc_comparison had to fake the curve).
     fpr, tpr, _ = roc_curve(y_true, y_prob)
     record["roc"] = {"fpr": fpr.tolist(), "tpr": tpr.tolist()}
 
@@ -224,8 +197,6 @@ def main(
     )
     record.update(audit.record)
 
-    # Quantitative Grad-CAM vs ROI. Computed on malignant test cases when
-    # roi_mask_id is present and masks are on disk, skipped otherwise.
     gradcam_roi, gradcam_skip_reason = _gradcam_roi_panel(
         model, test_ds, cfg.model.name, audit.test_probability, threshold, device
     )

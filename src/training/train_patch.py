@@ -1,17 +1,4 @@
-"""Stage 0 patch-classifier entry-point. One config in, one checkpoint out.
-
-This trains the five-class lesion/background head whose convolutional weights
-the patch-transfer comparison moves into the 448-pixel whole-image classifier.
-
-It is deliberately a separate entry-point from `src.training.train`: the patch
-task is multi-class, has no operating threshold to persist and has no test
-fold. It reuses that module's optimiser, scheduler and worker-seeding helpers
-unchanged, and repeats its staged-unfreezing shape, so the patch run and the
-locked whole-image runs remain directly comparable.
-
-Patch classification is an intermediate diagnostic. A high patch score is not
-itself project success.
-"""
+"""Train the five-class patch classifier."""
 
 import dataclasses
 import json
@@ -52,12 +39,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _preflight(cfg: PatchConfig) -> None:
-    """Enforce the registered patch leakage rules before any weight moves.
-
-    Rules 1, 2 and 5 of the patch contract put every patch from one patient in
-    exactly one split; rule 3 keeps test patients out of the patch task
-    entirely. Both are cheap to check and expensive to discover later.
-    """
+    """Check patch split isolation before training."""
     frames = {
         "patch train": pd.read_csv(cfg.data.train_csv),
         "patch val": pd.read_csv(cfg.data.val_csv),
@@ -400,8 +382,6 @@ def main(
 
     _save_json(cfg.output_dir / f"{cfg.run_name}.history.json", history)
 
-    # Score the selected checkpoint, not the final epoch: the transfer takes
-    # these weights, so the reported panel must describe the weights on disk.
     best_path = cfg.output_dir / f"{cfg.run_name}.pt"
     if best_path.exists():
         model.load_state_dict(

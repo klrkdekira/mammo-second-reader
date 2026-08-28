@@ -12,8 +12,6 @@ from src.training.train import _seed_worker
 
 
 def test_seed_worker_makes_numpy_and_random_deterministic():
-    # torch.initial_seed() is what a real worker reads; pin it and confirm
-    # _seed_worker drives numpy/random to a reproducible, torch-derived state.
     def draw():
         with mock.patch.object(torch, "initial_seed", return_value=12345):
             _seed_worker(0)
@@ -49,21 +47,16 @@ def test_balanced_sampler_upweights_minority():
     g.manual_seed(0)
     drawn = list(balanced_sampler(labels, generator=g))
     minority = sum(1 for i in drawn if labels[i] == 1)
-    # With inverse-frequency weights the minority class is drawn far above its
-    # 10% base rate; expect roughly balanced sampling.
     assert 0.35 < minority / len(drawn) < 0.65
 
 
 def _asymmetric_draws(seed, n=8):
-    """Sum the left half only: a horizontal flip must change this number."""
     image = np.random.default_rng(0).random((32, 32)).astype(np.float32)
     augment = train_augment(32, level="light", seed=seed)
     return [float(augment(image=image)["image"][:, :16].sum()) for _ in range(n)]
 
 
 def test_seeded_augmentation_is_reproducible():
-    # Albumentations 2.x transforms hold their own RNG, so this cannot be
-    # covered by set_global_seed; the Compose seed is the only control.
     assert _asymmetric_draws(7) == _asymmetric_draws(7)
 
 
@@ -72,8 +65,6 @@ def test_seeded_augmentation_differs_between_seeds():
 
 
 def test_unseeded_augmentation_is_not_reproducible():
-    # Documents why train_augment must be given a seed: without one, two
-    # identically-configured runs see different augmentation streams.
     draws = [_asymmetric_draws(None, n=16) for _ in range(4)]
     assert len({tuple(draw) for draw in draws}) > 1
 

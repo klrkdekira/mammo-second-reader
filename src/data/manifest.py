@@ -1,24 +1,4 @@
-"""Shared manifest schema for all mammography datasets.
-
-Every CSV that drives MammogramDataset must conform to this schema.
-Required columns are `image_id` and `label`. All others are optional
-and may be absent or NaN for datasets that do not carry them.
-
-Column glossary
----------------
-image_id        : str  - path stem relative to image_root. The loader appends
-                         `.npy` (cached) or `.dcm` (raw).
-label           : int  - 0 = benign, 1 = malignant.
-patient_id      : str  - for patient-level leakage checks across splits.
-dataset         : str  - source identifier, e.g. "cbis_ddsm", "inbreast".
-birads_density  : int  - BI-RADS breast-density category 1-4.
-birads_assessment: int - BI-RADS assessment category 1-6 (INbreast primary).
-roi_mask_id     : str  - path stem of the binary lesion-mask file. Same
-                         root convention as image_id.
-pathology       : str  - raw string label before binary collapse (CBIS-DDSM).
-lesion_type     : str  - "mass" or "calcification" (CBIS-DDSM).
-subtlety        : int  - radiologist subtlety rating 1-5 (CBIS-DDSM).
-"""
+"""Shared manifest schema for mammography datasets."""
 
 from collections.abc import Mapping, Sequence
 from pathlib import Path
@@ -27,9 +7,6 @@ import pandas as pd
 
 REQUIRED: tuple[str, ...] = ("image_id", "label")
 
-# Maps column name -> Python type used for coercion.
-# Int64 (capital I) is pandas' nullable integer - preserves NaN for optional
-# integer columns rather than forcing a float cast.
 SCHEMA: dict[str, str] = {
     "image_id": "str",
     "label": "int",
@@ -45,10 +22,7 @@ SCHEMA: dict[str, str] = {
 
 
 def validate(df: pd.DataFrame, source: str = "") -> None:
-    """Raise `ValueError` if the required columns are missing or labels invalid.
-
-    Call once at manifest load time so problems surface immediately rather than mid-epoch.
-    """
+    """Validate required columns and binary labels."""
     tag = f" (from {source})" if source else ""
     missing = [c for c in REQUIRED if c not in df.columns]
     if missing:
@@ -77,11 +51,7 @@ def _coerce(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def read(path: str | Path) -> pd.DataFrame:
-    """Read a manifest CSV, validate it, and coerce column types.
-
-    Use this instead of `pd.read_csv` everywhere a manifest is loaded so
-    schema errors are caught at read time.
-    """
+    """Read, validate, and coerce a manifest CSV."""
     path = Path(path)
     df = pd.read_csv(path)
     validate(df, source=str(path))

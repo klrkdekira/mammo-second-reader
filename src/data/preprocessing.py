@@ -139,13 +139,7 @@ def segment_breast(
 def artifact_mask(
     arr: np.ndarray, breast: np.ndarray | None = None, grow_ksize: int = 31
 ) -> np.ndarray:
-    """Bright non-breast blobs: view marker, film frame, scanner specks.
-
-    Grown so the faint halo around burned-in text goes with it, but never
-    into the breast itself. The frame's white line is the one exception: it
-    is film, not tissue, so it is zeroed even where it overlaps the breast
-    mask at the image edge.
-    """
+    """Mask bright labels, film borders, and scanner artefacts."""
     if breast is None:
         breast = segment_breast(arr)
     keep = (breast > 0).astype(np.uint8)
@@ -182,13 +176,7 @@ def resize(arr: np.ndarray, size: int = 224) -> np.ndarray:
 def preprocess_aligned_array(
     arr: np.ndarray, use_clahe: bool = True
 ) -> tuple[np.ndarray, np.ndarray, tuple[int, int, int, int]]:
-    """Clean and breast-crop an image without resizing it.
-
-    Returns ``(image, breast_mask, source_bbox)``.  The image and mask have
-    identical geometry, and ``source_bbox`` maps their coordinates back to the
-    original DICOM array.  Patch extraction uses this path so lesion masks are
-    aligned before any whole-image downscaling.
-    """
+    """Return a cropped image, aligned breast mask, and source bounding box."""
     breast = segment_breast(arr)
     clean = arr.copy()
     clean[artifact_mask(arr, breast) > 0] = 0.0
@@ -206,27 +194,14 @@ def preprocess_aligned_array(
 
 
 def normalise(arr: np.ndarray, mean: float = 0.485, std: float = 0.229) -> np.ndarray:
-    """Normalise `arr` using the ImageNet red-channel mean and std.
-
-    These are the single-channel ImageNet statistics (0.485 / 0.229), applied
-    to the greyscale mammogram. `ThreeChannelWrapper` then repeats that one
-    normalised channel to three, so all three backbone inputs share the
-    red-channel stats rather than the true per-channel means/stds. This is a
-    documented simplification for single-channel medical images and is applied
-    identically in training (`augment.A.Normalize`) and inference, so it is a
-    consistent convention, not a train/serve skew.
-    """
+    """Apply the ImageNet red-channel mean and standard deviation."""
     return (arr - mean) / std
 
 
 def preprocess_array(
     arr: np.ndarray, image_size: int = 224, use_clahe: bool = True
 ) -> np.ndarray:
-    """Zero artefacts, crop to the breast, optionally CLAHE, resize.
-
-    Only artefact pixels are altered. Breast and air keep their original
-    values (air is near-black already), so no tissue is ever deleted.
-    """
+    """Remove artefacts, crop, apply optional CLAHE, and resize."""
     arr, _, _ = preprocess_aligned_array(arr, use_clahe=use_clahe)
     return resize(arr, image_size).astype(np.float32)
 
