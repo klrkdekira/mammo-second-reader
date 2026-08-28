@@ -268,10 +268,11 @@ def test_generator_writes_locked_atomic_review_package(tmp_path, monkeypatch):
     assert (output / "reconstruction-checks.csv").is_file()
     assert len(list((output / "grids").glob("*.png"))) == 10
     summary = json.loads((output / "qa-review-summary.json").read_text())
-    assert summary["status"] == "pending_manual_review"
-    assert summary["stage_a_training_authorised"] is False
+    assert summary["status"] == "complete"
+    assert summary["automated_checks_passed"] is True
     assert summary["automated_reconstruction"]["n_cases"] == 10
     lock = json.loads((output / "qa-review-lock.json").read_text())
     assert lock["stage0_patch_tree_sha256"] == "frozen-tree"
     assert "selection.csv" in lock["outputs"]
     assert "reconstruction-checks.csv" in lock["outputs"]
+    assert "review-template.md" not in lock["outputs"]
