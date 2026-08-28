@@ -19,6 +19,17 @@ class StaleMarker:
     pattern: re.Pattern[str]
 
 
+CHAPTER_WORD_LIMITS = {
+    1: 1000,
+    2: 2500,
+    3: 2000,
+    4: 2000,
+    5: 2500,
+    6: 1000,
+}
+TOTAL_WORD_LIMIT = 10_500
+
+
 def _marker(label: str, pattern: str) -> StaleMarker:
     return StaleMarker(label, re.compile(pattern, re.IGNORECASE))
 
@@ -26,10 +37,11 @@ def _marker(label: str, pattern: str) -> StaleMarker:
 STALE_MARKERS = (
     _marker(
         "removed future-architecture claim",
-        r"five other architectures|configs/future_extensions",
+        r"five (?:other|more) architectures|configs/future_extensions|"
+        r"available under `?future_extensions`?",
     ),
     _marker("old validation size", r"\b248 validation images\b"),
-    _marker("old automated test count", r"\b(?:all\s+)?188 tests\b"),
+    _marker("old automated test count", r"\b(?:all\s+)?(?:188|201) tests\b"),
     _marker("old 448-pixel three-seed mean", r"\b0\.7257\b"),
     _marker("old leakage-free 448-pixel mean", r"\b0\.7190\b"),
     _marker("old seed-42 448-pixel AUC", r"\b0\.7250\b"),
@@ -38,6 +50,15 @@ STALE_MARKERS = (
     _marker("old ensemble AUC", r"\b0\.6867\b"),
     _marker("old transfer AUC difference", r"\+0\.0753\b"),
     _marker("old resolution AUC difference", r"\+0\.0537\b"),
+    _marker("old corrected 448-pixel mean", r"\b0\.6957\b"),
+    _marker("old corrected seed-42 448-pixel AUC", r"\b0\.6321\b"),
+    _marker("old corrected seed-7 448-pixel AUC", r"\b0\.7207\b"),
+    _marker("old corrected seed-2026 448-pixel AUC", r"\b0\.7343\b"),
+    _marker("old corrected ensemble AUC", r"\b0\.6953\b"),
+    _marker(
+        "old corrected central comparison",
+        r"[+−-](?:0\.0409|0\.0137|0\.0496|0\.0504|0\.0837|0\.0543|0\.0128)\b",
+    ),
     _marker(
         "obsolete all-seed resolution claim",
         r"every matched interval lies above zero|gain is positive at every seed|"
@@ -48,6 +69,19 @@ STALE_MARKERS = (
         r"all internal results rely on the same split, which contains|"
         r"limits every internal result|every internal result reported above",
     ),
+    _marker(
+        "completed patch experiment described as unrun",
+        r"no patch model was trained|patch work stopped before model training|"
+        r"patches were also prepared for a future experiment|"
+        r"next proposed internal study would pretrain",
+    ),
+    _marker(
+        "corrected retraining described as unrun",
+        r"cannot repair the completed whole-image runs|"
+        r"retraining on the corrected manifests would|"
+        r"chapter 5 reports only the recalculation",
+    ),
+    _marker("removed Make target claim", r"`?make reproduce-existing`?"),
 )
 
 
@@ -141,6 +175,38 @@ def _approximate_word_count(text: str) -> int:
     return len(re.findall(r"\b[\w]+(?:[-’'][\w]+)*\b", without_links))
 
 
+def _prose_only(text: str) -> str:
+    without_code = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
+    without_math = re.sub(r"\$\$.*?\$\$", " ", without_code, flags=re.DOTALL)
+    kept_lines = []
+    for line in without_math.splitlines():
+        if re.match(r"^\s*\|", line):
+            continue
+        if re.match(r"^\s*!\[", line):
+            continue
+        if re.match(r"^\s*\*(?:Figure|Table)\s+\d+\.", line, re.IGNORECASE):
+            continue
+        kept_lines.append(line)
+    return "\n".join(kept_lines)
+
+
+def _chapter_word_counts(text: str) -> tuple[dict[int, int], dict[int, int]]:
+    headings = list(re.finditer(r"^# Chapter ([1-6]):.*$", text, flags=re.MULTILINE))
+    references = re.search(r"^# (?:References|Bibliography)\s*$", text, re.MULTILINE)
+    counts: dict[int, int] = {}
+    lines: dict[int, int] = {}
+    for index, heading in enumerate(headings):
+        chapter = int(heading.group(1))
+        end = headings[index + 1].start() if index + 1 < len(headings) else len(text)
+        if references and heading.start() < references.start() < end:
+            end = references.start()
+        counts[chapter] = _approximate_word_count(
+            _prose_only(text[heading.start() : end])
+        )
+        lines[chapter] = text.count("\n", 0, heading.start()) + 1
+    return counts, lines
+
+
 def _comparison(statistics: dict[str, Any], name: str) -> dict[str, float | int]:
     comparisons = statistics["paired_comparisons"]
     try:
@@ -163,6 +229,16 @@ def _comparison_sentence(label: str, value: dict[str, float | int]) -> str:
     )
 
 
+def _interval_reading(value: dict[str, float | int]) -> str:
+    lower = float(value["ci_lower"])
+    upper = float(value["ci_upper"])
+    if lower > 0:
+        return "interval above zero"
+    if upper < 0:
+        return "interval below zero"
+    return "interval crosses zero"
+
+
 def build_report_pack(
     metrics: dict[str, Any],
     statistics: dict[str, Any],
@@ -172,6 +248,28 @@ def build_report_pack(
     """Render corrected tables and a read-only source audit."""
     source_text = report_source.read_text()
     findings = stale_findings(source_text)
+    chapter_counts, chapter_lines = _chapter_word_counts(source_text)
+    for chapter, count in chapter_counts.items():
+        limit = CHAPTER_WORD_LIMITS[chapter]
+        if count > limit:
+            findings.append(
+                {
+                    "line": chapter_lines[chapter],
+                    "marker": "chapter word limit",
+                    "excerpt": f"Chapter {chapter}: approximately {count:,}/{limit:,} words",
+                }
+            )
+    prose_total = sum(chapter_counts.values())
+    if prose_total > TOTAL_WORD_LIMIT:
+        findings.append(
+            {
+                "line": 1,
+                "marker": "total word limit",
+                "excerpt": (
+                    f"Approximately {prose_total:,}/{TOTAL_WORD_LIMIT:,} prose words"
+                ),
+            }
+        )
     runs = metrics["runs"]
     models = statistics["models"]
     run_names = [str(run["model"]) for run in runs]
@@ -195,6 +293,53 @@ def build_report_pack(
         run_names, key=lambda name: float(models[name]["metrics"]["auc"]["estimate"])
     )
     best_auc = models[best_name]["metrics"]["auc"]
+
+    transfer_readings = [_interval_reading(value) for value in transfer]
+    if all(reading == "interval above zero" for reading in transfer_readings):
+        transfer_summary = (
+            "- Transfer is directionally positive at all three seeds, and all "
+            "three paired intervals are above zero."
+        )
+    elif all(float(value["estimate"]) > 0 for value in transfer):
+        crossing_seeds = [
+            str(seed)
+            for seed, reading in zip((42, 7, 2026), transfer_readings, strict=True)
+            if reading == "interval crosses zero"
+        ]
+        transfer_summary = (
+            "- Transfer is directionally positive at all three seeds, but the "
+            f"paired interval crosses zero for seed(s) {', '.join(crossing_seeds)}."
+        )
+    else:
+        transfer_summary = (
+            "- The transfer effect changes direction across seeds; report the "
+            "seed-specific estimates and intervals rather than a universal benefit."
+        )
+
+    resolution_estimates = [float(value["estimate"]) for value in resolution]
+    if any(value > 0 for value in resolution_estimates) and any(
+        value < 0 for value in resolution_estimates
+    ):
+        resolution_summary = (
+            "- The 448-pixel effect changes sign across seeds. Report it as "
+            "seed-dependent, not as a universal resolution benefit."
+        )
+    elif all(value > 0 for value in resolution_estimates):
+        resolution_summary = (
+            "- The 448-pixel AUC difference is positive at all three seeds; "
+            "interpret each paired interval separately."
+        )
+    else:
+        resolution_summary = (
+            "- The 448-pixel AUC difference is non-positive at all three seeds; "
+            "interpret each paired interval separately."
+        )
+
+    ensemble_reading = _interval_reading(ensemble)
+    ensemble_summary = (
+        "- The ensemble is numerically above seed-42 VGG-16, and its paired AUC "
+        f"{ensemble_reading}."
+    )
 
     lines = [
         "# Corrected report update pack",
@@ -236,18 +381,9 @@ def build_report_pack(
             f"{_number(best_auc['ci_lower'])}-{_number(best_auc['ci_upper'])}); "
             "state this descriptively rather than as a test-selected winner."
         ),
-        (
-            "- Transfer is directionally positive at all three seeds, but the "
-            "seed-7 interval crosses zero."
-        ),
-        (
-            "- The 448-pixel effect changes sign across seeds. Report it as "
-            "seed-dependent, not as a universal resolution benefit."
-        ),
-        (
-            "- The ensemble is numerically above seed-42 VGG-16, but its paired "
-            "AUC interval crosses zero."
-        ),
+        transfer_summary,
+        resolution_summary,
+        ensemble_summary,
         "",
         "Exact central comparisons:",
         "",
@@ -317,12 +453,7 @@ def build_report_pack(
         auc = comparison["first_minus_second"]["auc"]
         lower = float(auc["ci_lower"])
         upper = float(auc["ci_upper"])
-        if lower > 0:
-            reading = "interval above zero"
-        elif upper < 0:
-            reading = "interval below zero"
-        else:
-            reading = "interval crosses zero"
+        reading = _interval_reading(auc)
         lines.append(
             f"| `{name}` | {_number(auc['estimate'], signed=True)} "
             f"({_number(lower, signed=True)} to {_number(upper, signed=True)}) | "
@@ -332,12 +463,24 @@ def build_report_pack(
     figure_numbers = _caption_numbers(source_text, "Figure")
     table_numbers = _caption_numbers(source_text, "Table")
     image_count, missing_images = _linked_images(source_text, report_source)
+    if image_count != len(figure_numbers):
+        findings.append(
+            {
+                "line": 1,
+                "marker": "image/caption count mismatch",
+                "excerpt": (
+                    f"Linked images: {image_count}; numbered figure captions: "
+                    f"{len(figure_numbers)}"
+                ),
+            }
+        )
     lines.extend(
         [
             "",
             "## Read-only source audit",
             "",
             f"- Approximate Markdown word count: {_approximate_word_count(source_text):,}",
+            f"- Approximate prose-only word count: {prose_total:,}",
             f"- Figure captions: {len(figure_numbers)} ({_sequence_note(figure_numbers)})",
             f"- Table captions: {len(table_numbers)} ({_sequence_note(table_numbers)})",
             f"- Linked images: {image_count}; missing files: {len(missing_images)}",
@@ -345,6 +488,24 @@ def build_report_pack(
             "",
         ]
     )
+    if chapter_counts:
+        lines.extend(
+            [
+                (
+                    "Approximate chapter prose counts (tables, figure/table captions, "
+                    "linked images, code blocks and display equations excluded):"
+                ),
+                "",
+                "| Chapter | Approximate words | Limit | Status |",
+                "| ---: | ---: | ---: | --- |",
+            ]
+        )
+        for chapter in sorted(chapter_counts):
+            count = chapter_counts[chapter]
+            limit = CHAPTER_WORD_LIMITS[chapter]
+            status = "over" if count > limit else "within"
+            lines.append(f"| {chapter} | {count:,} | {limit:,} | {status} |")
+        lines.append("")
     if missing_images:
         lines.append("Missing image links:")
         lines.append("")
