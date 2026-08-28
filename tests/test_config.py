@@ -56,13 +56,13 @@ def test_load_config_parses_single_model(tmp_path):
     assert cfg.train.epochs == 10
 
 
-def test_unknown_data_key_fails_loudly(tmp_path):
+def test_unknown_data_key_is_rejected(tmp_path):
     bad = VALID_SINGLE.replace("image_size = 224", "augmnet = 'heavy'")
     with pytest.raises(ValueError, match="augmnet"):
         load_config(_write(tmp_path, bad))
 
 
-def test_unknown_top_level_key_fails_loudly(tmp_path):
+def test_unknown_top_level_key_is_rejected(tmp_path):
     bad = VALID_SINGLE.replace(
         'run_name = "baseline"', 'run_naem = "baseline"\nrun_name = "baseline"'
     )
@@ -71,9 +71,6 @@ def test_unknown_top_level_key_fails_loudly(tmp_path):
 
 
 def test_load_config_rejects_ensemble_config(tmp_path):
-    # An ensemble config carries a top-level `members` list and no [model]
-    # section, so the single-model loader must fail loudly rather than
-    # silently mis-parse it. Unknown-key validation catches `members` first.
     with pytest.raises(ValueError, match="members"):
         load_config(_write(tmp_path, VALID_ENSEMBLE))
 
@@ -94,14 +91,13 @@ def test_ensemble_requires_val_csv(tmp_path):
         load_ensemble_config(_write(tmp_path, no_val))
 
 
-def test_ensemble_unknown_key_fails_loudly(tmp_path):
+def test_ensemble_unknown_key_is_rejected(tmp_path):
     bad = VALID_ENSEMBLE.replace("members =", "membrs =")
     with pytest.raises(ValueError, match="membrs"):
         load_ensemble_config(_write(tmp_path, bad))
 
 
 def test_shipped_ensemble_config_loads():
-    # The real repo config must parse under the loader that ensemble.py uses.
     cfg = load_ensemble_config("configs/ensemble.toml")
     assert cfg.run_name == "ensemble"
     assert len(cfg.members) == 4
@@ -162,11 +158,6 @@ def test_regularised_extension_changes_only_budget_and_name(
 
 
 def test_transfer_configs_are_matched_to_the_448_reference():
-    """Patch pretraining must be the only factor that differs between the arms.
-
-    A drifted batch size or schedule here would make the paired AUC difference
-    uninterpretable, so the match is asserted rather than trusted to review.
-    """
     reference = load_config("configs/vgg16_highres_448.toml")
     control = load_config("configs/patch_learning/vgg16_imagenet_448_quarantined.toml")
     candidate = load_config("configs/patch_learning/vgg16_patch_imagenet_448.toml")
@@ -175,12 +166,10 @@ def test_transfer_configs_are_matched_to_the_448_reference():
         assert arm.seed == reference.seed
         assert arm.data == reference.data
         assert vars(arm.train) == vars(reference.train)
-        # Patch-learning runs must not overwrite the locked milestone evidence.
         assert arm.output_dir == Path("models/patch_learning")
 
     assert control.run_name == "vgg16_imagenet_448_quarantined"
     assert candidate.run_name == "vgg16_patch_imagenet_448"
-    # The two arms differ in initialisation and nothing else.
     assert control.model.init_from_patch_checkpoint is None
     assert candidate.model.init_from_patch_checkpoint == Path(
         "models/patch_learning/vgg16_patch.pt"
@@ -203,11 +192,6 @@ def test_shipped_patch_config_loads():
 
 
 def test_patch_amendment_changes_only_augmentation():
-    """Amendment 1 must isolate the augmentation level.
-
-    A drifted learning rate or epoch budget here would make the validation
-    comparison against vgg16_patch uninterpretable.
-    """
     from src.config import load_patch_config
 
     original = load_patch_config("configs/patch_learning/vgg16_patch.toml")

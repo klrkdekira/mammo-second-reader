@@ -19,7 +19,6 @@ from src.data.inbreast import (
 )
 from src.data.inbreast_roi import rasterise
 
-# (file name, laterality, view, ACR density, raw BI-RADS)
 _CASES = (
     ("100", "R", "CC", "2", "1"),
     ("101", "L", "MLO", "3", "2"),
@@ -74,7 +73,6 @@ def release(tmp_path):
         "Patient ID;Patient age;Laterality;View;Acquisition date;File Name;ACR;Bi-Rads"
     ]
     for file_name, laterality, view, acr, birads in _CASES:
-        # Real releases pad the blank ACR field with whitespace.
         padded = acr if acr else "     "
         lines.append(
             f"removed;removed;{laterality};{view};201001;{file_name};{padded};{birads}"
@@ -84,7 +82,6 @@ def release(tmp_path):
 
     (root / "INbreast.csv").write_text("\n".join(lines) + "\n")
 
-    # BI-RADS 1 carries no annotation, matching the real release.
     _write_plist(xml_dir / "101.xml", [("Calcification", [(10.0, 10.0)])])
     _write_plist(xml_dir / "102.xml", [("Mass", [(1.0, 1.0), (5.0, 1.0), (5.0, 5.0)])])
     _write_plist(

@@ -1,9 +1,4 @@
-"""Temperature scaling and reliability metrics.
-
-Temperature scaling is a single-parameter post-hoc calibration method
-(Guo et al. 2017). A scalar T is fit on validation by minimising NLL,
-then applied to test logits before the sigmoid.
-"""
+"""Temperature scaling and reliability metrics."""
 
 import itertools
 from dataclasses import asdict, dataclass
@@ -143,10 +138,7 @@ def _bin_masks(probs: np.ndarray, n_bins: int):
 def expected_calibration_error(
     probs: np.ndarray, labels: np.ndarray, n_bins: int = 10
 ) -> float:
-    """Weighted average gap between predicted and observed across bins.
-
-    Uses equal-width binning over [0, 1] with n_bins bins, per Guo 2017.
-    """
+    """Calculate expected calibration error over equal-width bins."""
     probs, labels = _validate_probability_inputs(probs, labels, n_bins)
     ece = 0.0
     for _, _, mask in _bin_masks(probs, n_bins):

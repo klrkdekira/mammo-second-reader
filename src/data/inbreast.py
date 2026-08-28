@@ -1,10 +1,4 @@
-"""Build the locked INbreast external-test manifest.
-
-INbreast uses radiological BI-RADS assessments; biopsy outcomes are unavailable.
-Patient IDs are recovered from DICOM filenames because the CSV patient column
-has been removed. The manifest also retains the raw assessment, view, and
-laterality for subgroup analyses.
-"""
+"""Build the INbreast external-test manifest."""
 
 from __future__ import annotations
 
@@ -27,21 +21,16 @@ LOGGER = logging.getLogger(__name__)
 
 INGEST_VERSION = 1
 
-# Fixed before external predictions were generated. BI-RADS 3 is included in
-# the benign class. No images are excluded.
 MALIGNANT_ASSESSMENTS = ("4a", "4b", "4c", "5", "6")
 BENIGN_ASSESSMENTS = ("1", "2", "3")
 LABEL_RULE = "birads_4a4b4c5and6_malignant__birads_123_benign__no_exclusions"
 
-# BI-RADS 1 is a normal read and carries no annotation.
 NORMAL_ASSESSMENT = "1"
 
 _DICOM_STEM = re.compile(
     r"^(?P<file>\d+)_(?P<patient>[0-9a-f]+)_MG_(?P<laterality>[LR])_(?P<view>[A-Z]+)_ANON$"
 )
 
-# ROI names are free text and include spelling variants. Only known mass and
-# calcification names are mapped to the CBIS-DDSM strata.
 _CALCIFICATION_NAMES = frozenset({"calcification", "calcifications", "cluster"})
 _MASS_NAMES = frozenset({"mass"})
 
@@ -93,11 +82,7 @@ def read_rois(xml_path: str | Path) -> list[Roi]:
 
 
 def lesion_type_for(rois: Sequence[Roi]) -> str | None:
-    """Return the lesion family used for subgroup analysis.
-
-    INbreast rows may contain both masses and calcifications. These are marked
-    as ``mixed`` instead of being assigned to either single-lesion stratum.
-    """
+    """Map ROI annotations to a subgroup lesion type."""
     families = {roi.family for roi in rois}
     has_mass = "mass" in families
     has_calc = "calcification" in families
@@ -207,8 +192,6 @@ def build_manifest(root: Path, *, xml_dir: Path | None = None) -> pd.DataFrame:
         )
 
     frame = pd.DataFrame(rows).sort_values("image_id").reset_index(drop=True)
-    # Keep blank densities nullable and file names as identifiers after a CSV
-    # round trip.
     frame["birads_density"] = frame["birads_density"].astype("Int64")
     frame["birads_assessment"] = frame["birads_assessment"].astype("Int64")
     frame["file_name"] = frame["file_name"].astype(str)

@@ -7,8 +7,8 @@ WARNING = (
     "and the calibration temperature are transferred unchanged from the frozen "
     "CBIS-DDSM run; nothing is fitted on INbreast. Re-running after reading a "
     "result and keeping the better one would turn a generalisation test into "
-    "selection on the test set. Load the existing result unless you intend to "
-    "use the one-shot test."
+    "selection on the test set. Existing results should be loaded instead of "
+    "rerunning the test."
 )
 
 NOTES = (

@@ -1,9 +1,4 @@
-"""Run the locked external evaluation on INbreast.
-
-The checkpoint, thresholds, and calibration temperature are loaded from the
-frozen CBIS-DDSM run. Results are written separately from the internal evidence
-file and include patient-level bootstrap intervals.
-"""
+"""Run the INbreast external evaluation."""
 
 from __future__ import annotations
 
@@ -160,13 +155,7 @@ def load_locked_operating_point(
     checkpoint_path: Path,
     threshold_sidecar: Path,
 ) -> LockedOperatingPoint:
-    """Read the frozen internal operating point and verify it is self-consistent.
-
-    The threshold appears in two independent places - the metrics record and the
-    checkpoint's threshold sidecar - and a mismatch means the checkpoint and the
-    frozen results have drifted apart. That has to stop a cold run, because the
-    whole point is that the transferred threshold is the one that was reported.
-    """
+    """Load and validate the frozen internal operating point."""
     record = _run_record(metrics_path, run_name)
     sidecar = json.loads(Path(threshold_sidecar).read_text())
     youden = float(record["val_threshold"])
@@ -216,12 +205,7 @@ def external_audit(
     logits: np.ndarray,
     locked: LockedOperatingPoint,
 ) -> ExternalAudit:
-    """Score one external subset at the locked operating point.
-
-    Mirrors `build_audit` but fits nothing: the temperature and both thresholds
-    arrive already fixed, and no `threshold_at_specificity` call is made on
-    external labels.
-    """
+    """Score an external subset without refitting thresholds or calibration."""
     labels = np.asarray(frame["label"].to_numpy(), dtype=int)
     logits = np.asarray(logits, dtype=float).ravel()
     if labels.size != logits.size:
@@ -270,8 +254,6 @@ def external_audit(
             "target": locked.fixed_specificity_target,
             "threshold_source": "internal_validation_fold_transferred_unchanged",
             "threshold": locked.fixed_specificity_threshold,
-            # The target applies to the internal validation fold. Report the
-            # specificity achieved here without retuning.
             "achieved_specificity": fixed_panel.specificity,
             "test": _panel_dict(fixed_panel),
             "density_strata": metrics_by_density(
@@ -293,14 +275,7 @@ def _subset_name(run_name: str, subset: str) -> str:
 
 
 def subset_names(subsets: Sequence[tuple[object, ...]]) -> list[str]:
-    """Return the pre-registered subset names in evaluation order.
-
-    Kept separate from the payload literal so that widening the subset tuple
-    cannot silently break the lineage record again. An earlier revision
-    added the frame and logits to each tuple and left this unpacking at two
-    elements, which raised `ValueError` after inference but before the metrics
-    were written.
-    """
+    """Return subset names in evaluation order."""
     return [str(entry[0]) for entry in subsets]
 
 
@@ -371,8 +346,6 @@ def evaluate_subset(
             threshold=locked.youden_threshold,
             fixed_specificity_target=locked.fixed_specificity_target,
             fixed_specificity_threshold=locked.fixed_specificity_threshold,
-            # The seed identifies the trained model being transferred, so it is
-            # the internal run's seed. External inference is deterministic.
             seed=internal_seed,
             checkpoint_sha256=locked.checkpoint_sha256,
         ),
@@ -382,7 +355,6 @@ def evaluate_subset(
     record["manifest"] = str(manifest_path)
     record["run_name"] = run_name
     record["subset"] = subset
-    # Use the same patient-level bootstrap as the internal evaluation.
     record["intervals"] = model_intervals(
         read_predictions(path), n_resamples=n_resamples, seed=seed
     )

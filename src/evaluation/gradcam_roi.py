@@ -1,34 +1,10 @@
-"""Quantitative Grad-CAM evaluation against CBIS-DDSM ROIs.
-
-Metrics:
-
-- Pointing Game accuracy: fraction of cases where the heatmap argmax
-  pixel lies inside the lesion ROI.
-- Energy-based pointing game: fraction of total heatmap energy that falls
-  inside the ROI (Wang et al. 2020, Score-CAM). Unlike the single-pixel
-  pointing game and the area-sensitive IoU, this stays meaningful when the
-  lesion is a tiny fraction of the image - which CBIS-DDSM lesions are
-  (typically well under 1% of pixels). Compare it against `roi_area_frac`,
-  the score a model that ignored the lesion entirely would get by chance.
-- Heatmap-ROI IoU: IoU of (cam >= 0.5) and the ROI mask. Reported for
-  completeness, but structurally small here: a broad heatmap region cannot
-  overlap a sub-1% ROI by much, so read this alongside the energy metric.
-- Centroid distance: Euclidean distance between cam centroid and ROI
-  centroid, normalised by the image diagonal.
-"""
+"""Grad-CAM localisation metrics against CBIS-DDSM lesion masks."""
 
 import numpy as np
 
 
 def is_degenerate(cam: np.ndarray) -> bool:
-    """True when a Grad-CAM heatmap carries no energy anywhere in the frame.
-
-    A rectifier that zeroes every location (e.g. an all-negative weighted sum)
-    leaves downstream metrics looking like real, if bad, localisation instead
-    of absent data: pointing_game falls back to argmax at (0, 0) and
-    centroid_distance's `cam.max() * 0.5` threshold selects the whole frame.
-    Callers should exclude these cases rather than score them.
-    """
+    """Return whether a heatmap contains no positive energy."""
     return float(cam.sum()) <= 0.0
 
 
@@ -38,12 +14,7 @@ def pointing_game(cam: np.ndarray, roi: np.ndarray) -> bool:
 
 
 def energy_pointing_game(cam: np.ndarray, roi: np.ndarray) -> float:
-    """Fraction of total Grad-CAM energy lying inside the ROI.
-
-    A perfect localiser approaches 1.0. A model that ignores the lesion scores
-    roughly the ROI's area fraction. It remains useful for tiny lesions, where the
-    single-pixel pointing game is noisy and IoU is structurally near-zero.
-    """
+    """Return the fraction of heatmap energy inside the ROI."""
     total = float(cam.sum())
     if total <= 0.0:
         return 0.0

@@ -56,7 +56,7 @@ def test_lesion_sampling_is_deterministic_and_in_bounds():
     assert all(overlap.score >= config.min_roi_overlap for _, overlap, _ in first)
 
 
-def test_impossible_overlap_is_explicitly_marked_not_silently_relaxed():
+def test_impossible_overlap_uses_a_fallback_marker():
     mask = np.zeros((32, 32), dtype=np.uint8)
     mask[::2, ::2] = 1
     config = _config(

@@ -1,13 +1,4 @@
-"""CBIS-DDSM DICOM path resolution.
-
-Three folder-naming conventions appear across the four split CSVs:
-1. Exact match      - CSV base folder name exists on disk as-is.
-2. Suffix mismatch  - folder stored with a different _N suffix than the CSV.
-3. Bare patient dir - P_xxxxx_VIEW without the lesion-type prefix.
-
-Crop vs mask disambiguation uses pixel area (smaller = crop, larger = mask)
-rather than CSV column order, which would swap them in roughly half of cases.
-"""
+"""Resolve CBIS-DDSM CSV paths to DICOM files."""
 
 import re
 from collections import defaultdict
@@ -19,12 +10,7 @@ import pydicom
 
 
 class DICOMPathResolver:
-    """Maps CBIS-DDSM CSV path strings to on-disk DICOM Paths.
-
-    Build once, then call `resolve_dataframe` on each of the four split
-    DataFrames. The instance caches header reads so repeated lookups for
-    the same file are cheap.
-    """
+    """Map CBIS-DDSM CSV paths to files in a release tree."""
 
     _PREFIX_RE = re.compile(r"^[A-Za-z]+-(?:Test|Training)_")
 
@@ -55,16 +41,13 @@ class DICOMPathResolver:
         """Return the on-disk series folder for the first component of a CSV path."""
         base = Path(csv_path).parts[0]
 
-        # Convention 1: exact match
         if (folder := self.dicom_dir / base).exists():
             return folder
 
-        # Convention 2: numeric suffix mismatch, strip _N and pick lowest-numbered match
         core = re.sub(r"_\d+$", "", base)
         if series := self._folder_lookup.get(core):
             return series[min(series)]
 
-        # Convention 3: bare patient folder, strip lesion-type prefix
         bare = self._PREFIX_RE.sub("", base)
         bare_series = self._dcm_dir_lookup.get(re.sub(r"_\d+$", "", bare), {})
         if not bare_series:
@@ -122,10 +105,6 @@ class DICOMPathResolver:
                 full_dcms
                 + [f for b in self._bare_folders(image_csv) for f in self._dcms(b)]
             ),
-            # Some releases contain duplicate full-image DICOMs with the same
-            # pixel area under different UID paths.  A path tiebreaker keeps
-            # resolution stable across processes instead of inheriting set
-            # iteration order.
             key=lambda path: (-self._area(path), path.as_posix()),
         )
         return next(

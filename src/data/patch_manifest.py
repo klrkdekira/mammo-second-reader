@@ -1,16 +1,4 @@
-"""Build deterministic, patient-disjoint CBIS-DDSM lesion-patch manifests.
-
-Stage 0 reads only the official *training* case-description CSVs.
-The canonical, patient-disjoint whole-image manifests provide the locked patient
-assignment. Images are cleaned and breast-cropped at native resolution before
-aligned 224-pixel crops are extracted.
-
-The overlap rule follows the cited Shen et al. reference implementation:
-``max(intersection / ROI area, intersection / patch area) >= cutoff``.  Both
-components are retained in the manifest so the rule is auditable.  Background
-patches are stricter than that implementation and must contain zero pixels from
-the union of every known ROI in the source mammogram.
-"""
+"""Build patient-disjoint CBIS-DDSM lesion-patch manifests."""
 
 from __future__ import annotations
 
@@ -79,7 +67,7 @@ MANIFEST_COLUMNS = (
 
 @dataclass(frozen=True)
 class PatchExtractionConfig:
-    """Registered Stage 0 extraction controls."""
+    """Patch extraction settings."""
 
     seed: int = 42
     patch_size: int = 224
@@ -110,7 +98,7 @@ class PatchExtractionConfig:
 def load_patch_extraction_config(
     path: Path,
 ) -> tuple[Path, Path, Path, Path, PatchExtractionConfig]:
-    """Load the registered Stage 0 paths and sampling controls from TOML."""
+    """Load patch paths and extraction settings from TOML."""
     with Path(path).open("rb") as handle:
         raw = tomllib.load(handle)
     unknown_sections = set(raw) - {"paths", "extraction"}
@@ -220,8 +208,6 @@ def _candidate_centres(
     ys, xs = np.where(mask > 0)
     if not len(ys):
         return
-    # The centroid is a useful deterministic first candidate.  Subsequent
-    # centres come from actual ROI pixels, as in the reference sampler.
     yield int(np.rint(ys.mean())), int(np.rint(xs.mean()))
     indices = rng.integers(0, len(ys), size=max(n - 1, 0))
     for index in indices:
@@ -233,12 +219,7 @@ def sample_lesion_boxes(
     config: PatchExtractionConfig,
     rng: np.random.Generator,
 ) -> list[tuple[PatchBox, Overlap, str]]:
-    """Sample lesion boxes, retaining an explicit fallback when needed.
-
-    Accepted boxes meet ``min_roi_overlap``.  If fewer unique qualifying boxes
-    exist after the registered attempt budget, the best remaining candidates
-    are used and marked rather than silently lowering the cutoff.
-    """
+    """Sample lesion boxes and mark any below-threshold fallbacks."""
     binary = np.asarray(roi_mask) > 0
     if not binary.any():
         return []
@@ -350,14 +331,7 @@ def _image_case_key(
 
 
 def _reconcile_locked_image_ids(source: pd.DataFrame, splits_dir: Path) -> pd.DataFrame:
-    """Join ROI rows to exact locked paths using stable case identity.
-
-    CBIS-DDSM can contain the same full mammogram under multiple nested UID
-    paths.  The locked image manifest and a fresh resolver run may therefore
-    select different storage paths for the same family/patient/side/view.  The
-    join below preserves the exact locked path while rejecting absent or
-    ambiguous physical cases.
-    """
+    """Join ROI rows to canonical image paths by case identity."""
     frames = read_split_frames(splits_dir)
     assert_patient_disjoint(frames)
     locked: dict[tuple[str, str, str, str, str], set[str]] = {}
@@ -591,8 +565,6 @@ def _write_qa_grids(
         subset = manifest[manifest["patch_class"] == patch_class].copy()
         if subset.empty:
             continue
-        # Surface difficult examples: fallbacks first, then lowest overlap for
-        # lesions or lowest tissue fraction for background.
         subset["has_fallback"] = subset["fallback_reason"].fillna("").ne("")
         metric = "tissue_fraction" if patch_class == "background" else "roi_overlap"
         subset = subset.sort_values(["has_fallback", metric], ascending=[False, True])

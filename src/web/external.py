@@ -23,8 +23,6 @@ SUBSET_LABELS = {
     "lesion_present": "Lesion-present (secondary, drops BI-RADS 1 normals)",
 }
 
-# Metrics promoted to the headline table, in display order. Names match the
-# keys produced by src.evaluation.statistics.model_intervals.
 HEADLINE_METRICS = (
     ("auc", "AUC"),
     ("average_precision", "Average precision"),
@@ -301,8 +299,6 @@ def strata_table(result: dict, subset: str, key: str) -> pd.DataFrame:
     if not isinstance(rows, list) or not rows:
         return pd.DataFrame([{"note": f"no {key} recorded for this subset"}])
     frame = pd.DataFrame(rows)
-    # Small strata are reported as skipped rather than silently absent, so keep
-    # the reason column visible when any row was skipped.
     if "skipped_reason" in frame.columns and frame["skipped_reason"].isna().all():
         frame = frame.drop(columns="skipped_reason")
     return frame.round(4)
@@ -320,11 +316,7 @@ def run_cold_evaluation(
     acknowledged: bool,
     result_path: Path = DEFAULT_RESULT,
 ) -> dict:
-    """Run the cold external evaluation, refusing without an explicit acknowledgement.
-
-    The caller records an explicit acknowledgement because overwriting a result
-    after reading it would invalidate the pre-registration.
-    """
+    """Run the cold evaluation after checking acknowledgement and inputs."""
     if not acknowledged:
         raise ValueError(
             "Cold external evaluation consumes a one-shot pre-registered test. "

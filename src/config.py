@@ -1,8 +1,4 @@
-"""Configuration system, seeding, and logging.
-
-Every experiment is driven by a TOML config so the training entry-point is
-one function and re-runs are pure-data changes.
-"""
+"""Configuration, seeding, and logging utilities."""
 
 import logging
 import os
@@ -39,9 +35,6 @@ class ModelConfig:
     dropout_head: float = 0.5
     head_hidden: int = 256
     init_from_patch_checkpoint: Path | None = None
-    """Patch-transfer runs only: a patch checkpoint whose convolutional weights
-    initialise this whole-image model. The head is always built fresh. Left
-    unset by every locked run, so their initialisation is unchanged."""
 
 
 @dataclass(frozen=True)
@@ -73,12 +66,7 @@ class Config:
 
 @dataclass(frozen=True)
 class EnsembleConfig:
-    """Schema for an ensemble config.
-
-    Ensemble configs differ from single-model configs: they carry a top-level
-    `members` list of checkpoint names and have no [model]/[train] sections, so
-    `load_config`/`Config` cannot represent them. Use `load_ensemble_config`.
-    """
+    """Ensemble configuration schema."""
 
     seed: int
     run_name: str
@@ -95,12 +83,7 @@ class EnsembleConfig:
 
 @dataclass(frozen=True)
 class PatchDataConfig:
-    """Stage 0 patch inputs.
-
-    There is deliberately no `test_csv`. The registered patch contract forbids
-    extracting patches from test patients at all, so a patch fold for the test
-    split does not exist and must not be invented.
-    """
+    """Patch inputs with no test fold."""
 
     train_csv: Path
     val_csv: Path
@@ -109,19 +92,11 @@ class PatchDataConfig:
     augment: str = "light"
     num_workers: int = 2
     exclusion_test_csv: Path | None = None
-    """Locked whole-image test manifest, read only as a set of forbidden
-    patient ids. The patch trainer refuses to start if any patch patient
-    appears in it. Its images and labels are never loaded."""
 
 
 @dataclass(frozen=True)
 class PatchTrainConfig(TrainConfig):
-    """Training knobs for the five-class patch head.
-
-    Inherits the whole-image schedule fields so the patch run and the locked
-    448-pixel runs stay directly comparable, and adds the two choices that only
-    exist for a multi-class head.
-    """
+    """Training configuration for the five-class patch model."""
 
     class_weighted_loss: bool = True
     selection_metric: str = "macro_f1"  # or "balanced_accuracy"
@@ -129,12 +104,7 @@ class PatchTrainConfig(TrainConfig):
 
 @dataclass(frozen=True)
 class PatchConfig:
-    """Schema for a Stage 0 patch-classifier config.
-
-    Kept separate from `Config` for the same reason as `EnsembleConfig`: the
-    [data] section has no `test_csv` and points at a patch root rather than an
-    image root, so `load_config` cannot represent it. Use `load_patch_config`.
-    """
+    """Patch-classifier configuration schema."""
 
     seed: int
     run_name: str
@@ -160,11 +130,7 @@ _ENSEMBLE_DATA_KEYS = {
 def _reject_unknown_keys(
     section: str, provided: Iterable[str], allowed: Iterable[str]
 ) -> None:
-    """Raise `ValueError` if `provided` contains keys outside `allowed`.
-
-    Guards against silently-dropped typos (e.g. `augmnet` in [data]), which
-    otherwise leave the default in force with no warning.
-    """
+    """Reject keys outside the section schema."""
     unknown = set(provided) - set(allowed)
     if unknown:
         raise ValueError(
@@ -184,11 +150,7 @@ def _model_config(raw: dict[str, object]) -> ModelConfig:
 
 
 def load_config(path: Path) -> Config:
-    """Load a single-model TOML config file.
-
-    For ensemble configs (top-level `members`, no [model]/[train]) use
-    `load_ensemble_config` instead. This loader requires those sections.
-    """
+    """Load a single-model TOML config."""
     path = Path(path)
     with path.open("rb") as f:
         raw = tomllib.load(f)

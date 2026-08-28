@@ -1,9 +1,4 @@
-"""Stage 0 patch-classifier tests.
-
-These cover the parts that can go silently wrong: the head geometry, the
-class-weight derivation, the leakage preflight, and whether a run end-to-end
-produces the checkpoint and metric report the transfer run expects to consume.
-"""
+"""Patch-classifier tests."""
 
 import json
 
@@ -20,7 +15,6 @@ from src.training.loss import make_patch_criterion
 
 
 def _write_patches(root, frame):
-    """Materialise one random 224-pixel array per manifest row."""
     rng = np.random.default_rng(0)
     for path in frame["patch_path"]:
         target = root / path
@@ -29,7 +23,6 @@ def _write_patches(root, frame):
 
 
 def _balanced_manifest(split, patients):
-    """One patch per class per patient, so every class is present in both folds."""
     rows = []
     for patient in patients:
         for patch_class in PATCH_CLASSES:
@@ -48,7 +41,6 @@ def _balanced_manifest(split, patients):
 
 
 def _patch_project(tmp_path, train_patients, val_patients, test_patients=()):
-    """Build a miniature Stage 0 tree plus a loadable config."""
     data = tmp_path / "data"
     data.mkdir()
     train = _balanced_manifest("train", train_patients)
@@ -91,7 +83,6 @@ early_stop_patience = 2
 
 
 def test_build_model_default_head_is_unchanged():
-    """The locked whole-image runs must keep their single-logit head."""
     model = build_model("vgg16", pretrained=False)
     assert model(torch.zeros(2, 1, 224, 224)).shape == (2, 1)
 
@@ -114,8 +105,6 @@ def test_patch_criterion_weights_are_inverse_frequency(tmp_path):
     criterion = make_patch_criterion(csv)
     weights = criterion.weight
     assert weights is not None
-    # Rarer classes weigh more, and the mean stays 1.0 so the configured
-    # learning rate keeps its meaning.
     assert weights[1] > weights[4] > weights[0]
     assert float(weights.mean()) == pytest.approx(1.0)
 
@@ -174,7 +163,6 @@ def test_preflight_accepts_disjoint_folds(tmp_path):
 
 
 def test_patch_training_writes_checkpoint_and_report(tmp_path):
-    """End-to-end on a miniature tree: the artefacts the transfer needs exist."""
     from src.training import train_patch
 
     config = _patch_project(tmp_path, ["P_1", "P_2"], ["P_3"], test_patients=["P_9"])
@@ -199,7 +187,6 @@ def test_patch_training_writes_checkpoint_and_report(tmp_path):
 
 
 def test_patch_training_is_reproducible(tmp_path):
-    """Same config, same seed, same history. Guards the seeded generator path."""
     from src.training import train_patch
 
     histories = []
@@ -230,7 +217,6 @@ def test_evaluate_patches_perfect_predictions():
 
 
 def test_patch_backbone_transfer_copies_features_only(tmp_path):
-    """The registered mapping: convolutional weights move, the head does not."""
     from src.models.transfer import load_patch_backbone
 
     patch_model = build_model("vgg16", pretrained=False, num_classes=len(PATCH_CLASSES))
@@ -245,16 +231,13 @@ def test_patch_backbone_transfer_copies_features_only(tmp_path):
 
     after = whole.state_dict()
     source = patch_model.state_dict()
-    # All 13 VGG-16 conv layers, weight and bias.
     assert summary["n_tensors_copied"] == 26
     assert summary["n_tensors_left_as_built"] == 8
     for key in source:
         if key.startswith("backbone.features."):
             assert torch.equal(after[key], source[key]), key
-    # The binary head keeps its own shape and values.
     assert after["backbone.classifier.6.4.weight"].shape == (1, 256)
     assert torch.equal(after["backbone.classifier.6.4.weight"], head_before)
-    # VGG's 4096-unit layers stay ImageNet-initialised, per the plan.
     assert torch.equal(after["backbone.classifier.0.weight"], fc_before)
 
 
@@ -276,7 +259,6 @@ def test_patch_backbone_transfer_accepts_a_bare_backbone_checkpoint(tmp_path):
 
 
 def test_patch_backbone_transfer_refuses_wrong_architecture(tmp_path):
-    """A partial transfer must fail loudly, not silently half-initialise."""
     from src.models.transfer import load_patch_backbone
 
     vgg19_patch = build_model("vgg19", pretrained=False, num_classes=len(PATCH_CLASSES))
@@ -288,7 +270,6 @@ def test_patch_backbone_transfer_refuses_wrong_architecture(tmp_path):
 
 
 def test_patch_backbone_transfer_refuses_empty_checkpoint(tmp_path):
-    """An empty checkpoint is reported as missing conv keys, naming the first few."""
     from src.models.transfer import load_patch_backbone
 
     checkpoint = tmp_path / "empty.pt"
@@ -298,7 +279,6 @@ def test_patch_backbone_transfer_refuses_empty_checkpoint(tmp_path):
 
 
 def test_whole_image_training_consumes_a_patch_checkpoint(tmp_path):
-    """End-to-end: the candidate config path actually initialises."""
     from src.models.transfer import load_patch_backbone
 
     patch_model = build_model("vgg16", pretrained=False, num_classes=len(PATCH_CLASSES))
@@ -307,6 +287,4 @@ def test_whole_image_training_consumes_a_patch_checkpoint(tmp_path):
 
     whole = build_model("vgg16", pretrained=False)
     load_patch_backbone(whole, checkpoint, "vgg16")
-    # The transferred model still takes 448-pixel whole images and emits one
-    # logit: no ROI input, no five-class head.
     assert whole(torch.zeros(1, 1, 448, 448)).shape == (1, 1)

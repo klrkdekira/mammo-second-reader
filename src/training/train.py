@@ -39,19 +39,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _seed_worker(_worker_id: int) -> None:
-    """Seed each DataLoader worker's RNGs from its torch-derived seed.
-
-    Spawn workers start with fresh numpy/random state, so any numpy-backed
-    random op would differ run-to-run despite set_global_seed. torch assigns
-    each worker a deterministic seed derived from the loader's generator;
-    mirror it into numpy and random.
-
-    Albumentations 2.x additionally gives every Compose its own generator,
-    which neither seed() call above reaches, so re-seed this worker's copy of
-    the pipeline from the same torch-derived seed. That keeps augmentation
-    reproducible across runs of one config while still differing between
-    workers.
-    """
+    """Seed Python, NumPy, and transform RNGs for one loader worker."""
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
@@ -74,8 +62,6 @@ def _build_loaders(cfg: Config) -> tuple[DataLoader, DataLoader]:
         cfg.data.image_root,
         transform=val_augment(cfg.data.image_size),
     )
-    # A seeded generator makes both the shuffle order and the worker seeds
-    # (and any WeightedRandomSampler draws) deterministic across runs.
     generator = torch.Generator()
     generator.manual_seed(cfg.seed)
 
@@ -145,19 +131,7 @@ def _build_scheduler(optimiser: torch.optim.Optimizer, cfg: TrainConfig, epochs:
 def _mixup(
     x: torch.Tensor, y: torch.Tensor, alpha: float
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    """Return a convex combination of the batch with a shuffled copy of itself.
-
-    Soft targets go straight into BCEWithLogitsLoss, so no per-sample loss
-    mixing is needed.
-
-    Interaction with pos_weight: the criterion still applies the fixed
-    n_neg/n_pos pos_weight to these interpolated soft targets, so a mixed
-    sample's positive term is up-weighted by the full imbalance factor even
-    though its target is only fractionally positive. The effect is small and
-    consistent across runs. Configs combining mixup and pos_weight (e.g.
-    regularised_combined) should note it rather than read the two as
-    independent. See WARNINGS / writeup.
-    """
+    """Mix a batch with one random permutation."""
     lam = float(np.random.beta(alpha, alpha))
     perm = torch.randperm(x.size(0), device=x.device)
     return lam * x + (1.0 - lam) * x[perm], lam * y + (1.0 - lam) * y[perm]
@@ -397,7 +371,6 @@ def main(
 
     _save_history(cfg.output_dir / f"{cfg.run_name}.history.json", history)
 
-    # Reload best-AUC checkpoint before calculating operating threshold.
     best_path = cfg.output_dir / f"{cfg.run_name}.pt"
     if best_path.exists():
         model.load_state_dict(

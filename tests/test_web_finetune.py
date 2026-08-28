@@ -1,5 +1,4 @@
-"""Tests for the web fine-tuning flow: workdir materialisation,
-de-identification-on-extract, and the per-epoch streaming wiring."""
+"""Tests for web fine-tuning."""
 
 import zipfile
 
@@ -20,7 +19,6 @@ def _make_dicom_bytes(tmp_path, name: str, patient_name: str = "Test^Patient"):
     file_meta.MediaStorageSOPInstanceUID = pydicom.uid.generate_uid()
     file_meta.TransferSyntaxUID = pydicom.uid.ExplicitVRLittleEndian
 
-    # In-memory dataset: pydicom accepts filename=None, the stubs do not.
     ds = FileDataset(None, {}, file_meta=file_meta, preamble=b"\0" * 128)  # type: ignore[arg-type]
     ds.PatientName = patient_name
     ds.PatientID = "12345"
@@ -36,8 +34,6 @@ def test_materialise_workdir_requires_train_and_val_csv(tmp_path):
     pd.DataFrame({"image_id": ["a"], "label": [0]}).to_csv(
         src_dir / "train.csv", index=False
     )
-    # val.csv is absent to exercise manifest validation.
-
     zip_path = tmp_path / "batch.zip"
     with zipfile.ZipFile(zip_path, "w") as zf:
         zf.write(src_dir / "train.csv", arcname="train.csv")
@@ -64,8 +60,6 @@ def test_materialise_workdir_rejects_a_zip_bomb_by_declared_size(tmp_path, monke
     class _HugeZipInfo:
         file_size = finetune.MAX_EXTRACTED_BYTES + 1
 
-    # A real zip bomb declares a huge uncompressed size in its own metadata;
-    # mocking infolist() exercises that check without needing gigabytes of data.
     monkeypatch.setattr(zipfile.ZipFile, "infolist", lambda self: [_HugeZipInfo()])
 
     workdir = tmp_path / "workdir"
@@ -102,10 +96,6 @@ def test_materialise_workdir_deidentifies_and_flattens(tmp_path):
 
 
 def test_stream_finetune_epochs_yields_metrics(tmp_path, monkeypatch):
-    # Force CPU: this machine's GPU exposes torch.cuda.is_available() but its
-    # MIOpen/HIPRTC toolchain cannot compile a batch-norm kernel. Training does
-    # not run on this machine; only the test suite does, and it must not depend
-    # on GPU availability.
     monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
 
     workdir = tmp_path / "workdir"

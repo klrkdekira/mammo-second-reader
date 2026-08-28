@@ -62,7 +62,6 @@ def test_malignant_if_any():
     df = _df([_row("img_a", 0, "mass", "roi_1"), _row("img_a", 1, "calc", "roi_2")])
     out = collapse_to_image_level(df)
     assert out.iloc[0]["label"] == 1
-    # representative fields come from the malignant abnormality
     assert out.iloc[0]["roi_mask_id"] == "roi_2"
 
 

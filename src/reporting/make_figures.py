@@ -80,13 +80,7 @@ def _load_statistics(path: Path) -> dict:
 
 
 def plot_roc_comparison(metrics_path: Path, out_path: Path) -> None:
-    """One ROC curve per model on a shared axis.
-
-    Each run's metrics record carries the full (fpr, tpr) arrays under
-    "roc", saved by src.evaluation.evaluate, so this draws the real curve.
-    Runs without a "roc" block (e.g. from an older evaluation) are skipped
-    with a warning rather than drawn as a fake straight line.
-    """
+    """Plot available model ROC curves on one axis."""
     runs = _load_metrics(metrics_path)["runs"]
     if not runs:
         LOGGER.warning("No runs in %s", metrics_path)
@@ -218,11 +212,7 @@ def plot_fixed_specificity(metrics_path: Path, out_path: Path) -> None:
 def plot_roc_subset(
     metrics_path: Path, out_path: Path, members: list[str], title: str
 ) -> None:
-    """ROC overlay restricted to a named subset of runs, in `members` order.
-
-    Used for the headline scratch-vs-transfer figure, which compares only the
-    three prototype models rather than every trained backbone.
-    """
+    """Plot ROC curves for selected runs in the given order."""
     by_name = {r.get("model"): r for r in _load_metrics(metrics_path)["runs"]}
     fig, ax = plt.subplots(figsize=(6, 6))
     drawn = 0
@@ -249,11 +239,7 @@ def plot_roc_subset(
 
 
 def plot_learning_curve(history_path: Path, out_path: Path, title: str) -> None:
-    """Training loss (left axis) and validation AUC (right axis) vs. epoch.
-
-    Reads the per-epoch history written by src.training.train. Validation loss
-    is not recorded by the trainer, so the loss axis shows training loss only.
-    """
+    """Plot training loss and validation AUC by epoch."""
     if not history_path.exists():
         LOGGER.warning("History %s not found; skipping %s", history_path, out_path)
         return
@@ -284,12 +270,7 @@ def plot_learning_curve(history_path: Path, out_path: Path, title: str) -> None:
 
 
 def plot_confusion_matrices(metrics_path: Path, out_dir: Path) -> None:
-    """Annotated confusion matrix heatmap, one file per run.
-
-    Layout is [[TN, FP], [FN, TP]] (rows = actual, cols = predicted).
-    Title carries the headline AUC / sensitivity / specificity so the figure
-    is self-contained without referring back to the metrics file.
-    """
+    """Write one confusion-matrix heatmap per run."""
     runs = _load_metrics(metrics_path)["runs"]
     class_labels = ["Benign", "Malignant"]
     for r in runs:
@@ -324,12 +305,7 @@ def plot_confusion_matrices(metrics_path: Path, out_dir: Path) -> None:
 
 
 def plot_density_strata(metrics_path: Path, out_dir: Path) -> None:
-    """AUC, sensitivity, and specificity broken down by BIRADS breast density.
-
-    Three side-by-side bar charts share the same density axis (D1 to D4).
-    Each model is a separate bar group so models can be compared at a glance
-    within each density category.
-    """
+    """Plot AUC, sensitivity, and specificity by breast density."""
     runs = _load_metrics(metrics_path)["runs"]
     runs = [r for r in runs if r.get("density_strata")]
     if not runs:
@@ -371,13 +347,7 @@ def plot_density_strata(metrics_path: Path, out_dir: Path) -> None:
 
 
 def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
-    """AUC, sensitivity, and specificity broken down by lesion type.
-
-    Three side-by-side bar charts share a mass-vs-calcification axis, with
-    each model a separate bar group. A large mass-vs-calc AUC gap is the
-    evidence for training separate per-lesion-type models. A small gap
-    argues the pooled model is not the bottleneck.
-    """
+    """Plot AUC, sensitivity, and specificity by lesion type."""
     runs = _load_metrics(metrics_path)["runs"]
     runs = [r for r in runs if r.get("lesion_strata")]
     if not runs:
@@ -419,12 +389,7 @@ def plot_lesion_strata(metrics_path: Path, out_dir: Path) -> None:
 
 
 def plot_reliability(metrics_path: Path, out_dir: Path) -> None:
-    """Reliability diagram for each run showing calibration after temperature scaling.
-
-    Points on the diagonal are perfectly calibrated. The title shows the
-    temperature T and ECE before/after scaling so the figure records whether
-    scaling actually improved calibration.
-    """
+    """Plot a post-calibration reliability diagram for each run."""
     runs = _load_metrics(metrics_path)["runs"]
     runs = [r for r in runs if r.get("calibration")]
     if not runs:
@@ -472,12 +437,7 @@ def plot_reliability(metrics_path: Path, out_dir: Path) -> None:
 
 
 def plot_decision_curves(metrics_path: Path, out_dir: Path) -> None:
-    """Decision curve analysis: net benefit vs probability threshold.
-
-    The treat-all and treat-none reference lines are drawn from the first run
-    (they are identical across runs for the same test set). Each model's curve
-    is overlaid so relative benefit is easy to read.
-    """
+    """Plot net benefit by probability threshold."""
     runs = _load_metrics(metrics_path)["runs"]
     runs = [r for r in runs if r.get("decision_curve")]
     if not runs:
@@ -518,12 +478,7 @@ def plot_decision_curves(metrics_path: Path, out_dir: Path) -> None:
 
 
 def plot_gradcam_roi(metrics_path: Path, out_dir: Path) -> None:
-    """GradCAM vs lesion ROI spatial alignment metrics for all / TP / FN subsets.
-
-    Three bar charts show pointing game rate, mean IoU, and normalised centroid
-    distance for each subset. The TP/FN split reveals whether the model looks at
-    the right region on cases it gets right versus wrong.
-    """
+    """Plot Grad-CAM localisation metrics for all, TP, and FN subsets."""
     runs = _load_metrics(metrics_path)["runs"]
     runs = [r for r in runs if r.get("gradcam_roi")]
     if not runs:

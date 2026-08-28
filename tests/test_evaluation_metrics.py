@@ -87,13 +87,11 @@ def test_metrics_by_density():
     res = metrics_by_density(df, y_prob, threshold=0.5, min_n=5)
 
     assert len(res) == 4
-    # Density 1 has n=10 >= min_n=5
     d1 = res[res["density"] == 1].iloc[0]
     assert d1["n"] == 10
     assert d1["auc"] is not None
     assert pd.isna(d1["skipped_reason"])
 
-    # Density 2 has n=2 < min_n=5
     d2 = res[res["density"] == 2].iloc[0]
     assert d2["n"] == 2
     assert pd.isna(d2["auc"])
