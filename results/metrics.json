@@ -3050,13 +3050,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:50:05.634231+00:00",
+        "generated_at_utc": "2026-08-28T04:29:05.953621+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -3114,32 +3114,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -3150,14 +3150,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -3168,8 +3168,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -3180,8 +3180,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -3194,8 +3194,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -3218,8 +3218,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -3230,8 +3230,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -3254,8 +3254,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -3272,14 +3272,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -3309,13 +3309,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -3323,7 +3323,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -6397,13 +6397,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:52:03.865997+00:00",
+        "generated_at_utc": "2026-08-28T04:29:12.262968+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -6461,32 +6461,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -6497,14 +6497,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -6515,8 +6515,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -6527,8 +6527,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -6541,8 +6541,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -6565,8 +6565,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -6577,8 +6577,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -6601,8 +6601,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -6619,14 +6619,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -6656,13 +6656,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -6670,7 +6670,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -9731,13 +9731,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:53:59.241678+00:00",
+        "generated_at_utc": "2026-08-28T04:29:18.424930+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -9795,32 +9795,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -9831,14 +9831,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -9849,8 +9849,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -9861,8 +9861,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -9875,8 +9875,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -9899,8 +9899,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -9911,8 +9911,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -9935,8 +9935,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -9953,14 +9953,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -9990,13 +9990,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -10004,7 +10004,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -12897,13 +12897,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:55:04.068364+00:00",
+        "generated_at_utc": "2026-08-28T04:29:24.567155+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -12961,32 +12961,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -12997,14 +12997,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -13015,8 +13015,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -13027,8 +13027,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -13041,8 +13041,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -13065,8 +13065,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -13077,8 +13077,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -13101,8 +13101,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -13119,14 +13119,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -13156,13 +13156,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -13170,7 +13170,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -16216,13 +16216,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:56:05.642088+00:00",
+        "generated_at_utc": "2026-08-28T04:29:30.645521+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -16280,32 +16280,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -16316,14 +16316,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -16334,8 +16334,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -16346,8 +16346,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -16360,8 +16360,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -16384,8 +16384,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -16396,8 +16396,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -16420,8 +16420,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -16438,14 +16438,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -16475,13 +16475,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -16489,7 +16489,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -19542,13 +19542,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T12:57:09.039424+00:00",
+        "generated_at_utc": "2026-08-28T04:29:36.822324+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -19606,32 +19606,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -19642,14 +19642,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -19660,8 +19660,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -19672,8 +19672,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -19686,8 +19686,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -19710,8 +19710,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -19722,8 +19722,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -19746,8 +19746,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -19764,14 +19764,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -19801,13 +19801,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -19815,7 +19815,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -22813,13 +22813,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:00:40.515235+00:00",
+        "generated_at_utc": "2026-08-28T04:29:46.267299+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -22877,32 +22877,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -22913,14 +22913,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -22931,8 +22931,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -22943,8 +22943,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -22957,8 +22957,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -22981,8 +22981,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -22993,8 +22993,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -23017,8 +23017,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -23035,14 +23035,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -23072,13 +23072,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -23086,7 +23086,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -26098,13 +26098,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:04:11.658159+00:00",
+        "generated_at_utc": "2026-08-28T04:29:55.698514+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -26162,32 +26162,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -26198,14 +26198,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -26216,8 +26216,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -26228,8 +26228,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -26242,8 +26242,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -26266,8 +26266,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -26278,8 +26278,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -26302,8 +26302,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -26320,14 +26320,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -26357,13 +26357,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -26371,7 +26371,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -28741,13 +28741,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:07:08.867148+00:00",
+        "generated_at_utc": "2026-08-28T04:30:04.993762+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -28805,32 +28805,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -28841,14 +28841,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -28859,8 +28859,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -28871,8 +28871,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -28885,8 +28885,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -28909,8 +28909,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -28921,8 +28921,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -28945,8 +28945,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -28963,14 +28963,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -29000,13 +29000,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -29014,7 +29014,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -32057,13 +32057,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:08:21.167141+00:00",
+        "generated_at_utc": "2026-08-28T04:30:11.442991+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -32121,32 +32121,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -32157,14 +32157,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -32175,8 +32175,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -32187,8 +32187,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -32201,8 +32201,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -32225,8 +32225,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -32237,8 +32237,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -32261,8 +32261,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -32279,14 +32279,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -32316,13 +32316,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -32330,7 +32330,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -35358,13 +35358,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:08:52.964505+00:00",
+        "generated_at_utc": "2026-08-28T04:30:16.771134+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -35422,32 +35422,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -35458,14 +35458,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -35476,8 +35476,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -35488,8 +35488,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -35502,8 +35502,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -35526,8 +35526,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -35538,8 +35538,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -35562,8 +35562,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -35580,14 +35580,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -35617,13 +35617,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -35631,7 +35631,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -38702,13 +38702,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:09:29.881790+00:00",
+        "generated_at_utc": "2026-08-28T04:30:23.930588+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -38766,32 +38766,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -38802,14 +38802,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -38820,8 +38820,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -38832,8 +38832,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -38846,8 +38846,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -38870,8 +38870,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -38882,8 +38882,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -38906,8 +38906,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -38924,14 +38924,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -38961,13 +38961,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -38975,7 +38975,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -42039,13 +42039,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:09:50.138266+00:00",
+        "generated_at_utc": "2026-08-28T04:30:28.005212+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -42103,32 +42103,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -42139,14 +42139,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -42157,8 +42157,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -42169,8 +42169,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -42183,8 +42183,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -42207,8 +42207,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -42219,8 +42219,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -42243,8 +42243,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -42261,14 +42261,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -42298,13 +42298,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -42312,7 +42312,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -45389,13 +45389,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:10:41.466693+00:00",
+        "generated_at_utc": "2026-08-28T04:30:32.115895+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -45453,32 +45453,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -45489,14 +45489,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -45507,8 +45507,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -45519,8 +45519,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -45533,8 +45533,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -45557,8 +45557,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -45569,8 +45569,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -45593,8 +45593,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -45611,14 +45611,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -45648,13 +45648,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -45662,7 +45662,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -48698,13 +48698,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:11:32.964304+00:00",
+        "generated_at_utc": "2026-08-28T04:30:36.197886+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -48762,32 +48762,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -48798,14 +48798,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -48816,8 +48816,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -48828,8 +48828,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -48842,8 +48842,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -48866,8 +48866,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -48878,8 +48878,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -48902,8 +48902,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -48920,14 +48920,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -48957,13 +48957,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -48971,7 +48971,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -51986,13 +51986,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:12:24.628269+00:00",
+        "generated_at_utc": "2026-08-28T04:30:40.097054+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -52050,32 +52050,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -52086,14 +52086,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -52104,8 +52104,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -52116,8 +52116,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -52130,8 +52130,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -52154,8 +52154,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -52166,8 +52166,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -52190,8 +52190,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -52208,14 +52208,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -52245,13 +52245,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -52259,7 +52259,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -55312,13 +55312,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:13:16.674194+00:00",
+        "generated_at_utc": "2026-08-28T04:30:44.029534+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -55376,32 +55376,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -55412,14 +55412,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -55430,8 +55430,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -55442,8 +55442,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -55456,8 +55456,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -55480,8 +55480,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -55492,8 +55492,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -55516,8 +55516,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -55534,14 +55534,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -55571,13 +55571,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -55585,7 +55585,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -58635,13 +58635,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:13:59.408169+00:00",
+        "generated_at_utc": "2026-08-28T04:30:47.949403+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -58699,32 +58699,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -58735,14 +58735,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -58753,8 +58753,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -58765,8 +58765,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -58779,8 +58779,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -58803,8 +58803,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -58815,8 +58815,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -58839,8 +58839,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -58857,14 +58857,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -58894,13 +58894,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -58908,7 +58908,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -61919,13 +61919,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:15:16.814203+00:00",
+        "generated_at_utc": "2026-08-28T04:30:52.047344+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -61983,32 +61983,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -62019,14 +62019,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -62037,8 +62037,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -62049,8 +62049,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -62063,8 +62063,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -62087,8 +62087,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -62099,8 +62099,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -62123,8 +62123,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -62141,14 +62141,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -62178,13 +62178,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -62192,7 +62192,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -65233,13 +65233,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:16:22.189512+00:00",
+        "generated_at_utc": "2026-08-28T04:30:55.958028+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -65297,32 +65297,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -65333,14 +65333,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -65351,8 +65351,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -65363,8 +65363,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -65377,8 +65377,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -65401,8 +65401,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -65413,8 +65413,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -65437,8 +65437,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -65455,14 +65455,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -65492,13 +65492,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -65506,7 +65506,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -68585,13 +68585,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:17:41.982474+00:00",
+        "generated_at_utc": "2026-08-28T04:30:59.962506+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -68649,32 +68649,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -68685,14 +68685,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -68703,8 +68703,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -68715,8 +68715,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -68729,8 +68729,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -68753,8 +68753,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -68765,8 +68765,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -68789,8 +68789,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -68807,14 +68807,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -68844,13 +68844,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -68858,7 +68858,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",
@@ -71869,13 +71869,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-26T13:17:49.403153+00:00",
+        "generated_at_utc": "2026-08-28T04:31:07.330386+00:00",
         "git": {
-          "commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-          "snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+          "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M Makefile\n M src/config.py\n M src/data/augment.py\n M src/evaluation/evaluate.py\n M src/evaluation/metrics.py\n M src/models/transfer.py\n M src/training/loss.py\n M src/training/train.py\n M tests/test_config.py\n M tests/test_train_reproducibility.py\n?? configs/patch_learning/vgg16_imagenet_448_quarantined.toml\n?? configs/patch_learning/vgg16_patch.toml\n?? configs/patch_learning/vgg16_patch_imagenet_448.toml\n?? src/data/patch_verify.py\n?? src/training/train_patch.py\n?? sync_patch_data.sh\n?? tests/test_patch_verify.py\n?? tests/test_train_patch.py",
+          "evidence_status": "M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -71946,32 +71946,32 @@
           }
         ],
         "code": {
-          "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-          "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+          "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+          "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
           "preprocessing_files": [
             {
               "path": "src/config.py",
               "exists": true,
-              "size_bytes": 10864,
-              "sha256": "303d23a8f1129edce2474946f2205cc1de5cdc020323ab7678ef2eb9a9dc05bd"
+              "size_bytes": 9106,
+              "sha256": "878d562dd8d7cf0afd21f200c5916978914cba2c9316098662583be464d09b4d"
             },
             {
               "path": "src/data/preprocessing.py",
               "exists": true,
-              "size_bytes": 8817,
-              "sha256": "ba25adf8f4604c9e5d77bf6a997c298b3a2f61f384e39c80ef2bf990a4a5441e"
+              "size_bytes": 7608,
+              "sha256": "45a2e442ec27700f06f23dee0e7790663bf4d0e4f812edabd11f7c94530efae2"
             },
             {
               "path": "src/data/manifest.py",
               "exists": true,
-              "size_bytes": 5449,
-              "sha256": "af765a2b9cf5a25bf18baaffd05240270d6b9ee068442f2620feb9e150d49dcd"
+              "size_bytes": 3953,
+              "sha256": "92f1b73e48cb4ada07d192da9d748c176e58a4a6dd551fc99477124293cf1b1b"
             },
             {
               "path": "src/data/splits.py",
               "exists": true,
-              "size_bytes": 10718,
-              "sha256": "e9ac1908b868323acb09554da709d0b1e31871d28b9f74ac1b2b8e1a51be33c1"
+              "size_bytes": 10139,
+              "sha256": "61fb4eaa67b3d605cd92ba4cf73d5702b6d813512086ca751ca5baaf1acc48b5"
             },
             {
               "path": "src/data/dataset.py",
@@ -71982,14 +71982,14 @@
             {
               "path": "src/data/augment.py",
               "exists": true,
-              "size_bytes": 2565,
-              "sha256": "3328d27bd7a7c68c469dc45a6fb104d0b96e1b433a422fdafda2212f61139ac2"
+              "size_bytes": 1876,
+              "sha256": "484e740f66594f0dfb0741c50a6282035aad8574e8dca447750c9f7de9109b2a"
             },
             {
               "path": "src/data/dicom_to_png.py",
               "exists": true,
-              "size_bytes": 3101,
-              "sha256": "93f843ea4c0afc9fa3c2d8b4969914f2bfce11a75e870d526f3fc9292544bdf9"
+              "size_bytes": 2961,
+              "sha256": "a0c0d2e8e3d01035648e61b4a56d43e41eb3cc0c36fb390791b581279e460988"
             },
             {
               "path": "src/data/cache_roi_masks.py",
@@ -72000,8 +72000,8 @@
             {
               "path": "src/training/train.py",
               "exists": true,
-              "size_bytes": 14898,
-              "sha256": "2f5db03ba6b0d3d7ed2aca095fefad63bf67e3c0b1967546ebf904530d9b191d"
+              "size_bytes": 13476,
+              "sha256": "d94d357e31e746730be782e57b0bbaee5aa9f2870cf902ed23fdf9b01f8ec297"
             },
             {
               "path": "src/training/callbacks.py",
@@ -72012,8 +72012,8 @@
             {
               "path": "src/training/loss.py",
               "exists": true,
-              "size_bytes": 3346,
-              "sha256": "37d2314e895a2c60b77313ff5c5417ec1b3ab350061c2b73ec37bbbbe6a63dec"
+              "size_bytes": 2481,
+              "sha256": "e46fddae5fb1c816cb703c89679e5e7e065ef3fa9cb7af7e7417ec102c644817"
             },
             {
               "path": "src/training/sampler.py",
@@ -72026,8 +72026,8 @@
             {
               "path": "src/evaluation/calibration.py",
               "exists": true,
-              "size_bytes": 6361,
-              "sha256": "ff045ce13ed0f7125c98378df3af0fafabf09c07c0e730bebc6e508eb14bdffa"
+              "size_bytes": 6087,
+              "sha256": "5f79f2a7566be0fbf8e631f8476371a949d6c1c8bd0911469e287f7fa1ed5158"
             },
             {
               "path": "src/evaluation/decision_curve.py",
@@ -72050,8 +72050,8 @@
             {
               "path": "src/evaluation/gradcam_roi.py",
               "exists": true,
-              "size_bytes": 3945,
-              "sha256": "19a46302e3eda50c87c2b9ae4b780fb5c6f61ded4903f63f581c01c7679b996d"
+              "size_bytes": 2425,
+              "sha256": "e488fb3bd3138e402ba604b614938874528ba3018929ce5bd480115459e1d897"
             },
             {
               "path": "src/evaluation/lesion_strata.py",
@@ -72062,8 +72062,8 @@
             {
               "path": "src/evaluation/metrics.py",
               "exists": true,
-              "size_bytes": 9491,
-              "sha256": "efc53d55b5c2972f1f410baf8289d74cad38fa07c91b3d0c53a28d91f2c870b5"
+              "size_bytes": 8400,
+              "sha256": "eb5a3cf9db3a694b853d34a211033cca6059d456158d8aee9d91a4d7d3c003a0"
             },
             {
               "path": "src/evaluation/audit.py",
@@ -72086,8 +72086,8 @@
             {
               "path": "src/evaluation/evaluate.py",
               "exists": true,
-              "size_bytes": 11607,
-              "sha256": "e196a059f159eaf03cc0c37b2e1daf4753da4469596c6dc5cd15eb3b02eb577c"
+              "size_bytes": 10074,
+              "sha256": "ae10268f6973790fd894e7c33e612dc3044a0c5847de5941768c451b281ed6e9"
             },
             {
               "path": "src/evaluation/lineage.py",
@@ -72104,14 +72104,14 @@
             {
               "path": "src/evaluation/freeze.py",
               "exists": true,
-              "size_bytes": 12152,
-              "sha256": "afdac7c3f9e0e38325cc0c395617adb44024860727e6b3d2ad7b19994114173e"
+              "size_bytes": 12100,
+              "sha256": "fb39a9eadf7c5f1e27c7e0326ef1a52c2638b5f7140a41e2a2b3c5e3867be5f0"
             },
             {
               "path": "src/training/ensemble.py",
               "exists": true,
-              "size_bytes": 6353,
-              "sha256": "d5f9ad50f609be2e556e2be095eabbe098b56e0a3524b81fc6ac4a1812816c22"
+              "size_bytes": 6276,
+              "sha256": "d0a77edc794d162410437edc04bddcdb18fd2c4ad87dc81e488be6916a8b7920"
             },
             {
               "path": "src/models/__init__.py",
@@ -72141,13 +72141,13 @@
               "path": "src/models/transfer.py",
               "exists": true,
               "size_bytes": 6956,
-              "sha256": "c388639071e7ba4c8bf1628ede431824051b9050893aae78d77bc3abaf7133cb"
+              "sha256": "d51a4e296d560c078b55626e7360c6bb32108adc840bbdb6bba9c00125821fa7"
             },
             {
               "path": "src/reporting/make_figures.py",
               "exists": true,
-              "size_bytes": 23360,
-              "sha256": "1687dd9ee44dc5da2d13e0c8fc62b55efd987cf286e2c0feeae2ca780a29354b"
+              "size_bytes": 21316,
+              "sha256": "657387bd9e7301824a9813aa755064ed796de67ece9acacc744cd068934c6f6c"
             }
           ]
         },
@@ -72155,7 +72155,7 @@
           "python": "3.12.14",
           "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.1",
+            "numpy": "2.5.2",
             "pandas": "3.0.5",
             "pydicom": "3.0.2",
             "scikit-learn": "1.9.0",

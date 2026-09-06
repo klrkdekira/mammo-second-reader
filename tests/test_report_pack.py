@@ -85,7 +85,7 @@ def test_stale_findings_report_line_numbers():
 
 def test_stale_findings_allow_labelled_historical_numbers():
     text = (
-        "### 5.8 Cold external evaluation\nEarlier internal AUC was 0.7250.\n"
+        "## 5.8 Cold external evaluation\nEarlier internal AUC was 0.7250.\n"
         "### 5.9 Historical audit\nOriginal mean was 0.7257.\n"
         "### 5.10 Current limits\nCurrent mean is still 0.7257.\n"
     )
@@ -202,3 +202,33 @@ def test_report_pack_flags_an_unnumbered_linked_image(tmp_path):
     _, findings = build_report_pack(metrics, _statistics(), frozen, report)
 
     assert "image/caption count mismatch" in {finding["marker"] for finding in findings}
+
+
+def test_report_pack_counts_reference_images_and_escaped_captions(tmp_path):
+    report = tmp_path / "FinalReport.md"
+    report.write_text(
+        "# Report\n\n![][image1]\n\n*Figure 1\\. Plot.*\n\n"
+        "[image1]: <data:image/png;base64,AAAA>\n"
+    )
+    metrics = {"runs": [{"model": name} for name in RUNS]}
+    frozen = {"figures": [], "source_snapshot": "a" * 64}
+
+    rendered, findings = build_report_pack(metrics, _statistics(), frozen, report)
+
+    assert "Figure captions: 1 (contiguous 1-1)" in rendered
+    assert "Linked images: 1; missing files: 0" in rendered
+    assert "image/caption count mismatch" not in {
+        finding["marker"] for finding in findings
+    }
+
+
+def test_report_pack_flags_missing_reference_image_definition(tmp_path):
+    report = tmp_path / "FinalReport.md"
+    report.write_text("# Report\n\n![][missing]\n\n*Figure 1\\. Plot.*\n")
+    metrics = {"runs": [{"model": name} for name in RUNS]}
+    frozen = {"figures": [], "source_snapshot": "a" * 64}
+
+    rendered, _ = build_report_pack(metrics, _statistics(), frozen, report)
+
+    assert "Linked images: 1; missing files: 1" in rendered
+    assert "`[missing]`" in rendered
