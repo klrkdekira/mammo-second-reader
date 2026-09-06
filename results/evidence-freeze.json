@@ -1,15 +1,15 @@
 {
   "version": 3,
-  "frozen_at_utc": "2026-08-26T13:41:07.793501+00:00",
+  "frozen_at_utc": "2026-08-28T04:39:14.989708+00:00",
   "metrics": {
     "path": "results/metrics.json",
-    "size_bytes": 2175425,
-    "sha256": "10923e789509ce621a20c1baa4d43d39f90233c093f26c3b24300224c772633d"
+    "size_bytes": 2163171,
+    "sha256": "d522c86f59c3bb5cf82cfa1e14f9e95124b5f7993e66acdd6fa6fc10b9d7cbd5"
   },
   "statistics": {
     "path": "results/statistics.json",
     "size_bytes": 109384,
-    "sha256": "e6f2294a91cfd7554762da83c104d99f6283cee9a05dc51fc16d155065cc3f66",
+    "sha256": "c343ebd20e8568ec575386006bdca1f5f030767c47850cb9fe2fdb7845778258",
     "method": {
       "unit": "patient",
       "stratified_by": "patient_any_malignant",
@@ -23,11 +23,11 @@
       "seed": 42
     }
   },
-  "git_commit": "5048cbafdadb225cab19b9e0d5ade4496cf2b710",
-  "source_snapshot": "1e0c8e2041d8629593e9e3939e0ad3dc65d32c17b97e29c9b466b02e3fb4f33f",
+  "git_commit": "35f53e730350c92acd0520b69b720381e15fa41f",
+  "source_snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
   "source": "cuda_sync_snapshot",
-  "preprocessing_fingerprint": "131d3f9e9fe2137f0b68934710ff473f92ab6929edd12992a53f7fce71b95e6b",
-  "evaluation_fingerprint": "654c4c4b0fe1a49a7e988cdaf30a3b71a675a7be8e14106ece613a0d52b6d36e",
+  "preprocessing_fingerprint": "b9f04ea152b1086517d9906db7d03b2551172b1af2326679865a4086fe7e14cb",
+  "evaluation_fingerprint": "0fc6e2a47e4ae45b3fb995e0b5a7593becfbe98347aa222fff638364e70a3f50",
   "models": [
     "vgg16_scratch",
     "vgg16_scratch_seed7",

@@ -109,7 +109,7 @@ def stale_findings(text: str) -> list[dict[str, object]]:
     findings: list[dict[str, object]] = []
     section = ""
     for line_number, line in enumerate(text.splitlines(), start=1):
-        heading = re.match(r"^###\s+(5\.\d+)", line)
+        heading = re.match(r"^#{2,3}\s+(5\.\d+)", line)
         if heading:
             section = heading.group(1)
         elif line.startswith("# "):
@@ -136,7 +136,7 @@ def _caption_numbers(text: str, kind: str) -> list[int]:
     return [
         int(value)
         for value in re.findall(
-            rf"^\*{kind}\s+(\d+)\.", text, flags=re.IGNORECASE | re.MULTILINE
+            rf"^\*{kind}\s+(\d+)\\?\.", text, flags=re.IGNORECASE | re.MULTILINE
         )
     ]
 
@@ -158,20 +158,43 @@ def _sequence_note(values: list[int]) -> str:
 
 
 def _linked_images(text: str, report_source: Path) -> tuple[int, list[str]]:
-    targets = re.findall(r"!\[[^]]*\]\(([^)]+)\)", text)
+    inline_targets = re.findall(r"!\[[^]]*\]\(([^)]+)\)", text)
+    reference_ids = re.findall(r"!\[[^]]*\]\[([^]]+)\]", text)
+    definitions = {
+        match.group(1).casefold(): match.group(2) or match.group(3)
+        for match in re.finditer(
+            r"^\[([^]]+)\]:\s*(?:<([^>]+)>|(\S+))",
+            text,
+            flags=re.MULTILINE,
+        )
+    }
+    targets = list(inline_targets)
     missing = []
+    for reference_id in reference_ids:
+        target = definitions.get(reference_id.casefold())
+        if target is None:
+            missing.append(f"[{reference_id}]")
+        else:
+            targets.append(target)
     for target in targets:
-        candidate = Path(target.strip("<>"))
+        cleaned = target.strip("<>")
+        if re.match(r"^(?:data:|https?://)", cleaned, flags=re.IGNORECASE):
+            continue
+        candidate = Path(cleaned)
         if not candidate.is_absolute():
             candidate = report_source.parent / candidate
         if not candidate.resolve().is_file():
             missing.append(target)
-    return len(targets), missing
+    return len(inline_targets) + len(reference_ids), missing
 
 
 def _approximate_word_count(text: str) -> int:
     without_code = re.sub(r"```.*?```", " ", text, flags=re.DOTALL)
-    without_links = re.sub(r"!?\[([^]]*)\]\([^)]+\)", r"\1", without_code)
+    without_definitions = re.sub(
+        r"^\[[^]]+\]:.*$", " ", without_code, flags=re.MULTILINE
+    )
+    without_references = re.sub(r"!?\[([^]]*)\]\[[^]]+\]", r"\1", without_definitions)
+    without_links = re.sub(r"!?\[([^]]*)\]\([^)]+\)", r"\1", without_references)
     return len(re.findall(r"\b[\w]+(?:[-’'][\w]+)*\b", without_links))
 
 
@@ -184,7 +207,7 @@ def _prose_only(text: str) -> str:
             continue
         if re.match(r"^\s*!\[", line):
             continue
-        if re.match(r"^\s*\*(?:Figure|Table)\s+\d+\.", line, re.IGNORECASE):
+        if re.match(r"^\s*\*(?:Figure|Table)\s+\d+\\?\.", line, re.IGNORECASE):
             continue
         kept_lines.append(line)
     return "\n".join(kept_lines)

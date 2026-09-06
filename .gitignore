@@ -251,6 +251,22 @@ sync_patch_data.sh
 .cuda-snapshot
 .cuda-status
 
+# Compact evidence for the completed patch-transfer comparison. Keep the 11 GB
+# patch tree, logs and checkpoints ignored; retain only report-reproducible JSON
+# and case-level predictions.
+!results/patch_learning/
+results/patch_learning/*
+!results/patch_learning/metrics.json
+!results/patch_learning/predictions/
+results/patch_learning/predictions/*
+!results/patch_learning/predictions/*.csv
+
+!models/
+models/*
+!models/patch_learning/
+models/patch_learning/*
+!models/patch_learning/vgg16_patch.patch-metrics.json
+
 # Scratch file for temporary notes
 SCRATCH.md
 scratches
@@ -259,4 +275,3 @@ scratches
 *.dcm
 .DS_Store
 References
-models
