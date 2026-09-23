@@ -262,13 +262,8 @@ def _interval_reading(value: dict[str, float | int]) -> str:
     return "interval crosses zero"
 
 
-def build_report_pack(
-    metrics: dict[str, Any],
-    statistics: dict[str, Any],
-    frozen: dict[str, Any],
-    report_source: Path,
-) -> tuple[str, list[dict[str, object]]]:
-    """Render corrected tables and a read-only source audit."""
+def _source_audit(report_source: Path) -> tuple[list[str], list[dict[str, object]]]:
+    """Scan the report source for stale values, word limits and figure links."""
     source_text = report_source.read_text()
     findings = stale_findings(source_text)
     chapter_counts, chapter_lines = _chapter_word_counts(source_text)
@@ -293,6 +288,103 @@ def build_report_pack(
                 ),
             }
         )
+    figure_numbers = _caption_numbers(source_text, "Figure")
+    table_numbers = _caption_numbers(source_text, "Table")
+    image_count, missing_images = _linked_images(source_text, report_source)
+    if image_count != len(figure_numbers):
+        findings.append(
+            {
+                "line": 1,
+                "marker": "image/caption count mismatch",
+                "excerpt": (
+                    f"Linked images: {image_count}; numbered figure captions: "
+                    f"{len(figure_numbers)}"
+                ),
+            }
+        )
+    lines: list[str] = []
+    lines.extend(
+        [
+            "",
+            "## Read-only source audit",
+            "",
+            f"- Approximate Markdown word count: {_approximate_word_count(source_text):,}",
+            f"- Approximate prose-only word count: {prose_total:,}",
+            f"- Figure captions: {len(figure_numbers)} ({_sequence_note(figure_numbers)})",
+            f"- Table captions: {len(table_numbers)} ({_sequence_note(table_numbers)})",
+            f"- Linked images: {image_count}; missing files: {len(missing_images)}",
+            f"- Stale markers: {len(findings)}",
+            "",
+        ]
+    )
+    if chapter_counts:
+        lines.extend(
+            [
+                (
+                    "Approximate chapter prose counts (tables, figure/table captions, "
+                    "linked images, code blocks and display equations excluded):"
+                ),
+                "",
+                "| Chapter | Approximate words | Limit | Status |",
+                "| ---: | ---: | ---: | --- |",
+            ]
+        )
+        for chapter in sorted(chapter_counts):
+            count = chapter_counts[chapter]
+            limit = CHAPTER_WORD_LIMITS[chapter]
+            status = "over" if count > limit else "within"
+            lines.append(f"| {chapter} | {count:,} | {limit:,} | {status} |")
+        lines.append("")
+    if missing_images:
+        lines.append("Missing image links:")
+        lines.append("")
+        lines.extend(f"- `{target}`" for target in missing_images)
+        lines.append("")
+    if findings:
+        lines.extend(
+            [
+                (
+                    "The scan identifies text that needs contextual review. Values "
+                    "in the historical sensitivity table or the locked external "
+                    "section may remain when they are explicitly labelled as earlier "
+                    "evidence; do not replace numbers blindly."
+                ),
+                "",
+            ]
+        )
+        lines.extend(
+            [
+                "| Line | Review reason | Current excerpt |",
+                "| ---: | --- | --- |",
+            ]
+        )
+        for finding in findings:
+            lines.append(
+                f"| {finding['line']} | {_escape_cell(finding['marker'])} | "
+                f"{_escape_cell(finding['excerpt'])} |"
+            )
+    else:
+        lines.append("No configured stale markers were found.")
+    lines.extend(
+        [
+            "",
+            (
+                "The word count is a reproducible approximation. Use the submission "
+                "editor for the final declared count."
+            ),
+            "",
+        ]
+    )
+    return lines, findings
+
+
+def build_report_pack(
+    metrics: dict[str, Any],
+    statistics: dict[str, Any],
+    frozen: dict[str, Any],
+    report_source: Path | None = None,
+) -> tuple[str, list[dict[str, object]]]:
+    """Render corrected tables, plus a read-only source audit when a report is given."""
     runs = metrics["runs"]
     models = statistics["models"]
     run_names = [str(run["model"]) for run in runs]
@@ -368,8 +460,12 @@ def build_report_pack(
         "# Corrected report update pack",
         "",
         (
-            "This file is generated from the frozen internal evidence. It does not "
-            f"edit `{report_source.as_posix()}`."
+            "This file is generated from the frozen internal evidence."
+            if report_source is None
+            else (
+                "This file is generated from the frozen internal evidence. It does "
+                f"not edit `{report_source.as_posix()}`."
+            )
         ),
         "",
         "## Evidence lock",
@@ -483,92 +579,12 @@ def build_report_pack(
             f"{_number(auc['p_two_sided'])} | {reading} |"
         )
 
-    figure_numbers = _caption_numbers(source_text, "Figure")
-    table_numbers = _caption_numbers(source_text, "Table")
-    image_count, missing_images = _linked_images(source_text, report_source)
-    if image_count != len(figure_numbers):
-        findings.append(
-            {
-                "line": 1,
-                "marker": "image/caption count mismatch",
-                "excerpt": (
-                    f"Linked images: {image_count}; numbered figure captions: "
-                    f"{len(figure_numbers)}"
-                ),
-            }
-        )
-    lines.extend(
-        [
-            "",
-            "## Read-only source audit",
-            "",
-            f"- Approximate Markdown word count: {_approximate_word_count(source_text):,}",
-            f"- Approximate prose-only word count: {prose_total:,}",
-            f"- Figure captions: {len(figure_numbers)} ({_sequence_note(figure_numbers)})",
-            f"- Table captions: {len(table_numbers)} ({_sequence_note(table_numbers)})",
-            f"- Linked images: {image_count}; missing files: {len(missing_images)}",
-            f"- Stale markers: {len(findings)}",
-            "",
-        ]
-    )
-    if chapter_counts:
-        lines.extend(
-            [
-                (
-                    "Approximate chapter prose counts (tables, figure/table captions, "
-                    "linked images, code blocks and display equations excluded):"
-                ),
-                "",
-                "| Chapter | Approximate words | Limit | Status |",
-                "| ---: | ---: | ---: | --- |",
-            ]
-        )
-        for chapter in sorted(chapter_counts):
-            count = chapter_counts[chapter]
-            limit = CHAPTER_WORD_LIMITS[chapter]
-            status = "over" if count > limit else "within"
-            lines.append(f"| {chapter} | {count:,} | {limit:,} | {status} |")
+    if report_source is None:
+        findings: list[dict[str, object]] = []
         lines.append("")
-    if missing_images:
-        lines.append("Missing image links:")
-        lines.append("")
-        lines.extend(f"- `{target}`" for target in missing_images)
-        lines.append("")
-    if findings:
-        lines.extend(
-            [
-                (
-                    "The scan identifies text that needs contextual review. Values "
-                    "in the historical sensitivity table or the locked external "
-                    "section may remain when they are explicitly labelled as earlier "
-                    "evidence; do not replace numbers blindly."
-                ),
-                "",
-            ]
-        )
-        lines.extend(
-            [
-                "| Line | Review reason | Current excerpt |",
-                "| ---: | --- | --- |",
-            ]
-        )
-        for finding in findings:
-            lines.append(
-                f"| {finding['line']} | {_escape_cell(finding['marker'])} | "
-                f"{_escape_cell(finding['excerpt'])} |"
-            )
     else:
-        lines.append("No configured stale markers were found.")
-    lines.extend(
-        [
-            "",
-            (
-                "The word count is a reproducible approximation. Use the submission "
-                "editor for the final declared count."
-            ),
-            "",
-        ]
-    )
+        audit_lines, findings = _source_audit(report_source)
+        lines.extend(audit_lines)
     return "\n".join(lines), findings
 
 
@@ -576,8 +592,8 @@ def generate_report_pack(
     metrics_path: Path = Path("results/metrics.json"),
     statistics_path: Path = Path("results/statistics.json"),
     freeze_path: Path = Path("results/evidence-freeze.json"),
-    report_source: Path = Path("report.md"),
-    output_path: Path = Path("report-update.md"),
+    report_source: Path | None = None,
+    output_path: Path = Path("results/report-update.md"),
 ) -> list[dict[str, object]]:
     """Verify inputs and write a deterministic report-update pack."""
     verify_bundle(metrics_path, statistics_path, freeze_path)
@@ -615,24 +631,28 @@ def generate_report_pack(
 @click.option(
     "--report-source",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
-    required=True,
+    default=None,
+    help="Report to scan for stale values. Omit to write only the evidence tables.",
 )
 @click.option(
     "--output",
     "output_path",
     type=click.Path(dir_okay=False, path_type=Path),
-    required=True,
+    default=Path("results/report-update.md"),
+    show_default=True,
 )
 @click.option("--fail-on-stale", is_flag=True, default=False)
 def cli(
     metrics_path: Path,
     statistics_path: Path,
     freeze_path: Path,
-    report_source: Path,
+    report_source: Path | None,
     output_path: Path,
     fail_on_stale: bool,
 ) -> None:
-    """Generate corrected tables and scan the report source without editing it."""
+    """Generate corrected tables and, optionally, scan a report without editing it."""
+    if fail_on_stale and report_source is None:
+        raise click.UsageError("--fail-on-stale needs --report-source.")
     try:
         findings = generate_report_pack(
             metrics_path,
@@ -643,7 +663,10 @@ def cli(
         )
     except (OSError, TypeError, ValueError) as exc:
         raise click.ClickException(str(exc)) from exc
-    click.echo(f"Wrote {output_path} with {len(findings)} stale marker(s).")
+    if report_source is None:
+        click.echo(f"Wrote {output_path}.")
+    else:
+        click.echo(f"Wrote {output_path} with {len(findings)} stale marker(s).")
     if fail_on_stale and findings:
         raise click.ClickException(
             f"The report source still has {len(findings)} stale marker(s). "

@@ -135,9 +135,19 @@ def test_report_pack_renders_tables_and_read_only_scan(tmp_path):
     assert findings[0]["marker"] == "obsolete all-seed resolution claim"
 
 
-def test_report_pack_derives_narrative_from_current_intervals(tmp_path):
-    report = tmp_path / "FinalReport.md"
-    report.write_text("# Report\n")
+def test_report_pack_without_source_skips_scan():
+    metrics = {"runs": [{"model": name} for name in RUNS]}
+    frozen = {"figures": [], "source_snapshot": "a" * 64}
+
+    rendered, findings = build_report_pack(metrics, _statistics(), frozen)
+
+    assert "## Corrected model table" in rendered
+    assert "## Read-only source audit" not in rendered
+    assert "It does not edit" not in rendered
+    assert findings == []
+
+
+def test_report_pack_derives_narrative_from_current_intervals():
     metrics = {"runs": [{"model": name} for name in RUNS]}
     statistics = _statistics()
     for name in (
@@ -151,7 +161,7 @@ def test_report_pack_derives_narrative_from_current_intervals(tmp_path):
         auc["ci_upper"] = 0.08
     frozen = {"figures": [], "source_snapshot": "a" * 64}
 
-    rendered, _ = build_report_pack(metrics, statistics, frozen, report)
+    rendered, _ = build_report_pack(metrics, statistics, frozen)
 
     assert "all three paired intervals are above zero" in rendered
     assert "ensemble is numerically above seed-42 VGG-16" in rendered

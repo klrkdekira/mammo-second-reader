@@ -22,10 +22,7 @@ PATCH_PREDICTIONS ?= results/patch_learning/predictions
 TRANSFER_RUNS := \
 	configs/patch_learning/vgg16_imagenet_448_quarantined.toml:42:vgg16_imagenet_448_quarantined \
 	configs/patch_learning/vgg16_patch_imagenet_448.toml:42:vgg16_patch_imagenet_448
-REPORT_TEMPLATE ?=
-REPORT_SOURCE ?=
-REPORT_UPDATE ?=
-REPORT_FORCE ?=
+REPORT_UPDATE ?= results/report-update.md
 PYTHON_PATHS := src tests
 ARCHIVE_ROOT ?= ../mammo-second-reader-superseded/pipeline-$(shell date -u +%Y%m%dT%H%M%SZ)
 
@@ -66,7 +63,7 @@ MODEL_ARGS = $(if $(strip $(SEED)),--seed "$(SEED)") $(if $(strip $(RUN_NAME)),-
 .PHONY: all help setup test lint format format-check typecheck check web splits \
 	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa patch-verify patch-train patch-transfer fixture \
 	train evaluate experiments evaluate-experiments ensemble statistics figures freeze evidence \
-	verify-evidence report-draft report-pack report-check submission-check leakage-audit \
+	verify-evidence report-pack submission-check leakage-audit \
 	archive-evidence clean-evidence clean-cache clean-dev clean pipeline
 
 all: pipeline ## Run the full pipeline.
@@ -222,23 +219,12 @@ evidence: ## Build and freeze results.
 verify-evidence: ## Verify saved results.
 	$(PY) -m src.evaluation.verify_bundle
 
-report-draft: ## Create the report if absent.
-	@test -n "$(strip $(REPORT_TEMPLATE))" || { echo "REPORT_TEMPLATE is required"; exit 2; }
-	@test -n "$(strip $(REPORT_SOURCE))" || { echo "REPORT_SOURCE is required"; exit 2; }
-	$(PY) -m src.reporting.report_draft --template "$(REPORT_TEMPLATE)" --output "$(REPORT_SOURCE)" $(if $(strip $(REPORT_FORCE)),--force)
-
-report-pack: report-draft ## Build report update notes.
-	@test -n "$(strip $(REPORT_UPDATE))" || { echo "REPORT_UPDATE is required"; exit 2; }
-	$(PY) -m src.reporting.report_pack --report-source "$(REPORT_SOURCE)" --output "$(REPORT_UPDATE)"
-
-report-check: report-draft ## Check the report.
-	@test -n "$(strip $(REPORT_UPDATE))" || { echo "REPORT_UPDATE is required"; exit 2; }
-	$(PY) -m src.reporting.report_pack --report-source "$(REPORT_SOURCE)" --output "$(REPORT_UPDATE)" --fail-on-stale
+report-pack: ## Build report update notes.
+	$(PY) -m src.reporting.report_pack --output "$(REPORT_UPDATE)"
 
 submission-check: ## Run submission checks.
 	$(MAKE) check
 	$(MAKE) verify-evidence
-	@if [ -n "$(strip $(REPORT_SOURCE))" ]; then $(MAKE) report-check; fi
 
 leakage-audit: ## Run the split audit.
 	$(PY) -m src.evaluation.leakage_sensitivity
@@ -290,4 +276,4 @@ pipeline: ## Run the pipeline from a clean state.
 	$(MAKE) experiments
 	$(MAKE) evidence
 	$(MAKE) verify-evidence
-	@if [ -n "$(strip $(REPORT_SOURCE))" ]; then $(MAKE) report-pack; fi
+	$(MAKE) report-pack
