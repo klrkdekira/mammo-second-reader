@@ -3050,13 +3050,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:05.953621+00:00",
+        "generated_at_utc": "2026-09-21T08:27:18.725574+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -3321,12 +3321,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -3336,7 +3336,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_scratch",
@@ -6397,13 +6397,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:12.262968+00:00",
+        "generated_at_utc": "2026-09-21T08:29:16.055543+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -6668,12 +6668,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -6683,7 +6683,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_scratch_seed7",
@@ -9731,13 +9731,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:18.424930+00:00",
+        "generated_at_utc": "2026-09-21T08:31:10.269495+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -10002,12 +10002,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -10017,7 +10017,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_scratch_seed2026",
@@ -12897,13 +12897,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:24.567155+00:00",
+        "generated_at_utc": "2026-09-21T08:32:14.863240+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -13168,12 +13168,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -13183,7 +13183,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet",
@@ -16216,13 +16216,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:30.645521+00:00",
+        "generated_at_utc": "2026-09-21T08:33:15.762413+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -16487,12 +16487,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -16502,7 +16502,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet_seed7",
@@ -19542,13 +19542,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:36.822324+00:00",
+        "generated_at_utc": "2026-09-21T08:34:18.143378+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -19813,12 +19813,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -19828,7 +19828,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet_seed2026",
@@ -22813,13 +22813,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:46.267299+00:00",
+        "generated_at_utc": "2026-09-21T08:37:48.396426+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -23084,12 +23084,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -23099,7 +23099,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet_448",
@@ -26098,13 +26098,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:29:55.698514+00:00",
+        "generated_at_utc": "2026-09-21T08:41:18.047647+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -26369,12 +26369,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -26384,7 +26384,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet_448_seed7",
@@ -28741,13 +28741,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:04.993762+00:00",
+        "generated_at_utc": "2026-09-21T08:44:14.506131+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -29012,12 +29012,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -29027,7 +29027,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg16_imagenet_448_seed2026",
@@ -32057,13 +32057,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:11.442991+00:00",
+        "generated_at_utc": "2026-09-21T08:45:26.238005+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -32328,12 +32328,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -32343,7 +32343,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "vgg19_imagenet",
@@ -35358,13 +35358,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:16.771134+00:00",
+        "generated_at_utc": "2026-09-21T08:45:57.289172+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -35629,12 +35629,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -35644,7 +35644,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "resnet50_imagenet",
@@ -38702,13 +38702,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:23.930588+00:00",
+        "generated_at_utc": "2026-09-21T08:46:33.540702+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -38973,12 +38973,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -38988,7 +38988,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "efficientnet_b4_imagenet",
@@ -42039,13 +42039,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:28.005212+00:00",
+        "generated_at_utc": "2026-09-21T08:46:53.051840+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -42310,12 +42310,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -42325,7 +42325,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "baseline",
@@ -45389,13 +45389,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:32.115895+00:00",
+        "generated_at_utc": "2026-09-21T08:47:43.832236+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -45660,12 +45660,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -45675,7 +45675,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_base",
@@ -48698,13 +48698,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:36.197886+00:00",
+        "generated_at_utc": "2026-09-21T08:48:34.950632+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -48969,12 +48969,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -48984,7 +48984,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_heavy_aug",
@@ -51986,13 +51986,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:40.097054+00:00",
+        "generated_at_utc": "2026-09-21T08:49:25.880163+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -52257,12 +52257,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -52272,7 +52272,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_label_smooth",
@@ -55312,13 +55312,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:44.029534+00:00",
+        "generated_at_utc": "2026-09-21T08:50:17.286765+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -55583,12 +55583,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -55598,7 +55598,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_mixup",
@@ -58635,13 +58635,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:47.949403+00:00",
+        "generated_at_utc": "2026-09-21T08:50:59.140338+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -58906,12 +58906,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -58921,7 +58921,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_combined",
@@ -61919,13 +61919,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:52.047344+00:00",
+        "generated_at_utc": "2026-09-21T08:52:15.501076+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -62190,12 +62190,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -62205,7 +62205,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_base_120",
@@ -65233,13 +65233,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:55.958028+00:00",
+        "generated_at_utc": "2026-09-21T08:53:20.423989+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -65504,12 +65504,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -65519,7 +65519,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_label_smooth_120",
@@ -68585,13 +68585,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:30:59.962506+00:00",
+        "generated_at_utc": "2026-09-21T08:54:39.071603+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -68856,12 +68856,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -68871,7 +68871,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "regularised_mixup_120",
@@ -71869,13 +71869,13 @@
       },
       "lineage": {
         "version": 4,
-        "generated_at_utc": "2026-08-28T04:31:07.330386+00:00",
+        "generated_at_utc": "2026-09-21T08:54:46.231775+00:00",
         "git": {
           "commit": "35f53e730350c92acd0520b69b720381e15fa41f",
-          "snapshot": "c1294a75e2d02d158a5cc6abc62b39095c94391667ff2a9e28d1fa1677eef49b",
+          "snapshot": "95f8162afd0b754aae0b3a235ddf8e6a99b9489b27b125174b0b158b7acb4d61",
           "dirty_evidence_files": false,
           "source_worktree_dirty": true,
-          "evidence_status": "M uv.lock",
+          "evidence_status": "M src/reporting/report_pack.py\n M tests/test_report_pack.py\n M uv.lock",
           "source": "cuda_sync_snapshot"
         },
         "config": {
@@ -72153,12 +72153,12 @@
         },
         "runtime": {
           "python": "3.12.14",
-          "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.43",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
           "packages": {
-            "numpy": "2.5.2",
-            "pandas": "3.0.5",
+            "numpy": "2.5.3",
+            "pandas": "3.0.6",
             "pydicom": "3.0.2",
-            "scikit-learn": "1.9.0",
+            "scikit-learn": "1.9.1",
             "torch": "2.11.0+cu128",
             "torchvision": "0.26.0+cu128"
           },
@@ -72168,7 +72168,7 @@
           "gpus": [
             "NVIDIA GeForce RTX 5090"
           ],
-          "nvidia_driver": "595.84"
+          "nvidia_driver": "595.91.07"
         },
         "experiment": {
           "run_name": "ensemble",
