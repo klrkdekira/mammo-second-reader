@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import re
+import shutil
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -13,7 +15,7 @@ from src.config import get_device
 from src.data import manifest
 from src.data.augment import train_augment, val_augment
 from src.data.dataset import MammogramDataset
-from src.evaluation.metrics import evaluate
+from src.evaluation.metrics import evaluate, youden_threshold
 from src.models import build_model
 from src.models.transfer import freeze_backbone as freeze_model_backbone
 from src.models.transfer import unfreeze_head
@@ -27,6 +29,13 @@ from src.web.archive import (
     deidentify_dicom_in_place,
     extract_flat_archive,
     move_file,
+)
+from src.web import inference
+from src.web.inference import (
+    available_models,
+    checkpoint_path,
+    model_image_size,
+    resolve_arch,
 )
 
 
@@ -60,41 +69,67 @@ def materialise_workdir(zip_path: str, workdir: Path) -> Path:
     return workdir
 
 
-def _clean_model_name(model_name: str) -> str:
-    return (
-        model_name.lower()
-        .replace("_imagenet", "")
-        .replace("_transfer", "")
-        .replace("_scratch", "")
-    )
+_OUTPUT_NAME = re.compile(r"^[a-z0-9_]+$")
+
+
+def default_output_name(base_model: str) -> str:
+    return f"{base_model}_finetuned"
+
+
+def _validate_output_name(base_model: str, output_name: str) -> Path:
+    """Return the new checkpoint path, refusing to overwrite a trained run."""
+    if not _OUTPUT_NAME.match(output_name):
+        raise ValueError(
+            "Output name may only contain lower-case letters, digits and underscores."
+        )
+    if resolve_arch(output_name) != resolve_arch(base_model):
+        raise ValueError(
+            f"Output name {output_name!r} must keep the base run prefix so its "
+            "architecture can be resolved, for example "
+            f"{default_output_name(base_model)!r}."
+        )
+    if model_image_size(output_name) != model_image_size(base_model):
+        raise ValueError("Output name must keep the base run's resolution suffix.")
+    target = inference.MODEL_DIR / f"{output_name}.pt"
+    if target.exists() or output_name in available_models():
+        raise ValueError(
+            f"A checkpoint named {output_name!r} already exists. Choose another name."
+        )
+    return target
 
 
 def stream_finetune_epochs(
     workdir: Path,
-    model_name: str,
-    base_checkpoint: Path,
+    base_model: str,
+    output_name: str,
     *,
     epochs: int = 5,
     lr: float = 1e-5,
     freeze_backbone: bool = True,
-    image_size: int = 224,
     batch_size: int = 16,
-) -> Iterator[dict[str, float | int]]:
-    """Fine-tune a model and return metrics after each epoch."""
+) -> Iterator[dict[str, object]]:
+    """Fine-tune a trained checkpoint and return metrics after each epoch.
+
+    The best-AUC weights are saved to models/<output_name>.pt with history
+    and threshold sidecars, so the result appears in the Inference tab.
+    """
     workdir = Path(workdir)
     if not 1 <= int(epochs) <= 50:
         raise ValueError("epochs must be between 1 and 50")
     if not 0.0 < float(lr) <= 0.1:
         raise ValueError("lr must be greater than 0 and no more than 0.1")
+    arch = resolve_arch(base_model)
+    base_checkpoint = checkpoint_path(base_model)
+    if arch is None or not base_checkpoint.is_file():
+        raise FileNotFoundError(f"No trained checkpoint for model {base_model!r}.")
+    target = _validate_output_name(base_model, output_name)
+    image_size = model_image_size(base_model)
     train_csv = workdir / "train.csv"
     val_csv = workdir / "val.csv"
     image_root = workdir / "processed"
-    if not base_checkpoint.is_file():
-        raise FileNotFoundError(f"Base checkpoint not found: {base_checkpoint}")
 
     device = get_device()
-    clean_name = _clean_model_name(model_name)
-    model = build_model(clean_name, pretrained=False)
+    model = build_model(arch, pretrained=False)
     state = torch.load(base_checkpoint, map_location=device, weights_only=True)
     model.load_state_dict(state)
     model = model.to(device)
@@ -121,7 +156,9 @@ def stream_finetune_epochs(
     )
     optimiser = torch.optim.Adam(trainable, lr=float(lr))
     criterion = make_criterion(train_csv, device)
-    checkpoint = BestAUCCheckpoint(workdir / "adapter.pt")
+    # Train into the work directory so an aborted run leaves models/ untouched.
+    staged = workdir / "adapter.pt"
+    checkpoint = BestAUCCheckpoint(staged)
     history: list[dict[str, float | int]] = []
 
     for epoch in range(int(epochs)):
@@ -139,3 +176,27 @@ def stream_finetune_epochs(
         history.append(record)
         (workdir / "history.json").write_text(json.dumps(history, indent=2) + "\n")
         yield record
+
+    model.load_state_dict(torch.load(staged, map_location=device, weights_only=True))
+    val_y, val_p = _predict(model, val_loader, device)
+    best_auc = float(evaluate(val_y, val_p).auc)
+    model_dir = inference.MODEL_DIR
+    model_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(staged, target)
+    (model_dir / f"{output_name}.history.json").write_text(
+        json.dumps(history, indent=2) + "\n"
+    )
+    (model_dir / f"{output_name}.threshold.json").write_text(
+        json.dumps(
+            {
+                "youden_j": youden_threshold(val_y, val_p),
+                "val_auc_at_best": best_auc,
+                "val_auc_final_epoch": history[-1]["val_auc"],
+                "run_name": output_name,
+                "base_model": base_model,
+            },
+            indent=2,
+        )
+        + "\n"
+    )
+    yield {**history[-1], "saved_as": output_name, "best_val_auc": best_auc}

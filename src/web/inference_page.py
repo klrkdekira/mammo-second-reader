@@ -46,6 +46,11 @@ def render() -> None:
             label_out = gr.Label(label="Prediction")
             heatmap_out = gr.Image(label="Grad-CAM Overlay")
 
+    def refresh_models(selected: str | None):
+        choices = available_models()
+        value = selected if selected in choices else (choices[0] if choices else None)
+        return gr.update(choices=choices, value=value)
+
     def sync_threshold(model_name: str):
         return model_threshold(model_name) if model_name else 0.5
 
@@ -70,6 +75,9 @@ def render() -> None:
             overlay = Image.open(io.BytesIO(overlay_bytes))
         return prob, confidences, overlay
 
+    model_select.focus(  # type: ignore[attr-defined]
+        refresh_models, inputs=[model_select], outputs=[model_select]
+    )
     model_select.change(  # type: ignore[attr-defined]
         sync_threshold,
         inputs=[model_select],

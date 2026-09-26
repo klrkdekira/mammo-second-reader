@@ -21,7 +21,7 @@ from src.web.archive import (
     deidentify_dicom_in_place,
     extract_flat_archive,
 )
-from src.web.inference import _load_model, model_threshold
+from src.web.inference import _load_model, model_image_size, model_threshold
 
 LOGGER = logging.getLogger(__name__)
 
@@ -50,12 +50,14 @@ def run_batch_evaluation(
     zip_path: str,
     model_name: str,
     *,
-    image_size: int = 224,
+    image_size: int | None = None,
     batch_size: int = 32,
 ) -> dict[str, object]:
     """Evaluate a model using an uploaded ZIP file."""
     if not model_name:
         raise ValueError("A model must be selected.")
+    if image_size is None:
+        image_size = model_image_size(model_name)
     with tempfile.TemporaryDirectory(prefix="mammo-evaluation-") as tmp:
         workdir = Path(tmp)
         manifest_csv = _extract_batch(zip_path, workdir)

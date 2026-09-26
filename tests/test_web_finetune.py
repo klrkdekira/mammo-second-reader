@@ -10,7 +10,7 @@ import torch
 from pydicom.dataset import FileDataset, FileMetaDataset
 
 from src.models import build_model
-from src.web import finetune
+from src.web import finetune, inference
 
 
 def _make_dicom_bytes(tmp_path, name: str, patient_name: str = "Test^Patient"):
@@ -97,6 +97,9 @@ def test_materialise_workdir_deidentifies_and_flattens(tmp_path):
 
 def test_stream_finetune_epochs_yields_metrics(tmp_path, monkeypatch):
     monkeypatch.setattr(torch.cuda, "is_available", lambda: False)
+    model_dir = tmp_path / "models"
+    model_dir.mkdir()
+    monkeypatch.setattr(inference, "MODEL_DIR", model_dir)
 
     workdir = tmp_path / "workdir"
     processed = workdir / "processed"
@@ -113,20 +116,49 @@ def test_stream_finetune_epochs_yields_metrics(tmp_path, monkeypatch):
     df.to_csv(workdir / "train.csv", index=False)
     df.to_csv(workdir / "val.csv", index=False)
 
-    base_checkpoint = tmp_path / "base.pt"
+    base_checkpoint = model_dir / "baseline.pt"
     torch.save(build_model("baseline").state_dict(), base_checkpoint)
+    original = base_checkpoint.read_bytes()
 
     epochs = list(
         finetune.stream_finetune_epochs(
             workdir,
             "baseline",
-            base_checkpoint,
+            "baseline_finetuned",
             epochs=2,
             lr=1e-4,
             freeze_backbone=False,
         )
     )
 
-    assert [e["epoch"] for e in epochs] == [0, 1]
+    assert [e["epoch"] for e in epochs[:2]] == [0, 1]
     assert all("val_auc" in e and "train_loss" in e for e in epochs)
-    assert (workdir / "adapter.pt").exists()
+    assert epochs[-1]["saved_as"] == "baseline_finetuned"
+    assert (model_dir / "baseline_finetuned.pt").exists()
+    assert (model_dir / "baseline_finetuned.threshold.json").exists()
+    assert base_checkpoint.read_bytes() == original
+    assert "baseline_finetuned" in inference.available_models()
+
+
+def test_finetune_refuses_to_overwrite_existing_checkpoint(tmp_path, monkeypatch):
+    monkeypatch.setattr(inference, "MODEL_DIR", tmp_path)
+    torch.save(build_model("baseline").state_dict(), tmp_path / "baseline.pt")
+
+    with pytest.raises(ValueError, match="already exists"):
+        next(
+            finetune.stream_finetune_epochs(
+                tmp_path, "baseline", "baseline", epochs=1, lr=1e-4
+            )
+        )
+
+
+def test_finetune_rejects_output_name_with_other_architecture(tmp_path, monkeypatch):
+    monkeypatch.setattr(inference, "MODEL_DIR", tmp_path)
+    torch.save(build_model("baseline").state_dict(), tmp_path / "baseline.pt")
+
+    with pytest.raises(ValueError, match="architecture"):
+        next(
+            finetune.stream_finetune_epochs(
+                tmp_path, "baseline", "vgg16_new", epochs=1, lr=1e-4
+            )
+        )
