@@ -161,6 +161,7 @@ fixture: ## Build the fine-tuning fixture.
 	$(PY) -m src.data.make_finetune_archive
 
 inbreast-fixtures: ## Build INbreast web evaluation and fine-tuning archives.
+	$(PY) -m src.data.inbreast
 	$(PY) -m src.data.make_inbreast_archives
 
 train: ## Train one model.
