@@ -61,7 +61,7 @@ export UV_CACHE_DIR
 MODEL_ARGS = $(if $(strip $(SEED)),--seed "$(SEED)") $(if $(strip $(RUN_NAME)),--run-name "$(RUN_NAME)")
 
 .PHONY: all help setup test lint format format-check typecheck check web splits \
-	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa patch-verify patch-train patch-transfer fixture \
+	cache-224 cache-448 preprocess qa-preprocessing patch-data patch-qa patch-verify patch-train patch-transfer fixture inbreast-fixtures \
 	train evaluate experiments evaluate-experiments ensemble statistics figures freeze evidence \
 	verify-evidence report-pack submission-check leakage-audit \
 	archive-evidence clean-evidence clean-cache clean-dev clean pipeline
@@ -159,6 +159,9 @@ patch-transfer: ## Train and evaluate both arms of the patch-transfer comparison
 
 fixture: ## Build the fine-tuning fixture.
 	$(PY) -m src.data.make_finetune_archive
+
+inbreast-fixtures: ## Build INbreast web evaluation and fine-tuning archives.
+	$(PY) -m src.data.make_inbreast_archives
 
 train: ## Train one model.
 	@if [ -z "$(strip $(CONFIG))" ]; then echo "CONFIG is required (for example, CONFIG=configs/vgg16_transfer.toml)"; exit 2; fi
