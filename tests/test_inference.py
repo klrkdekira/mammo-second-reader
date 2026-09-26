@@ -74,3 +74,44 @@ def test_dicom_upload_is_deidentified_before_decoding(monkeypatch):
     inference._preprocess_bytes(b"irrelevant bytes", "scan.dcm")
 
     assert captured["patient_name_present"] is False
+
+
+@pytest.mark.parametrize(
+    ("name", "arch"),
+    [
+        ("baseline", "baseline"),
+        ("regularised_mixup_120", "deeper"),
+        ("vgg16_scratch_seed7", "vgg16"),
+        ("vgg16_imagenet_448_seed2026", "vgg16"),
+        ("vgg16_patch_imagenet_448", "vgg16"),
+        ("efficientnet_b4_imagenet", "efficientnet_b4"),
+        ("resnet50_imagenet", "resnet50"),
+        ("vgg16_patch", None),
+        ("vgg16_patch_aug", None),
+        ("regularised", "deeper"),
+        ("unknown_model", None),
+    ],
+)
+def test_resolve_arch(name, arch):
+    assert inference.resolve_arch(name) == arch
+
+
+def test_available_models_lists_every_whole_image_checkpoint(tmp_path, monkeypatch):
+    monkeypatch.setattr(inference, "MODEL_DIR", tmp_path)
+    patch_dir = tmp_path / "patch_learning"
+    patch_dir.mkdir()
+    for name in ("vgg16_imagenet_seed7", "regularised_base_120", "vgg19_imagenet"):
+        (tmp_path / f"{name}.pt").touch()
+    (patch_dir / "vgg16_patch_imagenet_448.pt").touch()
+    (patch_dir / "vgg16_patch.pt").touch()
+    (patch_dir / "vgg16_imagenet_448_quarantined.pt").touch()
+
+    assert inference.available_models() == [
+        "regularised_base_120",
+        "vgg16_imagenet_seed7",
+        "vgg16_imagenet_448_quarantined",
+        "vgg16_patch_imagenet_448",
+        "vgg19_imagenet",
+    ]
+    assert inference.checkpoint_path("vgg16_patch_imagenet_448").parent == patch_dir
+    assert inference.model_image_size("vgg16_patch_imagenet_448") == 448

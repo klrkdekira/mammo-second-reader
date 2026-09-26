@@ -8,6 +8,7 @@ import base64
 import io
 import json
 import logging
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -24,33 +25,74 @@ MODEL_DIR = Path("models")
 
 MAX_UPLOAD_BYTES = 100 * 1024 * 1024
 
-MODEL_REGISTRY: dict[str, str] = {
-    "baseline": "baseline",
-    "regularised_base": "deeper",
-    "regularised_heavy_aug": "deeper",
-    "regularised_label_smooth": "deeper",
-    "regularised_mixup": "deeper",
-    "regularised_combined": "deeper",
-    "vgg16_scratch": "vgg16",
-    **{f"{arch}_imagenet": arch for arch in ARCHS},
-}
+# Training writes whole-image runs to models/ and patch-transfer runs to
+# models/patch_learning/, so both are scanned.
+SEARCH_SUBDIRS: tuple[str, ...] = ("", "patch_learning")
+
+_SEED_SUFFIX = re.compile(r"_seed\d+$")
+# Five-class patch classifiers share the models tree but not the binary head.
+_PATCH_CLASSIFIER = re.compile(r"_patch(_aug)?$")
+
+
+def resolve_arch(model_name: str) -> str | None:
+    """Architecture a run name was trained with, or None if unknown.
+
+    Run names follow the config convention: `baseline`, `regularised_*`
+    (DeeperCNN), and `<arch>_*` for torchvision backbones, with optional
+    `_448`, `_120` and `_seed<N>` suffixes.
+    """
+    stem = _SEED_SUFFIX.sub("", model_name.lower())
+    if _PATCH_CLASSIFIER.search(stem):
+        return None
+    if stem == "baseline" or stem.startswith("baseline_"):
+        return "baseline"
+    if stem.startswith("regularised"):
+        return "deeper"
+    for arch in sorted(ARCHS, key=len, reverse=True):
+        if stem == arch or stem.startswith(f"{arch}_"):
+            return arch
+    return None
+
+
+def model_image_size(model_name: str) -> int:
+    """Input resolution a run was trained at."""
+    return 448 if "_448" in model_name else 224
+
+
+def _checkpoints() -> dict[str, Path]:
+    found: dict[str, Path] = {}
+    for sub in SEARCH_SUBDIRS:
+        directory = MODEL_DIR / sub if sub else MODEL_DIR
+        for path in sorted(directory.glob("*.pt")):
+            if path.stem in found or resolve_arch(path.stem) is None:
+                continue
+            if path.with_name(f"{path.stem}.patch-metrics.json").exists():
+                continue
+            found[path.stem] = path
+    return found
+
+
+def checkpoint_path(model_name: str) -> Path:
+    """On-disk checkpoint for a model name, defaulting to MODEL_DIR."""
+    return _checkpoints().get(model_name, MODEL_DIR / f"{model_name}.pt")
 
 
 def available_models() -> list[str]:
-    """Registered checkpoints present on disk, ordered for display."""
-    return [p.stem for p in sorted(MODEL_DIR.glob("*.pt")) if p.stem in MODEL_REGISTRY]
+    """Binary whole-image checkpoints present on disk, ordered for display."""
+    return sorted(_checkpoints())
 
 
 @lru_cache(maxsize=4)
 def _load_model(model_name: str) -> torch.nn.Module:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = build_model(MODEL_REGISTRY[model_name], pretrained=False)
-    weights = MODEL_DIR / f"{model_name}.pt"
-    if not weights.exists():
+    arch = resolve_arch(model_name)
+    weights = checkpoint_path(model_name)
+    if arch is None or not weights.exists():
         raise FileNotFoundError(
             f"No checkpoint for model {model_name!r} at {weights}. "
             "Train the model or pick one of the available checkpoints."
         )
+    model = build_model(arch, pretrained=False)
     model.load_state_dict(torch.load(weights, map_location=device, weights_only=True))
     return model.to(device).eval()
 
@@ -58,13 +100,15 @@ def _load_model(model_name: str) -> torch.nn.Module:
 @lru_cache(maxsize=4)
 def model_threshold(model_name: str) -> float:
     """Youden-J operating threshold for a model, defaulting to 0.5."""
-    sidecar = MODEL_DIR / f"{model_name}.threshold.json"
+    sidecar = checkpoint_path(model_name).with_suffix(".threshold.json")
     if sidecar.exists():
         return float(json.loads(sidecar.read_text())["youden_j"])
     return 0.5
 
 
-def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
+def _preprocess_bytes(
+    contents: bytes, filename: str, image_size: int = 224
+) -> np.ndarray:
     """Decode and preprocess an uploaded DICOM, PNG, or JPEG image."""
     from src.data.preprocessing import preprocess_array
 
@@ -98,7 +142,7 @@ def _preprocess_bytes(contents: bytes, filename: str) -> np.ndarray:
             raise ValueError(
                 f"Could not decode the file as a PNG/JPEG image: {exc}"
             ) from exc
-    return preprocess_array(arr)
+    return preprocess_array(arr, image_size)
 
 
 def _overlay_to_b64(image: np.ndarray, heatmap: np.ndarray) -> str:
@@ -119,7 +163,7 @@ def run_single_inference(
     """Classify one image and return probability, label, threshold, and overlay."""
     from src.data.preprocessing import normalise
 
-    image = _preprocess_bytes(contents, filename)
+    image = _preprocess_bytes(contents, filename, model_image_size(model_name))
     model = _load_model(model_name)
     device = next(model.parameters()).device
     tensor = torch.from_numpy(normalise(image)).unsqueeze(0).unsqueeze(0).to(device)
@@ -128,7 +172,7 @@ def run_single_inference(
     thr = threshold if threshold is not None else model_threshold(model_name)
 
     overlay_b64 = ""
-    target = TARGET_LAYERS.get(MODEL_REGISTRY[model_name])
+    target = TARGET_LAYERS.get(resolve_arch(model_name) or "")
     if target is not None:
         try:
             overlay_b64 = _overlay_to_b64(image, compute_gradcam(model, tensor, target))

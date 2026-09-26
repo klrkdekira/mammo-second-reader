@@ -15,6 +15,11 @@ def render() -> None:
     run = gr.Button("Run Batch Evaluation", variant="primary")
     output = gr.JSON(label="Evaluation Metrics")
 
+    def refresh_models(selected: str | None):
+        choices = available_models()
+        value = selected if selected in choices else (choices[0] if choices else None)
+        return gr.update(choices=choices, value=value)
+
     def evaluate_archive(path: str, model_name: str):
         if not path or not model_name:
             raise gr.Error("Select an archive and an available model.")
@@ -25,6 +30,9 @@ def render() -> None:
         except (ValueError, FileNotFoundError) as exc:
             raise gr.Error(str(exc)) from exc
 
+    model.focus(  # type: ignore[attr-defined]
+        refresh_models, inputs=[model], outputs=[model]
+    )
     run.click(  # type: ignore[attr-defined]
         evaluate_archive, inputs=[archive, model], outputs=[output]
     )
